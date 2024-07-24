@@ -27,7 +27,15 @@
     #  rosa create account-roles --hosted-cp --prefix Managed-OpenShift --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
 
     - set_fact:
-        AWS_ACCOUNT_ID: "xxxxxxxxxx"
+        aws_account_id: "xxxxxxxxxx"
+        account_roles_prefix: Managed-OpenShift
+        operator_roles_prefix: Managed-OpenShift-HCP
+        cluster_name: xxxxxxxxxxxxxx
+        kms_arn: xxxxxxxxxxxxxx
+        vpc_cidr: x.x.x.x/x
+        subnet_id1: xxxxxxxxxxxxxx
+        subnet_id2: xxxxxxxxxxxxxx
+        subnet_id3: xxxxxxxxxxxxxx
 
     - name: Create ROSA Account Roles
       command:
@@ -39,7 +47,7 @@
           - --prefix
           - Managed-OpenShift
           - --permissions-boundary
-          - "arn:aws:iam::{{AWS_ACCOUNT_ID}}:policy/iam-role-permissions-boundary-rosa"
+          - "arn:aws:iam::{{ aws_account_id }}:policy/iam-role-permissions-boundary-rosa"
           - --mode
           - auto
       register: account_roles
@@ -93,11 +101,6 @@
     #  Take note of the Operator roles ARN
 
 
-    - set_fact:
-        account_roles_prefix: Managed-OpenShift
-        operator_roles_prefix: Managed-OpenShift-HCP
-        aws_account_id: "xxxxxxxxxx"
-
     - name: Create ROSA Operator Roles
       command:
         argv:
@@ -134,14 +137,6 @@
     #  export SUBNET_ID3=<SUBNET_ID3>
 
     #  rosa create cluster --private --cluster-name=${CLUSTER_NAME} --sts --mode=auto --hosted-cp --etcd-encryption-kms-arn ${KMS_ARN} --operator-roles-prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --machine-cidr=${VPC_CIDR} --subnet-ids=${SUBNET_ID1},${SUBNET_ID2},${SUBNET_ID3}
-
-    - set_fact:
-        cluster_name: xxxxxxxxxxxxxx
-        kms_arn: xxxxxxxxxxxxxx
-        vpc_cidr: x.x.x.x/x
-        subnet_id1: xxxxxxxxxxxxxx
-        subnet_id2: xxxxxxxxxxxxxx
-        subnet_id3: xxxxxxxxxxxxxx
 
     - name: Create ROSA Cluster
       command:
