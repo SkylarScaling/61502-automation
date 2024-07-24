@@ -16,28 +16,33 @@
     # Log on to AWS Account that the cluster is being installed on. (replace region, access key Id, access key, and
     # session token with the actual values of AWA account the cluster is being installed on)
 
-  export AWS_DEFAULT_REGION=us-xxx-xxx
-  export AWS_ACCESS_KEY_ID="xxx"
-  export AWS_SECRET_ACCESS_KEY="xxx"
-  export AWS_SESSION_TOKEN="xxx"
-
 
     # Log on to ROSA CLI (using Redhat account access token) as follows:
-  rosa login
+    #rosa login
+
+    - name: Login to ROSA CLI
+      environment:
+        AWS_DEFAULT_REGION=us-xxx-xxx
+        AWS_ACCESS_KEY_ID="xxx"
+        AWS_SECRET_ACCESS_KEY="xxx"
+        AWS_SESSION_TOKEN="xxx"
+      command:
+        cmd: rosa login
+
 
   # Create the account-wide IAM roles by running the following command:
   # (Replace aws account Id with the aws account being used to install)
 
-  export AWS_ACCOUNT_ID=<AWS_ACCOUNT_ID>
+#  export AWS_ACCOUNT_ID=<AWS_ACCOUNT_ID>
 
-  rosa create account-roles --hosted-cp --prefix Managed-OpenShift --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
+#  rosa create account-roles --hosted-cp --prefix Managed-OpenShift --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
 
   # Take a screenshot of the result of the command, staring from the below command to the end of the result of the command:
   # $rosa create account-roles…
 
   # Create the OIDC configuration by running the following command:
 
-  rosa create oidc-config --mode=auto –yes
+#  rosa create oidc-config --mode=auto –yes
 
   # Take a screenshot of the result of the command, staring from the below command to the end of the result of the command:
   # Paste the screenshot at the bottom of this document.
@@ -47,12 +52,12 @@
   # Create the Operator roles by running the following commands:
   # (OIDC_CONFIG_ID was captured from step #5)
   
-  export AWS_ACCOUNT_ID=<AWS_ACCOUNT_ID>
-  export ACCOUNT_ROLES_PREFIX=Managed-OpenShift
-  export OPERATOR_ROLES_PREFIX=Managed-OpenShift-HCP
-  export OIDC_CONFIG_ID=< OIDC_CONFIG_ID>
+#  export AWS_ACCOUNT_ID=<AWS_ACCOUNT_ID>
+#  export ACCOUNT_ROLES_PREFIX=Managed-OpenShift
+#  export OPERATOR_ROLES_PREFIX=Managed-OpenShift-HCP
+#  export OIDC_CONFIG_ID=< OIDC_CONFIG_ID>
   
-  rosa create operator-roles --hosted-cp --prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --installer-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ACCOUNT_ROLES_PREFIX}-HCP-ROSA-Installer-Role --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
+#  rosa create operator-roles --hosted-cp --prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --installer-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ACCOUNT_ROLES_PREFIX}-HCP-ROSA-Installer-Role --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
 
   # Take a screenshot of the result of the command, staring from the below command to the end of the result of the command:
   #  Take note of the Operator roles ARN
@@ -60,26 +65,26 @@
   # Create a private ROSA with HCP cluster by running the following command:
   # (OIDC_CONFIG_ID is taken from step #5, replace CLUSTER_NAME, VPC_CIDR, SUBNET_IDs and KMS_ARN with actual values)
   
-  export CLUSTER_NAME=<CLUSTER_NAME>
-  export OPERATOR_ROLES_PREFIX=Managed-OpenShift-HCP
-  export OIDC_CONFIG_ID=<OIDC_CONFIG_ID>
-  export VPC_CIDR=<VPC_CIDR>
-  export KMS_ARN=<KMS_ARN>
-  export SUBNET_ID1=<SUBNET_ID1>
-  export SUBNET_ID2=<SUBNET_ID2>
-  export SUBNET_ID3=<SUBNET_ID3>
+#  export CLUSTER_NAME=<CLUSTER_NAME>
+#  export OPERATOR_ROLES_PREFIX=Managed-OpenShift-HCP
+#  export OIDC_CONFIG_ID=<OIDC_CONFIG_ID>
+#  export VPC_CIDR=<VPC_CIDR>
+#  export KMS_ARN=<KMS_ARN>
+#  export SUBNET_ID1=<SUBNET_ID1>
+#  export SUBNET_ID2=<SUBNET_ID2>
+#  export SUBNET_ID3=<SUBNET_ID3>
   
-  rosa create cluster --private --cluster-name=${CLUSTER_NAME} --sts --mode=auto --hosted-cp --etcd-encryption-kms-arn ${KMS_ARN} --operator-roles-prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --machine-cidr=${VPC_CIDR} --subnet-ids=${SUBNET_ID1},${SUBNET_ID2},${SUBNET_ID3}
+#  rosa create cluster --private --cluster-name=${CLUSTER_NAME} --sts --mode=auto --hosted-cp --etcd-encryption-kms-arn ${KMS_ARN} --operator-roles-prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --machine-cidr=${VPC_CIDR} --subnet-ids=${SUBNET_ID1},${SUBNET_ID2},${SUBNET_ID3}
   
   # Enter the following command to follow the OpenShift installer logs to track the progress of the installation
   
-  rosa logs install --cluster=${CLUSTER_NAME}  --watch
+#  rosa logs install --cluster=${CLUSTER_NAME}  --watch
 
   # When the installation is completed take a screenshot of the result of the command , the screenshot must cover the below message that indicate the result of the installation:
   # I: Cluster '${CLUSTER_NAME} ' has been successfully installed
   # Paste the screenshot at the bottom of this document.
 
   # Additional tasks as appropriate:
-  Install the appropriate SSL/TLS certificate files on the server.
-  Create specific application configurations.
-  Configure application logging based on “type”.
+#  Install the appropriate SSL/TLS certificate files on the server.
+#  Create specific application configurations.
+#  Configure application logging based on “type”.
