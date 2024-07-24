@@ -119,7 +119,7 @@
           - --mode
           - auto
       register: operator_roles
-      ignore_errors: true ## remove this line before turning in the code
+      
     - debug:
         msg:  "{{ operator_roles.stdout }}"
 
