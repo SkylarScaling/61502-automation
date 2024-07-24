@@ -7,5 +7,7 @@ openshift_version: stable-4.14
 
 openshift_cli_url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ openshift_version }}/openshift-client-linux.tar.gz
 
+rosa_cli_url: https://mirror.openshift.com/pub/openshift-v4/clients/rosa/latest/rosa-linux.tar.gz
+
 oc: "{{ bin_dir }}/oc"
 ...
