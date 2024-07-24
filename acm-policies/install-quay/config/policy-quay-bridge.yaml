@@ -1,0 +1,61 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/quay-bridge-operator.openshift-operators: ""
+  name: quay-bridge-operator
+  namespace: openshift-operators
+spec:
+  installPlanApproval: Automatic
+  name: quay-bridge-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+---
+apiVersion: quay.redhat.com/v1
+kind: QuayIntegration
+metadata:
+ name: quay
+ annotations:
+   argocd.argoproj.io/sync-wave: "8"
+spec:
+ clusterID: openshift
+ credentialsSecret:
+   name: quay-integration
+   namespace: openshift-operators
+ insecureRegistry: false
+ quayHostname: https://{{hub fromConfigMap "" "quay-config" "host" hub}}
+---
+kind: Secret
+type: Opaque
+metadata:
+  name: quay-integration
+  namespace: openshift-operators
+apiVersion: v1
+data:
+  token: '{{hub fromSecret "" "quay-integration" "token" hub}}'
+---
+apiVersion: v1
+data:
+  quay-integration: '{{hub fromSecret "acm-install-policies" "opp-ingres-ca" "registry-quay-local-quay" hub}}'
+kind: Secret
+metadata:
+  name: opp-ingres-ca
+  namespace: openshift-config
+type: Opaque
+---
+apiVersion: v1
+data:
+  '{{hub fromConfigMap "" "quay-config" "host" hub}}': |
+    {{ ( fromSecret "openshift-config" "opp-ingres-ca" "quay-integration" ) | base64dec | autoindent }}
+kind: ConfigMap
+metadata:
+  name: opp-ingres-ca
+  namespace: openshift-config
+---
+apiVersion: config.openshift.io/v1
+kind: Image
+metadata:
+ name: cluster
+spec:
+  additionalTrustedCA:
+    name: opp-ingres-ca

@@ -1,0 +1,3 @@
+auth_target_list:
+  - auth_target: "{{ managed_cluster_admins }}"
+    auth_type: Group

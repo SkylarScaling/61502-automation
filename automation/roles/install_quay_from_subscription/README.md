@@ -1,0 +1,2 @@
+# Install Quay from ACM Subscription
+`install_quay_from_subscription` installs Quay and Container Storage Operator (CSO) via subscription to hub cluster, and Quay bridge operator to hub and managed clusters created using a Subscription.

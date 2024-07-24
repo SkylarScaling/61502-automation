@@ -1,0 +1,9 @@
+---
+- name: Download requisite Python modules
+  command: "pip3 install {{ item }}"
+  loop:
+    - setuptools
+    - kubernetes
+    - openshift
+    - boto3
+...

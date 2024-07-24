@@ -1,0 +1,10 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: container-security-operator
+  namespace: openshift-operators
+status:
+  conditions:
+    - type: Available
+      status: 'True'
+---

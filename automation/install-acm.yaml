@@ -1,0 +1,34 @@
+---
+- name: Install ACM
+  gather_facts: false
+  hosts: localhost
+#  vars_prompt:
+#    # Prompt for cluster name
+#    - name: ocp_cluster_address
+#      prompt: Enter OCP Cluster Address (e.g. clustername.domain.com)
+#      private: no
+#      confirm: no
+#    # Prompt for cluster-admin username
+#    - name: cluster_admin_user
+#      prompt: Enter cluster-admin user
+#      private: no
+#      confirm: no
+#    # Prompt for cluster-admin password
+#    - name: cluster_admin_password
+#      prompt: Enter cluster-admin password
+#      private: yes
+#      confirm: no
+  tasks:
+    - name: "OpenShift CLI login"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+
+    - include_role:
+        name: install_acm
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: admin_acm_rbac_hub
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+...

@@ -1,0 +1,115 @@
+---
+- name: Create ACM Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: open-cluster-management
+
+- name: Create OperatorGroup for ACM Operator
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operators.coreos.com/v1
+    definition:
+      kind: OperatorGroup
+      metadata:
+        name: open-cluster-management
+        annotations:
+          olm.providedAPIs: MultiClusterHub.v1.operator.open-cluster-management.io
+        namespace: open-cluster-management
+      spec:
+        targetNamespaces:
+          - open-cluster-management
+
+- name: Create Subscription for ACM Operator
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operators.coreos.com/v1alpha1
+    definition:
+      kind: Subscription
+      metadata:
+        name: advanced-cluster-management
+        namespace: open-cluster-management
+        labels:
+          operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
+      spec:
+        channel: release-2.10
+        installPlanApproval: Automatic
+        name: advanced-cluster-management
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        config:
+          nodeSelector:
+            node-role.kubernetes.io/infra: ""
+          tolerations:
+            - key: node-role.kubernetes.io/infra
+              effect: NoSchedule
+
+- name: Wait for ACM Hub Operator Deployment to become available
+  kubernetes.core.k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    kind: Deployment
+    name: multiclusterhub-operator
+    namespace: open-cluster-management
+    wait: true
+    wait_condition:
+      reason: MinimumReplicasAvailable
+      type: Available
+    wait_sleep: 1
+
+- name: Update ACM Subscription for Manual update approval
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operators.coreos.com/v1alpha1
+    definition:
+      kind: Subscription
+      metadata:
+        name: advanced-cluster-management
+        namespace: open-cluster-management
+      spec:
+        installPlanApproval: Manual
+
+- name: Create MultiClusterHub
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operator.open-cluster-management.io/v1
+    definition:
+      kind: MultiClusterHub
+      metadata:
+        name: multiclusterhub
+        namespace: open-cluster-management
+      spec:
+        nodeSelector:
+          node-role.kubernetes.io/infra: ""
+        tolerations:
+          - key: node-role.kubernetes.io/infra
+            effect: NoSchedule
+        availabilityConfig: High
+
+- name: Wait for ACM MultiClusterHub to become available
+  kubernetes.core.k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    kind: MultiClusterHub
+    name: multiclusterhub
+    namespace: open-cluster-management
+    wait: true
+    wait_condition:
+      reason: ComponentsAvailable
+      type: Complete
+    wait_sleep: 15
+    wait_timeout: 1200
+...

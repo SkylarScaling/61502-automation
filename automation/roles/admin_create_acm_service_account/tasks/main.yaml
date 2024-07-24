@@ -1,0 +1,69 @@
+---
+- name: "OpenShift CLI login"
+  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:6443 --insecure-skip-tls-verify"
+
+- name: Create ansible-playbook-access Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ acm_service_account_namespace }}"
+
+- name: Create ServiceAccount
+  k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: "{{ acm_service_account_name }}"
+        namespace: "{{ acm_service_account_namespace }}"
+
+- name: Create temporary directory for template files
+  tempfile:
+    state: directory
+    suffix: tmp
+  register: tmp_dir
+
+- set_fact:
+    working_dir: "{{ tmp_dir.path }}"
+
+- name: Populate Templates
+  template:
+    src: "{{ item }}"
+    dest: "{{ working_dir }}/{{ item | basename | regex_replace('\\.j2$', '') }}"
+  with_fileglob:
+    - ./templates/*.j2
+
+- name: Apply Templates
+  k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    src: "{{ item }}"
+    state: "{{ state }}"
+    api_version: v1
+  with_fileglob:
+    - "{{ working_dir }}/*.yaml"
+
+- name: Get ServiceAccount Secret
+  k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    kind: Secret
+    namespace: "{{ acm_service_account_namespace }}"
+  register: sa_secrets
+
+- name: Get Service Account token
+  set_fact:
+    sa_token: "{{ item.data.token | b64decode }}"
+  with_items: "{{ sa_secrets.resources }}"
+  when: (item.metadata.name.startswith(acm_service_account_name + "-token-"))
+  loop_control:
+    label: "{{ item.metadata.name }}"
+...

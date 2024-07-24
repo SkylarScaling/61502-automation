@@ -1,0 +1,10 @@
+---
+- name: Install Pre-Requisites for OCP Playbooks
+  gather_facts: false
+  connection: local
+  hosts: localhost
+  tasks:
+    - name: Download required utilities
+      include_role:
+        name: install_ocp_prerequisites
+...
