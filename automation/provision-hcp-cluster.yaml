@@ -27,15 +27,15 @@
     #  rosa create account-roles --hosted-cp --prefix Managed-OpenShift --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
 
     - set_fact:
-        aws_account_id: "xxxxxxxxxx"
+        aws_account_id: <TODO>
         account_roles_prefix: Managed-OpenShift
         operator_roles_prefix: Managed-OpenShift-HCP
-        cluster_name: xxxxxxxxxxxxxx
-        kms_arn: xxxxxxxxxxxxxx
-        vpc_cidr: x.x.x.x/x
-        subnet_id1: xxxxxxxxxxxxxx
-        subnet_id2: xxxxxxxxxxxxxx
-        subnet_id3: xxxxxxxxxxxxxx
+        cluster_name: <TODO>
+        kms_arn: <TODO>
+        vpc_cidr: <TODO>
+        subnet_id1: <TODO>
+        subnet_id2: <TODO>
+        subnet_id3: <TODO>
 
     - name: Create ROSA Account Roles
       command:
@@ -57,6 +57,8 @@
 
     - set_fact:
         arns: "{{account_roles.stdout}}"
+
+    - set_fact:
         worker_role: "{{ arns | regex_search('arn:aws\\S+Worker-Role') }}"
         installer_role: "{{ arns | regex_search('arn:aws\\S+Installer-Role') }}"
         support_role: "{{ arns | regex_search('arn:aws\\S+Support-Role') }}"
@@ -165,6 +167,8 @@
           - --machine-cidr
           - "{{ vpc_cidr }}"
           - "--subnet-ids={{ subnet_id1 }},{{ subnet_id2 }},{{ subnet_id3 }}"
+          - --billing-account
+          - "{{ aws_account_id }}"
       register: cluster_create
 
     - debug:
