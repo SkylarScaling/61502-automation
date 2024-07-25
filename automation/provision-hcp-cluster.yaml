@@ -51,11 +51,12 @@
           - --mode
           - auto
       register: account_roles
-    - debug: msg="{{account_roles}}"
-    - set_fact:
-        arns: "{{account_roles.stdout}}"
+
+    - debug:
+        msg: "{{account_roles}}"
 
     - set_fact:
+        arns: "{{account_roles.stdout}}"
         worker_role: "{{ arns | regex_search('arn:aws\\S+Worker-Role') }}"
         installer_role: "{{ arns | regex_search('arn:aws\\S+Installer-Role') }}"
         support_role: "{{ arns | regex_search('arn:aws\\S+Support-Role') }}"
@@ -77,15 +78,19 @@
           - auto
           - --yes
       register: oidc_provider
-    - debug: msg="{{ oidc_provider.stdout }}"
-    - set_fact:
-        arns: "{{oidc_provider.stdout}}"
+
+    - debug:
+        msg: "{{ oidc_provider.stdout }}"
+
     - set_fact:
         oidc: "{{ oidc_provider.stdout | regex_search('[^/]+$') }}"
+
     - debug:
         msg: "{{ oidc }}"
+
     - set_fact:
         oidc_id: "{{ oidc[:-1] }}"
+
     - debug:
         msg:  "{{ oidc_id }}"
 
