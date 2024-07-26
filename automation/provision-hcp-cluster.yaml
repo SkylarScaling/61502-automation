@@ -167,8 +167,6 @@
           - --machine-cidr
           - "{{ vpc_cidr }}"
           - "--subnet-ids={{ subnet_id1 }},{{ subnet_id2 }},{{ subnet_id3 }}"
-          - --billing-account
-          - "{{ aws_account_id }}"
       register: cluster_create
 
     - debug:
