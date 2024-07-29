@@ -29,13 +29,16 @@
     - set_fact:
         aws_account_id: <TODO>
         account_roles_prefix: Managed-OpenShift
-        operator_roles_prefix: Managed-OpenShift-HCP
         cluster_name: <TODO>
         kms_arn: <TODO>
         vpc_cidr: <TODO>
         subnet_id1: <TODO>
         subnet_id2: <TODO>
         subnet_id3: <TODO>
+        compute_machine_type: m5.xlarge
+
+    - set_fact:
+        operator_roles_prefix: "Managed-OpenShift-HCP-{{ cluster_name }}"
 
     - name: Create ROSA Account Roles
       command:
@@ -107,6 +110,34 @@
     #  rosa create operator-roles --hosted-cp --prefix ${OPERATOR_ROLES_PREFIX} --oidc-config-id ${OIDC_CONFIG_ID} --installer-role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ACCOUNT_ROLES_PREFIX}-HCP-ROSA-Installer-Role --permissions-boundary arn:aws:iam::${AWS_ACCOUNT_ID}:policy/iam-role-permissions-boundary-rosa --mode auto
     #  Take note of the Operator roles ARN
 
+    - name: Check if ROSA Operator Roles Exist
+      command:
+        argv:
+          - rosa
+          - list
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}"
+      register: existing_roles
+
+    - debug:
+        msg: "{{ existing_roles }}"
+
+    - debug:
+        msg: "{{ existing_roles.stdout_lines | length }}"
+
+    - name: Delete Existing ROSA Operator Roles
+      command:
+        argv:
+          - rosa
+          - delete
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}"
+          - -m
+          - auto
+          - -y
+      when: existing_roles.stdout_lines | length > 1
 
     - name: Create ROSA Operator Roles
       command:
@@ -126,7 +157,7 @@
           - --mode
           - auto
       register: operator_roles
-      
+
     - debug:
         msg:  "{{ operator_roles.stdout }}"
 
@@ -167,6 +198,8 @@
           - --machine-cidr
           - "{{ vpc_cidr }}"
           - "--subnet-ids={{ subnet_id1 }},{{ subnet_id2 }},{{ subnet_id3 }}"
+          - --compute-machine-type
+          - "{{ compute_machine_type }}"
       register: cluster_create
 
     - debug:
