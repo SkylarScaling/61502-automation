@@ -29,6 +29,7 @@
     - set_fact:
         aws_account_id: <TODO>
         account_roles_prefix: Managed-OpenShift
+        operator_roles_prefix: Managed-OpenShift-HCP
         cluster_name: <TODO>
         kms_arn: <TODO>
         vpc_cidr: <TODO>
@@ -36,9 +37,6 @@
         subnet_id2: <TODO>
         subnet_id3: <TODO>
         compute_machine_type: m5.xlarge
-
-    - set_fact:
-        operator_roles_prefix: "Managed-OpenShift-HCP-{{ cluster_name }}"
 
     - name: Create ROSA Account Roles
       command:
