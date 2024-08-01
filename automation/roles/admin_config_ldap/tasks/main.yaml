@@ -19,7 +19,7 @@
           - rosa
           - create
           - idp
-          - c 
+          - cluster 
           - --type 
           - "{{ type }}"
           - --name 
