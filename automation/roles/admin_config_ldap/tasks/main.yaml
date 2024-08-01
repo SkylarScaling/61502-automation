@@ -1,1 +1,43 @@
----
+- name: Testing of LDAP IDP
+  gather_facts: false
+  hosts: localhost
+  tasks:
+    - set_fact:
+        type: 
+        name: 
+        url:
+        bind_password: 
+        bind_dn: 
+        id_attributes: 
+        name_attributes: 
+        email_attributes: 
+        username_attributes: 
+
+    - name: "Create 3M Active Directory LDAP Identity Provider"
+      command:
+        argv:
+          - rosa
+          - create
+          - idp 
+          - --type 
+          - "{{ type }}"
+          - --name 
+          - "{{ name }}"
+          - --url 
+          - "{{ url }}"
+          - --bind_password
+          - "{{bind-password}}"
+          - --bind_dn
+          - "{{bind-dn}}"
+          - --id_attributes
+          - "{{id-attributes}}"
+          - --name_attributes 
+          - "{{name-attributes}}"
+          - --email_attributes
+          - "{{email-attributes}}"
+          - --username_attributes 
+          - "{{username-attributes}}"
+      register: idp_provider
+
+    - debug:
+        msg: "{{idp_provider.stout}}"  
