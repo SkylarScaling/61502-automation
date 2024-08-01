@@ -18,7 +18,8 @@
         argv:
           - rosa
           - create
-          - idp 
+          - idp
+          - c 
           - --type 
           - "{{ type }}"
           - --name 
