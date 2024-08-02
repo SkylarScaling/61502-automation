@@ -2,33 +2,34 @@
 - name: Apply Day 2 Configuration to OCP HCP Cluster
   gather_facts: false
   hosts: localhost
-  #  vars_prompt:
-  #    # Prompt for cluster name
-  #    - name: ocp_cluster_address
-  #      prompt: Enter OCP Cluster Address (e.g. clustername.domain.com)
-  #      private: no
-  #      confirm: no
-  #    # Prompt for cluster-admin username
-  #    - name: cluster_admin_user
-  #      prompt: Enter cluster-admin user
-  #      private: no
-  #      confirm: no
-  #    # Prompt for cluster-admin password
-  #    - name: cluster_admin_password
-  #      prompt: Enter cluster-admin password
-  #      private: yes
-  #      confirm: no
+# Required Variables for this Playbook
+#    type: "LDAP"
+#    name: "LDAP3M"
+#    cluster_name: hcp-3m
+#    url: "ldaps://xxxxxxxxxxxx"
+#    bind_password: "xxxxxxxxx"
+#    bind_dn: "xxxxxxxxxx"
+#    id_attributes: "dn"
+#    name_attributes: "cn"
+#    email_attributes: "mail"
+#    username_attributes: "uid"
   tasks:
     - include_role:
         name: aws_config_security_groups
 
     # TODO Create Cluster Admin using rosa CLI
 
-    - name: "OpenShift CLI login"
-      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
-
     - include_role:
         name: admin_config_ldap
 
+#    - include_role:
+#        name: install_groupsync_from_subscription
+
     - include_role:
-        name: install_groupsync_from_subscription
+        name: admin_config_rbac
+
+  # TODO Create trident-csi as default StorageClass (FSXn)
+  # TODO Create Machine Pool
+
+    - include_role:
+        name: admin_config_log_forwarder
