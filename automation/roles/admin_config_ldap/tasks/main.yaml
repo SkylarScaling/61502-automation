@@ -1,44 +1,49 @@
-- name: Testing of LDAP IDP
-  gather_facts: false
-  hosts: localhost
-  tasks:
-    - set_fact:
-        type: 
-        name: 
-        url:
-        bind_password: 
-        bind_dn: 
-        id_attributes: 
-        name_attributes: 
-        email_attributes: 
-        username_attributes: 
+  ---
+  - name: Testing of LDAP IDP
+    gather_facts: false
+    hosts: localhost
+    tasks:
+      - set_fact:
+          cluster_name: "xxxxxx"
+          type: "ldap"
+          name: "LDAP3M"
+          url: "ldaps://xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          bind_password: "xxxxxxxxxx" #This should be secure variable
+          bind_dn: "xxxxxxxxxxxxxxxxxxx"
+          id_attributes: "dn"
+          name_attributes: "cn"
+          email_attributes: "mail"
+          username_attributes: "uid"
 
-    - name: "Create 3M Active Directory LDAP Identity Provider"
-      command:
-        argv:
-          - rosa
-          - create
-          - idp
-          - cluster 
-          - --type 
-          - "{{ type }}"
-          - --name 
-          - "{{ name }}"
-          - --url 
-          - "{{ url }}"
-          - --bind_password
-          - "{{bind-password}}"
-          - --bind_dn
-          - "{{bind-dn}}"
-          - --id_attributes
-          - "{{id-attributes}}"
-          - --name_attributes 
-          - "{{name-attributes}}"
-          - --email_attributes
-          - "{{email-attributes}}"
-          - --username_attributes 
-          - "{{username-attributes}}"
-      register: idp_provider
+      - name: "Create 3M Active Directory LDAP Identity Provider"
+        command:
+          argv:
+            - rosa
+            - create
+            - idp
+            - --cluster
+            - "{{cluster_name}}"
+            - --type
+            - "{{type}}"
+            - --name
+            - "{{name}}"
+            - --url
+            - "{{ url }}"
+            - --bind-password
+            - "{{bind_password}}"
+            - --bind-dn
+            - "{{bind_dn}}"
+            - --id-attributes
+            - "{{id_attributes}}"
+            - --name-attributes
+            - "{{name_attributes}}"
+            - --email-attributes
+            - "{{email_attributes}}"
+            - --username-attributes
+            - "{{username_attributes}}"
+        register: idp_provider
 
-    - debug:
-        msg: "{{idp_provider.stout}}"  
+      - debug:
+          msg: "{{idp_provider.stdout}}"
+
+
