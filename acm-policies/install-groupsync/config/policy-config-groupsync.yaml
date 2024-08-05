@@ -1,0 +1,39 @@
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupSync
+metadata:
+  name: rosa-groupsync
+  namespace: group-sync-operator
+spec:
+  providers:
+    - ldap:
+        credentialsSecret:
+          kind: Secret
+          name: ldapsync
+          namespace: group-sync-operator
+        insecure: true
+        rfc2307:
+          usersQuery:
+            baseDN: 'XXXXXXXXX'
+            derefAliases: never
+            pageSize: 0
+            scope: sub
+          groupNameAttributes:
+            - cn
+          tolerateMemberNotFoundErrors: true
+          tolerateMemberOutOfScopeErrors: true
+          groupUIDAttribute: dn
+          groupMembershipAttributes:
+            - member
+          userNameAttributes:
+            - uid
+          groupsQuery:
+            baseDN: 'XXXXXXXX'
+            derefAliases: always
+            filter: (&(objectClass=group)(cn=OSCP-*))
+            pageSize: 0
+            scope: sub
+          userUIDAttribute: dn
+        url: 'XXXXXXXXXXXX'
+      name: ldap
+  schedule: 0 * * * *

@@ -20,8 +20,6 @@
       kind: OperatorGroup
       metadata:
         name: open-cluster-management
-        annotations:
-          olm.providedAPIs: MultiClusterHub.v1.operator.open-cluster-management.io
         namespace: open-cluster-management
       spec:
         targetNamespaces:
@@ -38,20 +36,12 @@
       metadata:
         name: advanced-cluster-management
         namespace: open-cluster-management
-        labels:
-          operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
       spec:
         channel: release-2.10
         installPlanApproval: Automatic
         name: advanced-cluster-management
         source: redhat-operators
         sourceNamespace: openshift-marketplace
-        config:
-          nodeSelector:
-            node-role.kubernetes.io/infra: ""
-          tolerations:
-            - key: node-role.kubernetes.io/infra
-              effect: NoSchedule
 
 - name: Wait for ACM Hub Operator Deployment to become available
   kubernetes.core.k8s_info:
@@ -92,11 +82,6 @@
         name: multiclusterhub
         namespace: open-cluster-management
       spec:
-        nodeSelector:
-          node-role.kubernetes.io/infra: ""
-        tolerations:
-          - key: node-role.kubernetes.io/infra
-            effect: NoSchedule
         availabilityConfig: High
 
 - name: Wait for ACM MultiClusterHub to become available

@@ -1,4 +1,29 @@
 ---
+  - name: Check for existing IDP
+    command:
+      argv:
+        - rosa
+        - list
+        - idp
+        - --cluster
+        - "{{ cluster_name }}"
+    register: idp_list
+
+  - debug:
+      msg: "{{ idp_list.stdout }}"
+
+  - name: Delete IDP if it Already Exists
+    command:
+      argv:
+        - rosa
+        - delete
+        - idp
+        - "{{ name }}"
+        - --cluster
+        - "{{ cluster_name }}"
+        - --yes
+    when: name in idp_list.stdout
+
   - name: "Create 3M Active Directory LDAP Identity Provider"
     command:
       argv:
