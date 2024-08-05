@@ -1,1 +1,99 @@
 ---
+- name: Create Logging Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openshift-logging
+
+- name: Create OperatorGroup for Logging Operator
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operators.coreos.com/v1
+    definition:
+      kind: OperatorGroup
+      metadata:
+        name: cluster-logging
+        namespace: openshift-logging
+      spec:
+        targetNamespaces:
+          - openshift-logging
+
+- name: Create Subscription for Logging Operator
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    api_version: operators.coreos.com/v1alpha1
+    definition:
+      kind: Subscription
+      metadata:
+        name: cluster-logging
+        namespace: openshift-logging
+      spec:
+        channel: stable
+        installPlanApproval: Automatic
+        name: cluster-logging
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        config:
+          nodeSelector:
+            node-role.kubernetes.io/infra: ""
+          tolerations:
+            - key: node-role.kubernetes.io/infra
+              effect: NoSchedule
+
+- name: Wait for Logging Operator Deployment to become available
+  kubernetes.core.k8s_info:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    kind: Deployment
+    name: 
+    namespace: openshift-logging
+    wait: true
+    wait_condition:
+      reason: MinimumReplicasAvailable
+      type: Available
+    wait_sleep: 1
+
+- name: Configure OpenShift Logging CR
+  kind: ClusterLogging
+  metadata:
+    name: instance 
+    namespace: openshift-logging 
+  spec:
+    collection:
+      type: vector
+    logStore:
+      lokistack:
+        name: logging-loki
+      retentionPolicy:
+        application:
+          maxAge: 7d
+        audit:
+          maxAge: 7d
+        infra:
+          maxAge: 7d
+      type: lokistack
+    visualization:
+      ocpConsole:
+        logsLimit: 15
+    managementState: Managed
+
+- name: Create OpenShift Log Forwarding Service Account
+  apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: <service_account_name>
+    namespace: openshift-logging
+
+- name: Configure OpenShift Log Forwarding Service Account
+  
+
+- name: Configure OpenShift Log Fowarding CR

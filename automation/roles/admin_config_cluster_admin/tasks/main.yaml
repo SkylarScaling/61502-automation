@@ -1,3 +1,4 @@
+---
 - name: "Grant User Cluster Admin"
   command:
     argv:
