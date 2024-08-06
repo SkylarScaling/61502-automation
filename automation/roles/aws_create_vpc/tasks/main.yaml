@@ -1,0 +1,207 @@
+
+- set_fact:
+    vpc_name: "{{ cluster_name }}-vpc"
+    vpc_cidr_block: 10.0.0.0/16
+    vpc_public_subnets:
+      public-a:
+        name: "{{ cluster_name }}-public-a"
+        cidr: 10.0.0.0/20
+        az: "{{ aws_region }}a"
+      public-b:
+        name: "{{ cluster_name }}-public-b"
+        cidr: 10.0.16.0/20
+        az: "{{ aws_region }}b"
+      public-c:
+        name: "{{ cluster_name }}-public-c"
+        cidr: 10.0.32.0/20
+        az: "{{ aws_region }}c"
+    vpc_private_subnets:
+      private-a:
+        name: "{{ cluster_name }}-private-a"
+        cidr: 10.0.128.0/20
+        az: "{{ aws_region }}a"
+      private-b:
+        name: "{{ cluster_name }}-private-b"
+        cidr: 10.0.144.0/20
+        az: "{{ aws_region }}b"
+      private-c:
+        name: "{{ cluster_name }}-private-c"
+        cidr: 10.0.160.0/20
+        az: "{{ aws_region }}c"
+    vpc_security_groups:
+      - name: vpc
+        description: "Allow internal traffic in the VPC"
+        rules:
+          - proto: all
+            group_name: vpc
+      - name: allow-public-ssh
+        description: "Allow public SSH"
+        rules:
+          - proto: tcp
+            cidr_ip: 0.0.0.0/0
+            ports:
+              - 22
+      - name: allow-public-http
+        description: "Allow public web traffic"
+        rules:
+          - proto: tcp
+            cidr_ip: 0.0.0.0/0
+            ports:
+              - 80
+              - 8080
+              - 443
+
+- name: create VPC
+  ec2_vpc_net:
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ aws_region }}"
+  register: create_vpc
+
+# parse the output of creating the VPC to extract the VPC ID -- we need to specify this in the subsequent tasks
+- name: "set fact: VPC ID"
+  set_fact:
+    vpc_id: "{{ create_vpc.vpc.id }}"
+
+# iterate over our dictionary of subnets with `with_dict`, and create each one with the Ansible module
+- name: create public VPC subnets
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ item.value.cidr }}"
+    az: "{{ item.value.az }}"
+    tags:
+      Name: "{{ item.value.name }}"
+      kubernetes.io/role/elb: ''
+  with_dict: "{{ vpc_public_subnets }}"
+  register: create_public_vpc_subnets
+
+- name: create private VPC subnets
+  ec2_vpc_subnet:
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ item.value.cidr }}"
+    az: "{{ item.value.az }}"
+    tags:
+      Name: "{{ item.value.name }}"
+      kubernetes.io/role/internal-elb: ''
+  with_dict: "{{ vpc_private_subnets }}"
+  register: create_private_vpc_subnets
+
+# this is a tricky one, using some filters to:
+# - loop over the list of outputs from creating our subnets
+# - for that subnet, define a "name: id" entry in the `vpc_subnet_ids` dictionary (or empty dictionary if it doesn't exist)
+- name: "set fact: VPC subnet IDs from public"
+  set_fact:
+    vpc_subnet_ids: "{{ vpc_subnet_ids | default({}) | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
+  loop: "{{ create_public_vpc_subnets.results }}"
+
+- name: "set fact: add VPC subnet IDs from private"
+  set_fact:
+    vpc_subnet_ids: "{{ vpc_subnet_ids | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
+  loop: "{{ create_private_vpc_subnets.results }}"
+
+# iterate over our list of security groups and create each one with the Ansible module
+- name: create VPC security groups
+  ec2_group:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    vpc_id: "{{ vpc_id }}"
+    rules: "{{ item.rules }}"
+  loop: "{{ vpc_security_groups }}"
+
+# create an EC2 key -- pretty simple
+#    - name: create EC2 key
+#      ec2_key:
+#        name: "{{ vpc_key }}"
+
+# create a private hosted zone for the VPC with the Ansible module
+#    - name: create Route 53 private hosted zone
+#      route53_zone:
+#        zone: "{{ vpc_dns_zone }}"
+#        state: present
+#        vpc_id: "{{ vpc_id }}"
+#        vpc_region: "{{ aws_region }}"
+
+# create the internet gateway, saving the output to extract the ID later
+- name: create internet gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_id }}"
+  register: create_gateway
+
+# create the NAT gateway, looking up the subnet ID by the human readable name: "private-a"
+- name: create NAT gateway
+  ec2_vpc_nat_gateway:
+    subnet_id: "{{ vpc_subnet_ids[cluster_name + '-private-a'] }}"
+    region: "{{ aws_region }}"
+    tags:
+      Name: "{{ cluster_name }}-nat"
+    wait: yes
+    if_exist_do_not_create: true
+  register: create_nat_gateway
+
+# parse the outputs of the Ansible modules for some important details referred to when setting up routing
+- name: "set facts: Gateway IDs and IP"
+  set_fact:
+    vpc_gateway_id: "{{ create_gateway.gateway_id }}"
+    vpc_nat_gateway_id: "{{ create_nat_gateway.nat_gateway_id }}"
+    vpc_nat_gateway_ip: "{{ create_nat_gateway.nat_gateway_addresses[0].public_ip }}"
+
+# update the VPCs DNS with the public IP of the new NAT gateway
+#    - name: update DNS with NAT gateway IP
+#      route53:
+#        zone: "{{ vpc_dns_zone }}"
+#        private_zone: yes
+#        record: nat.{{ vpc_dns_zone }}
+#        type: A
+#        value: "{{ vpc_nat_gateway_ip }}"
+
+# private route table that routes through the NAT -- attach it to our three private subnets
+- name: create route table for private subnets
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    tags:
+      Name: "{{ vpc_name }}-private"
+    subnets:
+      - "{{ vpc_subnet_ids[cluster_name + '-private-a'] }}"
+      - "{{ vpc_subnet_ids[cluster_name + '-private-b'] }}"
+      - "{{ vpc_subnet_ids[cluster_name + '-private-c'] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc_nat_gateway_id }}"
+
+# public route table that routes through the internet gateway -- attach it to our three public subnets
+- name: create route table for public subnets
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    tags:
+      Name: "{{ vpc_name }}-public"
+    subnets:
+      - "{{ vpc_subnet_ids[cluster_name + '-public-a'] }}"
+      - "{{ vpc_subnet_ids[cluster_name + '-public-b'] }}"
+      - "{{ vpc_subnet_ids[cluster_name + '-public-c'] }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ vpc_gateway_id }}"
+
+
+
+
+#      - name: Create ROSA HCP Cluster
+#        command:
+#          argv:
+#            - rosa
+#            - create
+#            - cluster
+#            - --cluster-name
+#            - "{{ cluster_name }}"
+#            - --hosted-cp
+#            - --mode
+#            - auto
+#            - --create-admin-user
+#            - --cluster-admin-password
+#            - "RedHat123RedHat123"
+#            - --operator-roles-prefix
+#            - "{{ operator_roles_prefix }}"
+#            - --oidc-config-id
+#            - "{{ oidc_id }}"
+#            - "--subnet-ids={{ vpc_subnet_ids[cluster_name + '-private-a'] }},{{ vpc_subnet_ids[cluster_name + '-private-b'] }},{{ vpc_subnet_ids[cluster_name + '-private-c'] }},{{ vpc_subnet_ids[cluster_name + '-public-a'] }},{{ vpc_subnet_ids[cluster_name + '-public-b'] }},{{ vpc_subnet_ids[cluster_name + '-public-c'] }}"
+#        register: cluster_create
