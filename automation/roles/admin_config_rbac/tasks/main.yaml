@@ -1,1 +1,22 @@
 ---
+- name: "OpenShift CLI login"
+  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:6443 --insecure-skip-tls-verify"
+
+- name: Grant 3M Group Cluster-Admin Rolebinding
+  k8s:
+    host: "https://api.{{ cluster_address }}:6443"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: cluster-admin-0
+      subjects:
+        - kind: Group
+          apiGroup: rbac.authorization.k8s.io
+          name: OSCP-Middleware-Admins
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin

@@ -13,14 +13,15 @@
 #    name_attributes: "cn"
 #    email_attributes: "mail"
 #    username_attributes: "uid"
+
   tasks:
-    - include_role:
-        name: aws_config_security_groups
+#    - include_role:
+#        name: aws_config_security_groups
 
     # TODO Create Cluster Admin using rosa CLI
 
-    - include_role:
-        name: admin_config_ldap
+#    - include_role:
+#        name: admin_config_ldap
 
 #    - include_role:
 #        name: install_groupsync_from_subscription
@@ -31,5 +32,5 @@
   # TODO Create trident-csi as default StorageClass (FSXn)
   # TODO Create Machine Pool
 
-    - include_role:
-        name: admin_config_log_forwarder
+#    - include_role:
+#        name: admin_config_log_forwarder
