@@ -2,6 +2,7 @@
 - name: Apply Day 2 Configuration to OCP HCP Cluster
   gather_facts: false
   hosts: localhost
+  vars:
 # Required Variables for this Playbook
 #    type: "LDAP"
 #    name: "LDAP3M"
@@ -13,6 +14,10 @@
 #    name_attributes: "cn"
 #    email_attributes: "mail"
 #    username_attributes: "uid"
+#    region: "us-east-1"
+#    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
+#    VpcId: "xxxxxxx"
+#    VpcEndpointId: "xxxxxxxxxx"     
   tasks:
 #    - name: "OpenShift CLI login"
 #      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
