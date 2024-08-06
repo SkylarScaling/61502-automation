@@ -15,26 +15,14 @@ placementBindingDefaults:
 policies:
   # Quay Policies - start
   - name: policy-install-quay
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     manifests:
       - path: config/policy-install-quay.yaml
   - name: policy-config-quay
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     dependencies:
       - name: policy-install-quay
     manifests:
       - path: config/policy-config-quay.yaml
   - name: policy-quay-status
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     dependencies:
       - name: policy-install-quay
     manifests:
@@ -46,38 +34,22 @@ policies:
   # Update the token in the quayadmin secret in the local-quay namespace with your
   # bearer token.  It will be propagated to the managed clusters automatically.
   - name: policy-hub-quay-bridge
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     dependencies:
       - name: policy-quay-status
     manifests:
       - path: config/policy-hub-quay-bridge.yaml
   - name: policy-install-cso
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     dependencies:
       - name: policy-quay-status
     manifests:
       - path: config/policy-install-cso.yaml
   - name: policy-cso-status
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     dependencies:
       - name: policy-install-cso
     manifests:
       - path: config/policy-cso-status.yaml
     remediationAction: inform
   - name: policy-quay-bridge
-    categories:
-      - SI System and Information Integrity
-    controls:
-      - SI-7 Software Firmware and Information Integrity
     manifests:
       - path: config/policy-quay-bridge.yaml
     orderManifests: true
@@ -86,15 +58,9 @@ policies:
   # Quay Policies - end
 policySets:
   - name: quay-hub
-    description: The OpenShift ACS policy set applies several policies
-      that will install the OpenShift Advanced Cluster Security using best practices.
-      This policy set is focused on the components that install to the Advanced Cluster Management hub.
     placement:
       placementRulePath: placements/hub-placement.yaml
 
   - name: quay-clusters
-    description: The OpenShift ACS policy set applies several policies
-      that will install the OpenShift Advanced Cluster Security using best practices.
-      This policy set is focused on the components that install to every managed cluster.
     placement:
       placementRulePath: placements/clusters-placement.yaml

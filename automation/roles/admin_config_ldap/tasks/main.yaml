@@ -1,5 +1,15 @@
 ---
-  - name: "Create 3M Active Directory LDAP Identity Provider"
+  - name: Check for existing IDP
+    command:
+      argv:
+        - rosa
+        - list
+        - idp
+        - --cluster
+        - "{{ cluster_name }}"
+    register: idp_list
+
+  - name: "Create 3M Active Directory LDAP Identity Provider if it Doesn't Exist"
     command:
       argv:
         - rosa
@@ -26,6 +36,4 @@
         - --username-attributes
         - "{{username_attributes}}"
     register: idp_provider
-
-  - debug:
-      msg: "{{idp_provider.stdout}}"
+    when: name not in idp_list.stdout
