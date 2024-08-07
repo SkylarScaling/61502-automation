@@ -175,29 +175,3 @@
 
     - debug:
         msg: "{{ logs_install.stdout_lines }}"
-
-###### Day 2 Config
-
-    - include_role:
-        name: aws_config_security_groups
-
-    # TODO Create Cluster Admin using rosa CLI
-
-    - include_role:
-        name: admin_config_ldap
-
-    - include_role:
-        name: install_groupsync_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    # TODO Create trident-csi as default StorageClass (FSXn)
-
-    - include_role:
-        name: admin_config_rbac
-
-    - include_role:
-        name: admin_config_machine-pool
-
-  #    - include_role:
-  #        name: admin_config_log_forwarder
