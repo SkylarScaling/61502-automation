@@ -19,8 +19,8 @@
 #    VpcId: "xxxxxxx"
 #    VpcEndpointId: "xxxxxxxxxx"     
   tasks:
-#    - name: "OpenShift CLI login"
-#      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+    - name: "OpenShift CLI login"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
 
     - include_role:
         name: install_acm
@@ -34,7 +34,8 @@
 
     - include_role:
         name: aws_config_security_groups
-
+    - include_role:
+        name: admin_config_machine-pool
     # TODO Create Cluster Admin using rosa CLI
 
     - include_role:
