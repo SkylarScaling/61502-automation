@@ -19,39 +19,33 @@
 #      private: yes
 #      confirm: no
   tasks:
-    - name: "OpenShift CLI login"
-      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
+#    - name: "OpenShift CLI login"
+#      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
 
     - include_role:
-        name: install_acm
+        name: admin_provision_hcp_cluster
+
+    - include_role:
+        name: aws_config_security_groups
+
+    # TODO Create Cluster Admin using rosa CLI
+
+    - include_role:
+        name: admin_config_ldap
+
+    - include_role:
+        name: install_groupsync_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-    - include_role:
-        name: admin_create_acm_service_account
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
+    # TODO Create trident-csi as default StorageClass (FSXn)
 
     - include_role:
-        name: admin_acm_rbac_hub
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
+        name: admin_config_rbac
 
     - include_role:
-        name: install_acs_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
+        name: admin_config_machine-pool
 
-    - include_role:
-        name: install_quay_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
+#    - include_role:
+#        name: admin_config_log_forwarder
 ...

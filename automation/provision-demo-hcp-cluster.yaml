@@ -3,16 +3,19 @@
   gather_facts: false
   hosts: localhost
 # Required Variables for this playbook
-#    aws_account_id: xxxxxxxxx
+# Cluster Provisioning Vars
+#    aws_account_id: <TODO>
 #    account_roles_prefix: Managed-OpenShift
 #    operator_roles_prefix: Managed-OpenShift-HCP
-#    cluster_name: xxxxxxx
-#    kms_arn: arn:aws:kms:xxxxxxxx
+#    cluster_name: <TODO>
 #    vpc_cidr: 10.0.0.0/16
-#    subnet_id1: subnet-xxxxxxxxxxxxx
-#    subnet_id2: subnet-xxxxxxxxxxxxx
-#    subnet_id3: subnet-xxxxxxxxxxxxx
-#    compute_machine_type: m5.xlarge
+#    private_subnet_id1: <TODO>
+#    private_subnet_id2: <TODO>
+#    private_subnet_id3: <TODO>
+#    public_subnet_id1: <TODO>
+#    public_subnet_id2: <TODO>
+#    public_subnet_id3: <TODO>
+#    compute_machine_type: m5a.xlarge
   tasks:
     - name: Set Public Subnet tags
       command:
@@ -173,38 +176,28 @@
     - debug:
         msg: "{{ logs_install.stdout_lines }}"
 
-#      rosa create cluster \
-#      --cluster-name amjed \
-#      --domain-prefix amjed \
-#      --sts \
-#      --cluster-admin-password l1nuX$1855adMn \
-#      --role-arn arn:aws:iam::338512279495:role/amjed3m-HCP-ROSA-Installer-Role \
-#      --support-role-arn arn:aws:iam::338512279495:role/amjed3m-HCP-ROSA-Support-Role \
-#      --worker-iam-role arn:aws:iam::338512279495:role/amjed3m-HCP-ROSA-Worker-Role \
-#      --operator-roles-prefix amjed3m \
-#      --oidc-config-id 2csnndgi4br20ssd2319347r9a0qu849 \
-#      --region us-east-1 \
-#      --version 4.14.33 \
-#      --replicas 3 \
-#      --compute-machine-type m5.xlarge \
-#      --machine-cidr 10.0.0.0/16 \
-#      --service-cidr 172.30.0.0/16 \
-#      --pod-cidr 10.128.0.0/14 \
-#      --host-prefix 23 \
-#      --subnet-ids subnet-0d61e3c282236e63e,subnet-037c9f25a5173e9d7,subnet-0a06533fa0a1a9369,subnet-0f5cda30cad9137b4,subnet-019a1f23f0db6bdbe,subnet-0d76cb73631535f29 \
-#      --disable-workload-monitoring \
-#      --hosted-cp \
-#      --billing-account 338512279495
+###### Day 2 Config
 
-  # Enter the following command to follow the OpenShift installer logs to track the progress of the installation
+    - include_role:
+        name: aws_config_security_groups
 
-  #  rosa logs install --cluster=${CLUSTER_NAME}  --watch
+    # TODO Create Cluster Admin using rosa CLI
 
-  # When the installation is completed take a screenshot of the result of the command , the screenshot must cover the below message that indicate the result of the installation:
-  # I: Cluster '${CLUSTER_NAME} ' has been successfully installed
-  # Paste the screenshot at the bottom of this document.
+    - include_role:
+        name: admin_config_ldap
 
-  # Additional tasks as appropriate:
-#  Install the appropriate SSL/TLS certificate files on the server.
-#  Create specific application configurations.
-#  Configure application logging based on "type".
+    - include_role:
+        name: install_groupsync_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    # TODO Create trident-csi as default StorageClass (FSXn)
+
+    - include_role:
+        name: admin_config_rbac
+
+    - include_role:
+        name: admin_config_machine-pool
+
+  #    - include_role:
+  #        name: admin_config_log_forwarder
