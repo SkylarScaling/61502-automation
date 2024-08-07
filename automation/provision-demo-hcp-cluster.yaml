@@ -135,6 +135,7 @@
           - --cluster-name
           - "{{ cluster_name }}"
           - --hosted-cp
+          - --sts
           - --mode
           - auto
           - --create-admin-user
@@ -146,10 +147,31 @@
           - "{{ oidc_id }}"
           - --subnet-ids
           - "{{ private_subnet_id1 + ',' + private_subnet_id2 + ',' + private_subnet_id3 + ',' + public_subnet_id1 + ',' + public_subnet_id2 + ',' + public_subnet_id3 }}"
+          - --compute-machine-type
+          - "{{ compute_machine_type }}"
       register: cluster_create
 
+    - name: Cluster Creation Command Used
+      debug:
+        msg: "{{ cluster_create.cmd }}"
+
+    - name: Cluster Creation Result
+      debug:
+        msg: "{{ cluster_create.stdout_lines }}"
+
+    - name: Waiting for Cluster to Start (This will take several minutes...)
+      command:
+        argv:
+          - rosa
+          - logs
+          - install
+          - --cluster
+          - "{{ cluster_name }}"
+          - --watch
+      register: logs_install
+
     - debug:
-        msg: "{{ cluster_create }}"
+        msg: "{{ logs_install.stdout_lines }}"
 
 #      rosa create cluster \
 #      --cluster-name amjed \
