@@ -18,3 +18,5 @@
       - "{{instance_type}}"
       - "--labels={{machinepool_labels}}"
       - "--taints={{machinepool_taints}}"
+      - --subnet
+      - "{{subnet}}"
