@@ -138,6 +138,8 @@
           - --cluster-name
           - "{{ cluster_name }}"
           - --hosted-cp
+          - --version
+          - 4.16.5
           - --sts
           - --mode
           - auto

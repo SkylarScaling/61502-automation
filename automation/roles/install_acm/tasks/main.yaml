@@ -33,8 +33,10 @@
       metadata:
         name: advanced-cluster-management
         namespace: open-cluster-management
+        labels:
+          operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
       spec:
-        channel: release-2.11
+        channel: release-2.10
         installPlanApproval: Automatic
         name: advanced-cluster-management
         source: redhat-operators
@@ -76,7 +78,7 @@
         name: multiclusterhub
         namespace: open-cluster-management
       spec:
-        availabilityConfig: High
+        availabilityConfig: Basic
 
 - name: Wait for ACM MultiClusterHub to become available
   kubernetes.core.k8s_info:
