@@ -16,33 +16,55 @@
           vector: {}
         managementState: Managed
 
-- name: Configure OpenShift Log Forwarding Service Account
+- name: Configure OpenShift Vector -> Splunk Reciver Secret from Base64 Encoded HEC Token
+  shell: oc -n openshift-logging create secret generic vector-splunk-secret --from-literal hecToken=test.yaml
+
+- name: Configure OpenShift Log-Fowarding Service Account Permissions ~ Audit
+  shell: oc adm policy add-cluster-role-to-user collect-audit-logs system:serviceaccount:openshift-logging:cluster-logging-operator
+
+- name: Configure OpenShift Log-Fowarding Service Account Permissions ~ Infrastructure
+  shell: oc adm policy add-cluster-role-to-user collect-infrastructure-logs system:serviceaccount:openshift-logging:cluster-logging-operator
+
+- name: Configure OpenShift Log-Fowarding Service Account Permissions ~ Application
+  shell: oc adm policy add-cluster-role-to-user collect-application-logs system:serviceaccount:openshift-logging:cluster-logging-operator
+
+#- name: Configure OpenShift Log-Forwarding Service Account Permissions 
+#  k8s:
+#    host: "https://api.{{ cluster_address }}:6443"
+#    validate_certs: no
+#    state: "{{ state }}"
+#    definition:
+#      apiVersion: v1
+#      kind: ServiceAccount
+#      metadata:
+#        name: cluster-logging-operator
+#        namespace: openshift-logging
+  
+- name: Configure OpenShift Log-Fowarding CR
   k8s:
     host: "https://api.{{ cluster_address }}:6443"
     validate_certs: no
     state: "{{ state }}"
     definition:
-      apiVersion: v1
-      kind: ServiceAccount
+      apiVersion: logging.openshift.io/v1
+      kind: ClusterLogForwarder
       metadata:
-        name: cluster-logging-operator
+        name: instance 
         namespace: openshift-logging
-  
-- name: Configure OpenShift Log Fowarding CR
-  apiVersion: logging.openshift.io/v1
-  kind: ClusterLogForwarder
-  metadata:
-    name: <log_forwarder_name> 
-    namespace: <log_forwarder_namespace> 
-  spec:
-    serviceAccountName: <service_account_name> 
-    pipelines:
-    - inputRefs:
-      - <log_type> 
-      outputRefs:
-      - <output_name> 
-    outputs:
-    - name: <output_name> 
-      type: <output_type> 
-      url: <log_output_url>
+      spec:
+        serviceAccountName: cluster-logging-operator 
+        outputs:
+          - name: splunk-receiver 
+            secret:
+              name: vector-splunk-secret 
+            type: splunk 
+            url: <http://your.splunk.hec.url:8088> 
+        pipelines: 
+          - inputRefs:
+              - application
+              - infrastructure
+              - audit
+            name: 
+            outputRefs:
+              - splunk-receiver
 
