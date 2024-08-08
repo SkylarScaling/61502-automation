@@ -17,7 +17,7 @@
         managementState: Managed
 
 - name: Configure OpenShift Vector -> Splunk Reciver Secret from Base64 Encoded HEC Token
-  shell: oc -n openshift-logging create secret generic vector-splunk-secret --from-literal hecToken=test.yaml
+  shell: oc -n openshift-logging create secret generic vector-splunk-secret --from-literal hecToken="{{ hec_token }}"
 
 - name: Configure OpenShift Log-Fowarding Service Account Permissions ~ Audit
   shell: oc adm policy add-cluster-role-to-user collect-audit-logs system:serviceaccount:openshift-logging:cluster-logging-operator
@@ -58,7 +58,7 @@
             secret:
               name: vector-splunk-secret 
             type: splunk 
-            url: <http://your.splunk.hec.url:8088> 
+            url: "{{ hec_url }}"
         pipelines: 
           - inputRefs:
               - application
