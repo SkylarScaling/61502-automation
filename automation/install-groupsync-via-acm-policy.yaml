@@ -1,5 +1,5 @@
 ---
-- name: Install ACM
+- name: Install GroupSync Operator via ACM Policy
   gather_facts: false
   hosts: localhost
 #  vars_prompt:
@@ -19,11 +19,17 @@
 #      private: yes
 #      confirm: no
   tasks:
-#    - name: "OpenShift CLI login"
-#      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
-
     - include_role:
-        name: install_acm
+        name: admin_create_acm_service_account
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    - include_role:
+        name: install_groupsync_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
 ...

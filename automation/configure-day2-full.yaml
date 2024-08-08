@@ -22,15 +22,15 @@
     - name: "OpenShift CLI login"
       shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:443 --insecure-skip-tls-verify"
 
-    - include_role:
-        name: install_acm
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
+#    - include_role:
+#        name: install_acm
+#      vars:
+#        cluster_address: "{{ ocp_cluster_address }}"
 
-    - include_role:
-        name: admin_create_acm_service_account
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
+#    - include_role:
+#        name: admin_create_acm_service_account
+#      vars:
+#        cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
         name: aws_config_security_groups
@@ -51,7 +51,9 @@
         cluster_address: "{{ ocp_cluster_address }}"
 
   # TODO Create trident-csi as default StorageClass (FSXn)
-  # TODO Create Machine Pool
+
+    - include_role:
+        name: admin_config_machine-pool
 
     - include_role:
         name: admin_config_log_forwarder
