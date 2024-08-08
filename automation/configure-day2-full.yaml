@@ -19,8 +19,8 @@
 #    VpcId: "xxxxxxx"
 #    VpcEndpointId: "xxxxxxxxxx"     
   tasks:
-    - name: "OpenShift CLI login"
-      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:443 --insecure-skip-tls-verify"
+#    - name: "OpenShift CLI login"
+#      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
 
 #    - include_role:
 #        name: install_acm
@@ -47,8 +47,6 @@
 
     - include_role:
         name: admin_config_rbac
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
 
   # TODO Create trident-csi as default StorageClass (FSXn)
 
@@ -57,8 +55,3 @@
 
     - include_role:
         name: admin_config_log_forwarder
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        hec_token: "{{ splunk_hec_token }}"
-        hec_url: "{{ splunk_hec_url }}"
-
