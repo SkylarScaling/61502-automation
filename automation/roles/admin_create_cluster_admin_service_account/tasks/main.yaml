@@ -1,6 +1,6 @@
 ---
-- name: "OpenShift CLI login"
-  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:6443 --insecure-skip-tls-verify"
+- include_role:
+    name: admin_oc_login
 
 - name: Create ansible-playbook-access Namespace
   k8s:
@@ -50,20 +50,4 @@
     api_version: v1
   with_fileglob:
     - "{{ working_dir }}/*.yaml"
-
-- name: Get ServiceAccount Secret
-  k8s_info:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
-    kind: Secret
-    namespace: "{{ cluster_admin_service_account_namespace }}"
-  register: sa_secrets
-
-- name: Get Service Account token
-  set_fact:
-    sa_token: "{{ item.data.token | b64decode }}"
-  with_items: "{{ sa_secrets.resources }}"
-  when: (item.metadata.name.startswith(cluster_admin_service_account_name + "-token-"))
-  loop_control:
-    label: "{{ item.metadata.name }}"
 ...

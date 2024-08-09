@@ -1,4 +1,7 @@
 ---
+- include_role:
+    name: admin_oc_login
+
 - name: Create ACM Namespace
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -36,7 +39,7 @@
         labels:
           operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
       spec:
-        channel: release-2.10
+        channel: release-2.11
         installPlanApproval: Automatic
         name: advanced-cluster-management
         source: redhat-operators

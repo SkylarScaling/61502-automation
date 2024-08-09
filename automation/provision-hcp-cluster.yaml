@@ -16,3 +16,18 @@
   tasks:
     - include_role:
         name: admin_provision_hcp_cluster
+
+    # TODO Move this out of here, into install-infra playbook. This is only for connection provisioning to Day 2 config
+    - name: Waiting for Cluster to Start (This will take several minutes...)
+      command:
+        argv:
+          - rosa
+          - logs
+          - install
+          - --cluster
+          - "{{ cluster_name }}"
+          - --watch
+      register: logs_install
+
+    - debug:
+        msg: "{{ logs_install.stdout_lines }}"

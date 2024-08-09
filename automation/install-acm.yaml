@@ -19,9 +19,6 @@
 #      private: yes
 #      confirm: no
   tasks:
-#    - name: "OpenShift CLI login"
-#      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:6443 --insecure-skip-tls-verify"
-
     - include_role:
         name: install_acm
       vars:

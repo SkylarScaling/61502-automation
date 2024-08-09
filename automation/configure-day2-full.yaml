@@ -19,18 +19,19 @@
 #    VpcId: "xxxxxxx"
 #    VpcEndpointId: "xxxxxxxxxx"     
   tasks:
-    - name: "OpenShift CLI login"
-      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ ocp_cluster_address }}:443"
-
     - include_role:
         name: install_acm
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
 
     - include_role:
         name: admin_create_acm_service_account
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
 
 #    - include_role:
 #        name: aws_config_security_groups
@@ -40,12 +41,12 @@
     - include_role:
         name: admin_config_ldap
 
-#    - include_role:
-#        name: install_groupsync_from_subscription
-#      vars:
-#        cluster_address: "{{ ocp_cluster_address }}"
-#        admin_user: "{{ cluster_admin_user }}"
-#        admin_password: "{{ cluster_admin_password }}"
+    - include_role:
+        name: install_groupsync_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
 
     - include_role:
         name: admin_config_rbac
@@ -64,3 +65,5 @@
 #        hec_token: "{{ splunk_hec_token }}"
 #        hec_url: "{{ splunk_hec_url }}"
 
+    - include_role:
+        name: admin_oc_logout
