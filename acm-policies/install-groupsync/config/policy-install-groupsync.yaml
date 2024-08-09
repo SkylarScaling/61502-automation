@@ -8,7 +8,7 @@ metadata:
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  generateName: group-sync-operator-
+  name: group-sync-operator
   namespace: group-sync-operator
 spec:
   targetNamespaces:

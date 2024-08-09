@@ -1,0 +1,9 @@
+---
+- name: "Check for Existing Login"
+  shell: "oc whoami"
+  register: result
+  failed_when: ( result.rc not in [ 0, 1 ] )
+
+- name: "OpenShift CLI login"
+  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:443"
+  when: result.rc == 1
