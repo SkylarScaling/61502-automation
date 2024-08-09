@@ -98,6 +98,8 @@
       - --mode
       - auto
       - --hosted-cp
+      - --version
+      - 4.16.5
       - --etcd-encryption-kms-arn
       - "{{ kms_arn }}"
       - --operator-roles-prefix
