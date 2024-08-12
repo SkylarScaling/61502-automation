@@ -1,8 +1,10 @@
 ---
+- include_role:
+    name: admin_oc_login
+    
 - name: Grant 3M Group Cluster-Admin Rolebinding
   k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     definition:
       apiVersion: rbac.authorization.k8s.io/v1
