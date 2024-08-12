@@ -1,7 +1,7 @@
 ---
 - include_role:
     name: admin_oc_login
-    
+
 - name: Grant 3M Group Cluster-Admin Rolebinding
   k8s:
     host: "https://api.{{ cluster_address }}:443"
