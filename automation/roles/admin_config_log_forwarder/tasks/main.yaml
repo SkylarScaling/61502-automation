@@ -114,7 +114,6 @@
           - inputRefs:
               - application
               - infrastructure
-              - audit
             name: 
             outputRefs:
               - splunk-receiver

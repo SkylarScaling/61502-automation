@@ -55,8 +55,8 @@
 
   # TODO Create trident-csi as default StorageClass (FSXn)
 
-#    - include_role:
-#        name: admin_config_machine-pool
+    - include_role:
+        name: admin_config_machine-pool
 
 #    - include_role:
 #        name: admin_config_log_forwarder
