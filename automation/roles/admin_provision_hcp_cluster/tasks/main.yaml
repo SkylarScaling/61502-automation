@@ -80,7 +80,7 @@
       - --etcd-encryption-kms-arn
       - "{{ kms_arn }}"
       - --operator-roles-prefix
-      - "{{ operator_roles_prefix }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
       - --oidc-config-id
       - "{{ oidc_id }}"
       - --machine-cidr
