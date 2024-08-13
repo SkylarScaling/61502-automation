@@ -1,4 +1,17 @@
 ---
+- name: Check for existing machinepool
+  command:
+      argv:
+        - rosa
+        - list
+        - machinepool
+        - --cluster
+        - "{{ cluster_name }}"
+  register: machinepool_list 
+
+- debug:  
+    msg: "{{ machinepool_list }}"
+      
 - name: Configure Machine Pool
   command:
     argv:
@@ -20,3 +33,6 @@
       - "--taints={{machinepool_taints}}"
       - --subnet
       - "{{subnet}}"
+  register: machinepool_provider    
+  when: machinepool_name not in machinepool_list.stdout
+     
