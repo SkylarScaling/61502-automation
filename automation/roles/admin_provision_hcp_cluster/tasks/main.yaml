@@ -43,29 +43,6 @@
   set_fact:
     oidc_id: "{{ oidc[:-1] }}"
 
-- name: Check if ROSA Operator Roles Exist
-  command:
-    argv:
-      - rosa
-      - list
-      - operator-roles
-      - --prefix
-      - "{{ operator_roles_prefix | lower }}"
-  register: existing_roles
-
-- name: Delete Existing ROSA Operator Roles
-  command:
-    argv:
-      - rosa
-      - delete
-      - operator-roles
-      - --prefix
-      - "{{ operator_roles_prefix | lower }}"
-      - -m
-      - auto
-      - -y
-  when: existing_roles.stdout_lines | length > 1
-
 - name: Create ROSA Operator Roles
   command:
     argv:
@@ -74,7 +51,7 @@
       - operator-roles
       - --hosted-cp
       - --prefix
-      - "{{ operator_roles_prefix }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
       - --oidc-config-id
       - "{{ oidc_id }}"
       - --installer-role-arn

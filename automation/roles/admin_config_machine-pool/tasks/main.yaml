@@ -7,10 +7,7 @@
         - machinepool
         - --cluster
         - "{{ cluster_name }}"
-  register: machinepool_list 
-
-- debug:  
-    msg: "{{ machinepool_list }}"
+  register: machinepool_list
       
 - name: Configure Machine Pool
   command:
