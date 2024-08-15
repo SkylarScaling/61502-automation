@@ -104,6 +104,8 @@
           - "arn:aws:iam::{{ aws_account_id }}:role/{{ account_roles_prefix }}-HCP-ROSA-Installer-Role"
           - --mode
           - auto
+          - --billing-account
+          - "{{ aws_account_id }}"
       register: operator_roles
 
     - name: Create ROSA HCP Cluster
@@ -131,6 +133,8 @@
           - "{{ private_subnet_id1 + ',' + private_subnet_id2 + ',' + private_subnet_id3 + ',' + public_subnet_id1 + ',' + public_subnet_id2 + ',' + public_subnet_id3 }}"
           - --compute-machine-type
           - "{{ compute_machine_type }}"
+          - --billing-account
+          - "{{ aws_account_id }}"
       register: cluster_create
 
     - name: Cluster Creation Command Used

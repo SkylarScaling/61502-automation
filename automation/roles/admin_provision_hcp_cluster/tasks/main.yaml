@@ -77,6 +77,9 @@
       - --hosted-cp
       - --version
       - 4.16.5
+      - --create-admin-user
+      - --cluster-admin-password
+      - "RedHat123RedHat123"
       - --etcd-encryption-kms-arn
       - "{{ kms_arn }}"
       - --operator-roles-prefix
