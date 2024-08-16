@@ -60,7 +60,7 @@
       - delete
       - operator-roles
       - --prefix
-      - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
       - -m
       - auto
       - -y
