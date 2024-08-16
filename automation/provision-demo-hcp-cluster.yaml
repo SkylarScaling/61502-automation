@@ -89,6 +89,36 @@
       set_fact:
         oidc_id: "{{ oidc[:-1] }}"
 
+    - name: Check if ROSA Operator Roles Exist
+      command:
+        argv:
+          - rosa
+          - list
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+      register: existing_roles
+
+    - debug:
+        msg: "{{ existing_roles }}"
+
+    - name: Delete Existing ROSA Operator Roles
+      command:
+        argv:
+          - rosa
+          - delete
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+          - -m
+          - auto
+          - -y
+      when: existing_roles.stdout_lines | length > 1
+      register: debug_out
+
+    - debug:
+        msg: "{{ debug_out }}"
+
     - name: Create ROSA Operator Roles
       command:
         argv:
@@ -104,8 +134,6 @@
           - "arn:aws:iam::{{ aws_account_id }}:role/{{ account_roles_prefix }}-HCP-ROSA-Installer-Role"
           - --mode
           - auto
-          - --billing-account
-          - "{{ aws_account_id }}"
       register: operator_roles
 
     - name: Create ROSA HCP Cluster
