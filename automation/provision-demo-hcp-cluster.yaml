@@ -89,6 +89,36 @@
       set_fact:
         oidc_id: "{{ oidc[:-1] }}"
 
+    - name: Check if ROSA Operator Roles Exist
+      command:
+        argv:
+          - rosa
+          - list
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+      register: existing_roles
+
+    - debug:
+        msg: "{{ existing_roles }}"
+
+    - name: Delete Existing ROSA Operator Roles
+      command:
+        argv:
+          - rosa
+          - delete
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+          - -m
+          - auto
+          - -y
+      when: existing_roles.stdout_lines | length > 1
+      register: debug_out
+
+    - debug:
+        msg: "{{ debug_out }}"
+
     - name: Create ROSA Operator Roles
       command:
         argv:
@@ -131,6 +161,8 @@
           - "{{ private_subnet_id1 + ',' + private_subnet_id2 + ',' + private_subnet_id3 + ',' + public_subnet_id1 + ',' + public_subnet_id2 + ',' + public_subnet_id3 }}"
           - --compute-machine-type
           - "{{ compute_machine_type }}"
+          - --billing-account
+          - "{{ aws_account_id }}"
       register: cluster_create
 
     - name: Cluster Creation Command Used

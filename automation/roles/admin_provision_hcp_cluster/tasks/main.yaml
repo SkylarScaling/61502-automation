@@ -43,6 +43,29 @@
   set_fact:
     oidc_id: "{{ oidc[:-1] }}"
 
+- name: Check if ROSA Operator Roles Exist
+  command:
+    argv:
+      - rosa
+      - list
+      - operator-roles
+      - --prefix
+      - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+  register: existing_roles
+
+- name: Delete Existing ROSA Operator Roles
+  command:
+    argv:
+      - rosa
+      - delete
+      - operator-roles
+      - --prefix
+      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+      - -m
+      - auto
+      - -y
+  when: existing_roles.stdout_lines | length > 1
+
 - name: Create ROSA Operator Roles
   command:
     argv:
@@ -77,6 +100,9 @@
       - --hosted-cp
       - --version
       - 4.16.5
+      - --create-admin-user
+      - --cluster-admin-password
+      - "RedHat123RedHat123"
       - --etcd-encryption-kms-arn
       - "{{ kms_arn }}"
       - --operator-roles-prefix

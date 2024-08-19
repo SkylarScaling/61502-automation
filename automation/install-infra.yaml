@@ -48,4 +48,6 @@
 
     - include_role:
         name: admin_oc_logout
+
+    # TODO Remove default cluster-admin user from HCP cluster
 ...
