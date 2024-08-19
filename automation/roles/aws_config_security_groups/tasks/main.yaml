@@ -3,7 +3,10 @@
 - name: Get all endpoints with specific filters
   amazon.aws.ec2_vpc_endpoint_info:
     region: "{{ region }}"
-  register: existing_endpoints
+    filters:
+      tag:api.openshift.com/name:
+        - "{{ cluster_name }}"
+  register: existing_endpoints  
 
 - name: Get details on specific endpoint
   amazon.aws.ec2_vpc_endpoint_info:
@@ -18,16 +21,17 @@
   debug:
     msg: 
       - "VPCE ID: {{ endpoint_details.vpc_endpoints.vpce_id }}"
-    #  - "tags: {{ endpoint_details.vpc_endpoints.tags.key=api.openshift.com/id }}"
+      - "VPC Type {{ endpoint_details.vpc_endpoints_type }}"
+
     
     var: ansible_facts
-  when: existing_endpoints is defined and existing_endpoints.vpc_id is defined
+  when: existing_endpoints is defined and existing_endpoints.vpc_id is defined 
 
 - name: set vpc-id
   set_fact:
     vpc_id: "{{ endpoint_details.vpc_endpoints[0].vpc_id }}"
     vpce_id: "{{ endpoint_details.vpc_endpoints[0].vpc_endpoint_id }}"
-  
+    vpc_endpoint_type: "{{ endpoint_details.vpc_endpoints[0].vpc_endpoint_type }}"
   
 
 - name: Configure AWS VPC Endpoint to access 3M API
