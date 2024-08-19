@@ -14,18 +14,11 @@
   debug:
     var: existing_endpoints
 
-#- name: Debug endpoint_details
-#  debug:
-#    var: endpoint_details
-- name: Debug VPC endpoint details
-  debug:
-    var: endpoint_details.vpc_endpoints
-
 - name: Print VPCE ID from endpoint details
   debug:
     msg: 
       - "VPCE ID: {{ endpoint_details.vpc_endpoints.vpce_id }}"
-      - "tags: {{ endpoint_details.vpc_endpoints.tags.key=api.openshift.com/id }}"
+    #  - "tags: {{ endpoint_details.vpc_endpoints.tags.key=api.openshift.com/id }}"
     
     var: ansible_facts
   when: existing_endpoints is defined and existing_endpoints.vpc_id is defined
@@ -34,6 +27,7 @@
   set_fact:
     vpc_id: "{{ endpoint_details.vpc_endpoints[0].vpc_id }}"
     vpce_id: "{{ endpoint_details.vpc_endpoints[0].vpc_endpoint_id }}"
+  
   
 
 - name: Configure AWS VPC Endpoint to access 3M API
