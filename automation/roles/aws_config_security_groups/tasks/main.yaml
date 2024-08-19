@@ -6,6 +6,9 @@
     filters:
       tag:api.openshift.com/name:
         - "{{ cluster_name }}"
+      vpc-endpoint-type:
+        - interface 
+
   register: existing_endpoints  
 
 - name: Get details on specific endpoint
@@ -32,7 +35,9 @@
     vpc_id: "{{ endpoint_details.vpc_endpoints[0].vpc_id }}"
     vpce_id: "{{ endpoint_details.vpc_endpoints[0].vpc_endpoint_id }}"
     vpc_endpoint_type: "{{ endpoint_details.vpc_endpoints[0].vpc_endpoint_type }}"
-  
+- name: Get Interfaces
+  set_fact:
+    indices: "{{ lookup('ansible.utils.index_of', endpoint_details.vpc_endpoints, 'eq', 'Interface', 'vpc_endpoint_type') }}"
 
 - name: Configure AWS VPC Endpoint to access 3M API
   command:
