@@ -13,7 +13,6 @@ placementBindingDefaults:
   name: "install-logging-binding"
 
 policies:
-  # GroupSync - start
   - name: policy-install-logging
     manifests:
       - path: config/policy-install-logging.yaml
