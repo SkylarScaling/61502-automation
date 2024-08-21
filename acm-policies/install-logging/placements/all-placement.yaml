@@ -1,12 +1,12 @@
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
-  name: placement-openshift-acm-managed-clusters
+  name: placement-openshift-acm-all-clusters
   namespace: acm-install-policies
 spec:
   clusterSelector:
     matchExpressions:
-      - key: name
-        operator: NotIn
+      - key: vendor
+        operator: In
         values:
-          - local-cluster
+          - OpenShift
