@@ -9,8 +9,8 @@ policyDefaults:
   consolidateManifests: false
   policySets:
     - cluster-logging
-  placementBindingDefaults:
-    name: "logging-binding"
+placementBindingDefaults:
+  name: "logging-binding"
 
 policies:
   # Logging Policies - start
