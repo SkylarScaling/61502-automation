@@ -1,0 +1,24 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-groupsync
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-logging
+  placementBindingDefaults:
+    name: "logging-binding"
+
+policies:
+  # Logging Policies - start
+  - name: policy-install-logging.yaml
+    manifests:
+      - path: config/policy-install-logging.yaml
+  # Logging Policies - end
+policySets:
+  - name: cluster-logging
+    placement:
+      placementRulePath: placements/clusters-placement.yaml
