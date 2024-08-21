@@ -7,7 +7,7 @@ metadata:
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name:  cluster-logging
+  name: cluster-logging
   namespace: openshift-logging
 spec:
   targetNamespaces:
@@ -25,5 +25,3 @@ spec:
   name: cluster-logging
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: cluster-logging.v5.9.5
-
