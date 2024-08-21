@@ -1,8 +1,14 @@
 ---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ acm_service_account_name }}"
+    service_account_namespace: "{{ acm_service_account_namespace }}"
+
 - name: Configure OpenShift Logging CR
   k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
       apiVersion: v1
@@ -16,10 +22,10 @@
           vector: {}
         managementState: Managed
 
-- name: Configure OpenShift Vector -> Splunk Reciver Secret from Base64 Encoded HEC Token
+- name: Configure OpenShift Vector -> Splunk Receiver Secret from Base64 Encoded HEC Token
   k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
       kind: Secret
@@ -42,6 +48,7 @@
 - name: add collect-application-logs Rolebinding to the default ServiceAccount
   k8s:
     host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
       kind: ClusterRoleBinding
@@ -64,6 +71,7 @@
 - name: add Log-Forwarding Rolebinding to the default ServiceAccount
   k8s:
     host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
       kind: ClusterRoleBinding
@@ -93,8 +101,8 @@
   
 - name: Configure OpenShift Log-Fowarding CR
   k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
       apiVersion: logging.openshift.io/v1
