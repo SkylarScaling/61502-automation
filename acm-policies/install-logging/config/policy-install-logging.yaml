@@ -10,8 +10,6 @@ metadata:
   name: cluster-logging
   namespace: openshift-logging
 spec:
-  targetNamespaces:
-    - openshift-logging
   upgradeStrategy: Default
 ---
 apiVersion: operators.coreos.com/v1alpha1
