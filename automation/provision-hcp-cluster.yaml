@@ -7,6 +7,7 @@
 #    account_roles_prefix: Managed-OpenShift
 #    operator_roles_prefix: Managed-OpenShift-HCP
 #    cluster_name: xxxxxxx
+#    cluster_short_name: XXX
 #    kms_arn: arn:aws:kms:xxxxxxxx
 #    vpc_cidr: 10.0.0.0/16
 #    subnet_id1: subnet-xxxxxxxxxxxxx

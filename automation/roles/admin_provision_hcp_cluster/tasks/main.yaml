@@ -50,7 +50,7 @@
       - list
       - operator-roles
       - --prefix
-      - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+      - "{{ operator_roles_prefix | lower }}-{{ cluster_short_name | lower }}"
   register: existing_roles
 
 - name: Delete Existing ROSA Operator Roles
@@ -60,7 +60,7 @@
       - delete
       - operator-roles
       - --prefix
-      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
       - -m
       - auto
       - -y
@@ -74,7 +74,7 @@
       - operator-roles
       - --hosted-cp
       - --prefix
-      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
       - --oidc-config-id
       - "{{ oidc_id }}"
       - --installer-role-arn
@@ -106,7 +106,7 @@
       - --etcd-encryption-kms-arn
       - "{{ kms_arn }}"
       - --operator-roles-prefix
-      - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
       - --oidc-config-id
       - "{{ oidc_id }}"
       - --machine-cidr
