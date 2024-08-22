@@ -186,3 +186,16 @@
 
     - debug:
         msg: "{{ logs_install.stdout_lines }}"
+
+    - name: Get Cluster Details
+      command:
+        argv:
+          - rosa
+          - describe
+          - cluster
+          - --cluster
+          - "{{ cluster_name }}"
+      register: cluster_details
+
+    - debug:
+        msg: "{{ cluster_details }}"

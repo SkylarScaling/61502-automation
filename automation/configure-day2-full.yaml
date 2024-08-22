@@ -19,6 +19,10 @@
 #    VpcId: "xxxxxxx"
 #    VpcEndpointId: "xxxxxxxxxx"     
   tasks:
+    # Ensure we're not still logged in under another account
+    - include_role:
+        name: admin_oc_logout
+
     - include_role:
         name: install_acm
       vars:
