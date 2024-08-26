@@ -1,0 +1,39 @@
+---
+  - name: Check for existing IDP
+    command:
+      argv:
+        - rosa
+        - list
+        - idp
+        - --cluster
+        - "{{ cluster_name }}"
+    register: idp_list
+
+  - name: "Create 3M Active Directory LDAP Identity Provider if it Doesn't Exist"
+    command:
+      argv:
+        - rosa
+        - create
+        - idp
+        - --cluster
+        - "{{ cluster_name }}"
+        - --type
+        - "{{ type }}"
+        - --name
+        - "{{ name }}"
+        - --url
+        - "{{ url }}"
+        - --bind-password
+        - "{{bind_password}}"
+        - --bind-dn
+        - "{{bind_dn}}"
+        - --id-attributes
+        - "{{id_attributes}}"
+        - --name-attributes
+        - "{{name_attributes}}"
+        - --email-attributes
+        - "{{email_attributes}}"
+        - --username-attributes
+        - "{{username_attributes}}"
+    register: idp_provider
+    when: name not in idp_list.stdout

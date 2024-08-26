@@ -1,0 +1,29 @@
+---
+- name: Get all endpoints with specific filters
+  amazon.aws.ec2_vpc_endpoint_info:
+    region: "{{ region }}"
+    filters:
+      tag:api.openshift.com/name:
+        - "{{ cluster_name }}"
+  register: existing_endpoints
+
+- name: Debug existing_endpoints
+  debug:
+    var: existing_endpoints
+
+- name: set vpc-id
+  set_fact:
+    vpc_id: "{{ existing_endpoints.vpc_endpoints[0].vpc_id }}"
+    vpce_id: "{{ existing_endpoints.vpc_endpoints[0].vpc_endpoint_id }}"
+    vpc_endpoint_type: "{{ existing_endpoints.vpc_endpoints[0].vpc_endpoint_type }}"
+
+- name: Configure AWS VPC Endpoint to access 3M API
+  command:
+    argv:
+      - aws
+      - ec2
+      - modify-vpc-endpoint
+      - --vpc-endpoint-id
+      - "{{ vpce_id }}"
+      - --add-security-group-ids
+      - "{{ DEFAULT_3M_SG_ID }}"

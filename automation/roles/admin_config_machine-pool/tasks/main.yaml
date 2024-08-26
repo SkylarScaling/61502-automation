@@ -1,0 +1,35 @@
+---
+- name: Check for existing machinepool
+  command:
+      argv:
+        - rosa
+        - list
+        - machinepool
+        - --cluster
+        - "{{ cluster_name }}"
+  register: machinepool_list
+      
+- name: Configure Machine Pool
+  command:
+    argv:
+      - rosa
+      - create
+      - machinepool
+      - --cluster
+      - "{{ cluster_name }}"
+      - --name
+      - "{{ machinepool_name }}"
+      - --enable-autoscaling
+      - --min-replicas
+      - "{{min_replicas}}"
+      - --max-replicas
+      - "{{max_replicas}}"
+      - --instance-type
+      - "{{instance_type}}"
+      - "--labels={{machinepool_labels}}"
+      - "--taints={{machinepool_taints}}"
+      - --subnet
+      - "{{subnet}}"
+  register: machinepool_provider    
+  when: machinepool_name not in machinepool_list.stdout
+     

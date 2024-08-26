@@ -1,8 +1,10 @@
 ---
+- include_role:
+    name: admin_oc_login
+
 - name: Create ACM Namespace
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     definition:
       apiVersion: v1
@@ -12,16 +14,13 @@
 
 - name: Create OperatorGroup for ACM Operator
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     api_version: operators.coreos.com/v1
     definition:
       kind: OperatorGroup
       metadata:
         name: open-cluster-management
-        annotations:
-          olm.providedAPIs: MultiClusterHub.v1.operator.open-cluster-management.io
         namespace: open-cluster-management
       spec:
         targetNamespaces:
@@ -29,8 +28,7 @@
 
 - name: Create Subscription for ACM Operator
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     api_version: operators.coreos.com/v1alpha1
     definition:
@@ -41,22 +39,15 @@
         labels:
           operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
       spec:
-        channel: release-2.10
+        channel: release-2.11
         installPlanApproval: Automatic
         name: advanced-cluster-management
         source: redhat-operators
         sourceNamespace: openshift-marketplace
-        config:
-          nodeSelector:
-            node-role.kubernetes.io/infra: ""
-          tolerations:
-            - key: node-role.kubernetes.io/infra
-              effect: NoSchedule
 
 - name: Wait for ACM Hub Operator Deployment to become available
   kubernetes.core.k8s_info:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     kind: Deployment
     name: multiclusterhub-operator
     namespace: open-cluster-management
@@ -68,8 +59,7 @@
 
 - name: Update ACM Subscription for Manual update approval
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     api_version: operators.coreos.com/v1alpha1
     definition:
@@ -82,8 +72,7 @@
 
 - name: Create MultiClusterHub
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     state: "{{ state }}"
     api_version: operator.open-cluster-management.io/v1
     definition:
@@ -92,17 +81,11 @@
         name: multiclusterhub
         namespace: open-cluster-management
       spec:
-        nodeSelector:
-          node-role.kubernetes.io/infra: ""
-        tolerations:
-          - key: node-role.kubernetes.io/infra
-            effect: NoSchedule
-        availabilityConfig: High
+        availabilityConfig: Basic
 
 - name: Wait for ACM MultiClusterHub to become available
   kubernetes.core.k8s_info:
-    host: "https://api.{{ cluster_address }}:6443"
-    validate_certs: no
+    host: "https://api.{{ cluster_address }}:443"
     kind: MultiClusterHub
     name: multiclusterhub
     namespace: open-cluster-management

@@ -1,0 +1,39 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ acm_service_account_name }}"
+    service_account_namespace: "{{ acm_service_account_namespace }}"
+
+- name: Create temporary directory for template files
+  tempfile:
+    state: directory
+    suffix: tmp
+  register: tmp_dir
+
+- set_fact:
+    working_dir: "{{ tmp_dir.path }}"
+
+- name: Populate Templates
+  template:
+    src: "{{ role_path }}/templates/subscription.yaml.j2"
+    dest: "{{ working_dir }}/subscription.yaml"
+
+- name: Create App Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ app_namespace }}"
+
+- name: Apply logging Operator install module repo subscription
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    src: "{{ working_dir }}/subscription.yaml"
+    state: "{{ state }}"
+...

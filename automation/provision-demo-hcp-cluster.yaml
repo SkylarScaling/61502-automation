@@ -1,0 +1,201 @@
+---
+- name: Provision OCP HCP Cluster on AWS
+  gather_facts: false
+  hosts: localhost
+# Required Variables for this playbook
+# Cluster Provisioning Vars
+#    aws_account_id: <TODO>
+#    account_roles_prefix: Managed-OpenShift
+#    operator_roles_prefix: Managed-OpenShift-HCP
+#    cluster_name: <TODO>
+#    vpc_cidr: 10.0.0.0/16
+#    private_subnet_id1: <TODO>
+#    private_subnet_id2: <TODO>
+#    private_subnet_id3: <TODO>
+#    public_subnet_id1: <TODO>
+#    public_subnet_id2: <TODO>
+#    public_subnet_id3: <TODO>
+#    compute_machine_type: m5a.xlarge
+  tasks:
+    - name: Set Public Subnet tags
+      command:
+        argv:
+          - aws
+          - ec2
+          - create-tags
+          - --resources
+          - "{{ item }}"
+          - --tags
+          - Key=kubernetes.io/role/elb,Value=1
+      loop:
+        - "{{ public_subnet_id1 }}"
+        - "{{ public_subnet_id2 }}"
+        - "{{ public_subnet_id3 }}"
+
+    - name: Set Private Subnet tags
+      command:
+        argv:
+          - aws
+          - ec2
+          - create-tags
+          - --resources
+          - "{{ item }}"
+          - --tags
+          - Key=kubernetes.io/role/internal-elb,Value=1
+      loop:
+        - "{{ private_subnet_id1 }}"
+        - "{{ private_subnet_id2 }}"
+        - "{{ private_subnet_id3 }}"
+      
+    - name: Create ROSA Account-Wide IAM Roles
+      command:
+        argv:
+          - rosa
+          - create
+          - account-roles
+          - --hosted-cp
+          - --prefix
+          - Managed-OpenShift
+          - --mode
+          - auto
+      register: account_roles
+
+    - name: Get Returned Account Roles
+      set_fact:
+        arns: "{{account_roles.stdout}}"
+
+    - name: Parse Worker, Installer, and Support Account Roles
+      set_fact:
+        worker_role: "{{ arns | regex_search('arn:aws\\S+Worker-Role') }}"
+        installer_role: "{{ arns | regex_search('arn:aws\\S+Installer-Role') }}"
+        support_role: "{{ arns | regex_search('arn:aws\\S+Support-Role') }}"
+
+    - name: Create ROSA OIDC Configuration
+      command:
+        argv:
+          - rosa
+          - create
+          - oidc-config
+          - --mode
+          - auto
+          - --yes
+      register: oidc_provider
+
+    - name: Parse Returned OIDC Provider
+      set_fact:
+        oidc: "{{ oidc_provider.stdout | regex_search('[^/]+$') }}"
+
+    - name: Get OIDC ID
+      set_fact:
+        oidc_id: "{{ oidc[:-1] }}"
+
+    - name: Check if ROSA Operator Roles Exist
+      command:
+        argv:
+          - rosa
+          - list
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix | lower }}-{{ cluster_name | lower }}"
+      register: existing_roles
+
+    - debug:
+        msg: "{{ existing_roles }}"
+
+    - name: Delete Existing ROSA Operator Roles
+      command:
+        argv:
+          - rosa
+          - delete
+          - operator-roles
+          - --prefix
+          - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+          - -m
+          - auto
+          - -y
+      when: existing_roles.stdout_lines | length > 1
+      register: debug_out
+
+    - debug:
+        msg: "{{ debug_out }}"
+
+    - name: Create ROSA Operator Roles
+      command:
+        argv:
+          - rosa
+          - create
+          - operator-roles
+          - --hosted-cp
+          - --prefix
+          - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+          - --oidc-config-id
+          - "{{ oidc_id }}"
+          - --installer-role-arn
+          - "arn:aws:iam::{{ aws_account_id }}:role/{{ account_roles_prefix }}-HCP-ROSA-Installer-Role"
+          - --mode
+          - auto
+      register: operator_roles
+
+    - name: Create ROSA HCP Cluster
+      command:
+        argv:
+          - rosa
+          - create
+          - cluster
+          - --cluster-name
+          - "{{ cluster_name }}"
+          - --hosted-cp
+          - --version
+          - 4.16.6
+          - --sts
+          - --mode
+          - auto
+          - --create-admin-user
+          - --cluster-admin-password
+          - "RedHat123RedHat123"
+          - --operator-roles-prefix
+          - "{{ operator_roles_prefix }}-{{ cluster_name }}"
+          - --oidc-config-id
+          - "{{ oidc_id }}"
+          - --subnet-ids
+          - "{{ private_subnet_id1 + ',' + private_subnet_id2 + ',' + private_subnet_id3 + ',' + public_subnet_id1 + ',' + public_subnet_id2 + ',' + public_subnet_id3 }}"
+          - --compute-machine-type
+          - "{{ compute_machine_type }}"
+          - --billing-account
+          - "{{ aws_account_id }}"
+      register: cluster_create
+
+    - name: Cluster Creation Command Used
+      debug:
+        msg: "{{ cluster_create.cmd }}"
+
+    - name: Cluster Creation Result
+      debug:
+        msg: "{{ cluster_create.stdout_lines }}"
+
+    - name: Waiting for Cluster to Start (This will take several minutes...)
+      command:
+        argv:
+          - rosa
+          - logs
+          - install
+          - --cluster
+          - "{{ cluster_name }}"
+          - --watch
+      register: logs_install
+
+    - debug:
+        msg: "{{ logs_install.stdout_lines }}"
+
+    - name: Get Cluster Details
+      command:
+        argv:
+          - rosa
+          - describe
+          - cluster
+          - --cluster
+          - "{{ cluster_name }}"
+      register: cluster_details
+
+    - debug:
+        msg: "{{ cluster_details }}"

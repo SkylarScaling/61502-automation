@@ -1,0 +1,35 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-groupsync
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - groupsync
+placementBindingDefaults:
+  name: "groupsync-binding"
+
+policies:
+  # GroupSync - start
+  - name: policy-install-groupsync
+    manifests:
+      - path: config/policy-install-groupsync.yaml
+#  - name: policy-config-groupsync
+#    dependencies:
+#      - name: policy-install-groupsync
+#    manifests:
+#      - path: config/policy-config-groupsync.yaml
+#  - name: policy-groupsync-status
+#    dependencies:
+#      - name: policy-install-quay
+#    manifests:
+#      - path: health/policy-groupsync-status.yaml
+#    remediationAction: inform
+  # Quay Policies - end
+policySets:
+  - name: group-sync
+    placement:
+      placementRulePath: placements/all-placement.yaml

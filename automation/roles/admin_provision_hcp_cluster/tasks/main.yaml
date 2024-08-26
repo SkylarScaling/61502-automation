@@ -1,0 +1,125 @@
+---
+- name: Create ROSA Account-Wide IAM Roles
+  command:
+    argv:
+      - rosa
+      - create
+      - account-roles
+      - --hosted-cp
+      - --prefix
+      - Managed-OpenShift
+      - --permissions-boundary
+      - "arn:aws:iam::{{ aws_account_id }}:policy/iam-role-permissions-boundary-rosa"
+      - --mode
+      - auto
+  register: account_roles
+
+- name: Get Returned Account Roles
+  set_fact:
+    arns: "{{account_roles.stdout}}"
+
+- name: Parse Worker, Installer, and Support Account Roles
+  set_fact:
+    worker_role: "{{ arns | regex_search('arn:aws\\S+Worker-Role') }}"
+    installer_role: "{{ arns | regex_search('arn:aws\\S+Installer-Role') }}"
+    support_role: "{{ arns | regex_search('arn:aws\\S+Support-Role') }}"
+
+- name: Create ROSA OIDC Configuration
+  command:
+    argv:
+      - rosa
+      - create
+      - oidc-config
+      - --mode
+      - auto
+      - --yes
+  register: oidc_provider
+
+- name: Parse Returned OIDC Provider
+  set_fact:
+    oidc: "{{ oidc_provider.stdout | regex_search('[^/]+$') }}"
+
+- name: Get OIDC ID
+  set_fact:
+    oidc_id: "{{ oidc[:-1] }}"
+
+- name: Check if ROSA Operator Roles Exist
+  command:
+    argv:
+      - rosa
+      - list
+      - operator-roles
+      - --prefix
+      - "{{ operator_roles_prefix | lower }}-{{ cluster_short_name | lower }}"
+  register: existing_roles
+
+- name: Delete Existing ROSA Operator Roles
+  command:
+    argv:
+      - rosa
+      - delete
+      - operator-roles
+      - --prefix
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
+      - -m
+      - auto
+      - -y
+  when: existing_roles.stdout_lines | length > 1
+
+- name: Create ROSA Operator Roles
+  command:
+    argv:
+      - rosa
+      - create
+      - operator-roles
+      - --hosted-cp
+      - --prefix
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
+      - --oidc-config-id
+      - "{{ oidc_id }}"
+      - --installer-role-arn
+      - "arn:aws:iam::{{ aws_account_id }}:role/{{ account_roles_prefix }}-HCP-ROSA-Installer-Role"
+      - --permissions-boundary
+      - "arn:aws:iam::{{ aws_account_id }}:policy/iam-role-permissions-boundary-rosa"
+      - --mode
+      - auto
+  register: operator_roles
+
+- name: Create ROSA HCP Cluster
+  command:
+    argv:
+      - rosa
+      - create
+      - cluster
+      - --private
+      - --cluster-name
+      - "{{ cluster_name }}"
+      - --sts
+      - --mode
+      - auto
+      - --hosted-cp
+      - --version
+      - 4.16.6
+      - --create-admin-user
+      - --cluster-admin-password
+      - "RedHat123RedHat123"
+      - --etcd-encryption-kms-arn
+      - "{{ kms_arn }}"
+      - --operator-roles-prefix
+      - "{{ operator_roles_prefix }}-{{ cluster_short_name }}"
+      - --oidc-config-id
+      - "{{ oidc_id }}"
+      - --machine-cidr
+      - "{{ vpc_cidr }}"
+      - "--subnet-ids={{ subnet_id1 }},{{ subnet_id2 }},{{ subnet_id3 }}"
+      - --compute-machine-type
+      - "{{ compute_machine_type }}"
+  register: cluster_create
+
+- name: Cluster Creation Command Used
+  debug:
+    msg: "{{ cluster_create.cmd }}"
+
+- name: Cluster Creation Result
+  debug:
+    msg: "{{ cluster_create.stdout_lines }}"
