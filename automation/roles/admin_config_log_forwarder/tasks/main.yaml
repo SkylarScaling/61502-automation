@@ -22,20 +22,41 @@
           vector: {}
         managementState: Managed
 
-- name: Configure OpenShift Vector -> Splunk Receiver Secret from Base64 Encoded HEC Token
+# Create the secret provider calss to access the splunk secret 
+- name: Create secret provider
   k8s:
     host: "https://api.{{ cluster_address }}:443"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
-      kind: Secret
-      apiVersion: v1
+      apiVersion: secrets-store.csi.x-k8s.io/v1
+      kind: SecretProviderClass
       metadata:
         name: vector-splunk-secret
         namespace: openshift-logging
-      data:
-        hecToken: "{{ hec_token }}"
-      type: Opaque
+      spec:
+        provider: aws
+        parameters:
+          objects: |
+            - objectName: "splunk_hec_token"
+              objectType: "secretsmanager" 
+
+
+
+# - name: Configure OpenShift Vector -> Splunk Receiver Secret from Base64 Encoded HEC Token
+#   k8s:
+#     host: "https://api.{{ cluster_address }}:443"
+#     api_key: "{{ sa_token }}"
+#     state: "{{ state }}"
+#     definition:
+#       kind: Secret
+#       apiVersion: v1
+#       metadata:
+#         name: vector-splunk-secret
+#         namespace: openshift-logging
+#       data:
+#         hecToken: "{{ hec_token }}"
+#       type: Opaque
 
 #  shell: oc -n openshift-logging create secret generic vector-splunk-secret --from-literal hecToken="{{ hec_token }}"
 
@@ -87,18 +108,45 @@
           kind: ClusterRole
           name: collect-infrastructure-logs 
      
-#- name: Configure OpenShift Log-Forwarding Service Account Permissions 
-#  k8s:
-#    host: "https://api.{{ cluster_address }}:6443"
-#    validate_certs: no
-#    state: "{{ state }}"
-#    definition:
-#      apiVersion: v1
-#      kind: ServiceAccount
-#      metadata:
-#        name: cluster-logging-operator
-#        namespace: openshift-logging
+- name: Configure OpenShift Log-Forwarding Service Account Permissions 
+  k8s:
+   host: "https://api.{{ cluster_address }}:6443"
+   validate_certs: no
+   state: "{{ state }}"
+   definition:
+     apiVersion: v1
+     kind: ServiceAccount
+     metadata:
+       name: cluster-logging-operator
+       namespace: openshift-logging
   
+# - name: Configure OpenShift Log-Fowarding CR
+#   k8s:
+#     host: "https://api.{{ cluster_address }}:443"
+#     api_key: "{{ sa_token }}"
+#     state: "{{ state }}"
+#     definition:
+#       apiVersion: logging.openshift.io/v1
+#       kind: ClusterLogForwarder
+#       metadata:
+#         name: instance 
+#         namespace: openshift-logging
+#       spec:
+#         serviceAccountName: cluster-logging-operator 
+#         outputs:
+#           - name: splunk-receiver 
+#             secret:
+#               name: vector-splunk-secret 
+#             type: splunk 
+#             url: "{{ hec_url }}"
+#         pipelines: 
+#           - inputRefs:
+#               - application
+#               - infrastructure
+#             name: 
+#             outputRefs:
+#               - splunk-receiver
+
 - name: Configure OpenShift Log-Fowarding CR
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -114,8 +162,8 @@
         serviceAccountName: cluster-logging-operator 
         outputs:
           - name: splunk-receiver 
-            secret:
-              name: vector-splunk-secret 
+            secret: 
+              fromSecretProviderClass: vector-splunk-secret
             type: splunk 
             url: "{{ hec_url }}"
         pipelines: 
