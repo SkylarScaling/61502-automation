@@ -22,22 +22,6 @@
           vector: {}
         managementState: Managed
 
-# - name: Configure OpenShift Vector -> Splunk Receiver Secret from Base64 Encoded HEC Token
-#   k8s:
-#     host: "https://api.{{ cluster_address }}:443"
-#     api_key: "{{ sa_token }}"
-#     state: "{{ state }}"
-#     definition:
-#       kind: Secret
-#       apiVersion: v1
-#       metadata:
-#         name: vector-splunk-secret
-#         namespace: openshift-logging
-#       data:
-#         hecToken: "{{ hec_token }}"
-#       type: Opaque
-
-
 # Create role binding to collect application logs
 - name: add collect-application-logs Rolebinding to the default ServiceAccount
   k8s:
