@@ -1,5 +1,5 @@
 ---
 state: present
-app_name: eso-installer
+app_name: install-eso
 app_namespace: acm-install-policies
 ...
