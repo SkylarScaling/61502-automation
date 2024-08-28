@@ -1,0 +1,57 @@
+---
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+
+namespace: openshift-logging
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: ServiceAccount
+      name: cluster-logging-operator
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: openshift-logging
+      - op: replace
+        path: /metadata/annotations/eks.amazonaws.com~1role-arn
+        value: arn:aws:iam::173994873460:role/ocp-access-to-aws-secrets
+
+  - target:
+      kind: SecretStore
+      name: splunk-store
+    patch: |-
+      - op: replace
+        path: /spec/provider/aws/region
+        value: us-east-1
+
+  # - target:
+  #     kind: ExternalSecret
+  #     name: splunk-secret
+  #   patch: |-
+  #     - op: replace
+  #       path: /spec/secretStoreRef/name
+  #       value: splunk-store
+  #     - op: replace
+  #       path: /spec/target/name
+  #       value: vector-splunk-secret
+  #     - op: replace
+  #       path: /spec/data/0/secretKey
+  #       value: hecToken
+  #     - op: replace
+  #       path: /spec/data/0/remoteRef/property
+  #       value: hecToken
+  #     - op: replace
+  #       path: /spec/data/0/remoteRef/key
+  #       value: splunk
+  #     - op: replace
+  #       path: /spec/data/1/secretKey
+  #       value: splunk_hec_url
+  #     - op: replace
+  #       path: /spec/data/1/remoteRef/property
+  #       value: splunk_hec_url
+  #     - op: replace
+  #       path: /spec/data/1/remoteRef/key
+  #       value: splunk
