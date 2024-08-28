@@ -2,7 +2,7 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
-  name: gen-policy-generator-eso
+  name: gen-policy-eso
 policyDefaults:
   namespace: acm-install-policies
   remediationAction: enforce
@@ -10,15 +10,15 @@ policyDefaults:
   policySets:
     - cluster-logging-operator
 placementBindingDefaults:
-  name: "cluster-logging-operator"
+  name: "eso-binding"
 
 policies:
   # Logging Policies - start
-  - name: policy-install-external-secrets-operator.yaml
+  - name: policy-install-eso
     manifests:
-      - path: config/policy-install-external-secrets-operator.yaml
+      - path: config/policy-install-eso.yaml
   # Logging Policies - end
 policySets:
-  - name: cluster-logging
+  - name: eso
     placement:
       placementRulePath: placements/all-placement.yaml

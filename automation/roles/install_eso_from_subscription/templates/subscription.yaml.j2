@@ -20,7 +20,7 @@ kind: Channel
 metadata:
   annotations:
     apps.open-cluster-management.io/reconcile-rate: medium
-  name: install-eso-policies-channel
+  name: eso-policies-channel
   namespace: "{{ app_namespace }}"
 spec:
   type: Git
@@ -40,7 +40,7 @@ spec:
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription
 metadata:
-  name: install-eso-policies-subscription
+  name: eso-policies
   namespace: "{{ app_namespace }}"
   annotations:
     apps.open-cluster-management.io/git-branch: "{{ subscription_branch }}"
@@ -49,16 +49,16 @@ metadata:
   labels:
     app: "{{ app_name }}"
 spec:
-  channel: "{{ app_namespace }}/install-eso-policies-channel"
+  channel: "{{ app_namespace }}/eso-policies-channel"
   placement:
     placementRef:
       kind: PlacementRule
-      name: install-eso-policies-placement
+      name: eso-policies-placement
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
-  name: install-eso-policies-placement
+  name: eso-policies-placement
   namespace: "{{ app_namespace }}"
   labels:
     app: "{{ app_name }}"

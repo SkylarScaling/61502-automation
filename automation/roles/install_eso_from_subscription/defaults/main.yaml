@@ -1,5 +1,5 @@
 ---
 state: present
-app_name: logging-installer
+app_name: eso-installer
 app_namespace: acm-install-policies
 ...
