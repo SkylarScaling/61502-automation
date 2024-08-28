@@ -2,13 +2,13 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
-  name: gen-policy-eso
+  name: gen-policy-generator-eso
 policyDefaults:
   namespace: acm-install-policies
   remediationAction: enforce
   consolidateManifests: false
   policySets:
-    - cluster-logging-operator
+    - eso-install
 placementBindingDefaults:
   name: "eso-binding"
 
