@@ -4,4 +4,4 @@ kind: Kustomization
 generators:
   - ./policyGenerator.yaml
 commonLabels:
-  open-cluster-management.io/policy-set: eso
+  open-cluster-management.io/policy-set: install-eso

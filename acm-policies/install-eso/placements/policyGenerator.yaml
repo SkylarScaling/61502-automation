@@ -8,17 +8,17 @@ policyDefaults:
   remediationAction: enforce
   consolidateManifests: false
   policySets:
-    - eso-install
+    - install-eso
 placementBindingDefaults:
   name: "eso-binding"
 
 policies:
   # Logging Policies - start
-  - name: policy-install-eso
+  - name: install-eso 
     manifests:
       - path: config/policy-install-eso.yaml
   # Logging Policies - end
 policySets:
-  - name: eso
+  - name: install-eso
     placement:
       placementRulePath: placements/all-placement.yaml
