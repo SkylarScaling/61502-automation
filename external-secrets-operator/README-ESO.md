@@ -120,16 +120,13 @@ aws iam attach-role-policy --role-name "$AWS_SECRETS_POLICY_NAME" --policy-arn $
 # Verify attachment
 aws iam list-attached-role-policies --role-name "$AWS_SECRETS_POLICY_NAME" --output text
 ```
-
-## Deploy Operator and Instance
-# Deploy the operator, skip if the External Secrets operator already installed
-oc apply -k operator/overlays/stable  
-# Deploy the instance after the operator is installed 
+## Deploy The Instance
+```
 oc apply -k instance/overlays/default
 ```
 ## Create namespace-scoped secret store
 ```
-oc apply -k  store/overlays/dev
+oc apply -k store/overlays/dev
 ```
 
 ## Create OpenShift resources
@@ -140,7 +137,7 @@ oc apply -k  store/overlays/dev
 oc apply -k store/overlays/dev
 
 # Verify all
-oc project -n $USER_NAMESPACE
+oc project $USER_NAMESPACE
 oc describe sa external-secrets-operator-sa | egrep "^Annotations"
 oc get secretstore
 oc get externalsecret
@@ -205,4 +202,3 @@ oc delete -k aws_secrets_integration/external-secrets-operator/operator/overlays
 oc delete csv $(oc get csv -n openshift-operators -o name | grep external-secrets)
 oc delete project $USER_NAMESPACE
 ```
-
