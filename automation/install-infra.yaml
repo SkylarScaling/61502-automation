@@ -41,7 +41,7 @@
         name: admin_config_rbac
 
     - include_role:
-        name: admin_config_machine-pool
+        name: admin_config_machine_pool
 
 #    - include_role:
 #        name: admin_config_log_forwarder
