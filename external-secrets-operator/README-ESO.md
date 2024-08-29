@@ -17,8 +17,8 @@
 #export VALUE1="xxxxxxxxxxxxxxxxxxxxxxx"
 #export KEY2="splunk_hec_url"
 #export VALUE2="xxxxxxxxx"
-#export KEY3="cred-string"
-#export VALUE3="{"username":"BoLauder", "password":"HelloWorld123"}" Example of username/password secret 
+##export KEY3="cred-string"
+##export VALUE3="{"username":"BoLauder", "password":"HelloWorld123"}" Example of username/password secret 
 #export AWS_SECRETS_POLICY_NAME="ocp-access-to-aws-secrets"
 
 #echo $REGION
