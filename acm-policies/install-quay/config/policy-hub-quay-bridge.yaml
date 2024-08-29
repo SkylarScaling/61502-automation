@@ -33,6 +33,8 @@ apiVersion: quay.redhat.com/v1
 kind: QuayIntegration
 metadata:
  name: quay
+ annotations:
+   argocd.argoproj.io/sync-wave: "8"
 spec:
  clusterID: openshift
  credentialsSecret:
