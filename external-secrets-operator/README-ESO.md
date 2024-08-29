@@ -4,38 +4,38 @@
 
 ```
 # Create environment variables
-export REGION=us-east-1
-export OIDC_ENDPOINT=$(oc get authentication.config.openshift.io cluster -o jsonpath='{.spec.serviceAccountIssuer}' | sed  's|^https://||')
-export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
-export AWS_PAGER=""
-export NAMESPACE="external-secrets"
-export USER_NAMESPACE="openshift-logging"  ##Name of namespace you want the secret to be used
+#export REGION=us-east-2
+#export OIDC_ENDPOINT=$(oc get authentication.config.openshift.io cluster -o jsonpath='{.spec.serviceAccountIssuer}' | sed  's|^https://||')
+#export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
+#export AWS_PAGER=""
+#export NAMESPACE="external-secrets"
+#export USER_NAMESPACE="openshift-logging"  ##Name of namespace you want the secret to be used
 #export SA_NAME="external-secrets-operator-sa"
-export SA_NAME="cluster-logging-operator"
-export ESO_SECRET_BUCKET=vector-splunk-secret   ##Name of the Secret in AWS Secret Manager
-export KEY1="hecToken"
-export VALUE1="xxxxxxxxxxxxxxxxxxxxxxx"
-export KEY2="splunk_hec_url"
-export VALUE2="xxxxxxxxx"
+#export SA_NAME="cluster-logging-operator"
+#export ESO_SECRET_BUCKET=vector-splunk-secret   ##Name of the Secret in AWS Secret Manager
+#export KEY1="hecToken"
+#export VALUE1="xxxxxxxxxxxxxxxxxxxxxxx"
+#export KEY2="splunk_hec_url"
+#export VALUE2="xxxxxxxxx"
 #export KEY3="cred-string"
 #export VALUE3="{"username":"BoLauder", "password":"HelloWorld123"}" Example of username/password secret 
-export AWS_SECRETS_POLICY_NAME="ocp-access-to-aws-secrets"
+#export AWS_SECRETS_POLICY_NAME="ocp-access-to-aws-secrets"
 
-echo $REGION
-echo $OIDC_ENDPOINT
-echo $AWS_ACCOUNT_ID
-echo $NAMESPACE
-echo $USER_NAMESPACE
-echo $SA_NAME
-echo $ESO_SECRET_BUCKET
-echo $KEY1
-echo $VALUE1
-echo $KEY2
-echo $VALUE2
-echo $KEY3
-echo $VALUE3
-echo $AWS_SECRETS_POLICY_NAME
-echo $AWS_PAGER # Will be blank
+#echo $REGION
+#echo $OIDC_ENDPOINT
+#echo $AWS_ACCOUNT_ID
+#echo $NAMESPACE
+#echo $USER_NAMESPACE
+#echo $SA_NAME
+#echo $ESO_SECRET_BUCKET
+#echo $KEY1
+#echo $VALUE1
+#echo $KEY2
+#echo $VALUE2
+#echo $KEY3
+#echo $VALUE3
+#echo $AWS_SECRETS_POLICY_NAME
+#echo $AWS_PAGER # Will be blank
 
 
 # Parameterize the secret creation using KEY/VALUE variables. Here and when creating ExternalSecret below
