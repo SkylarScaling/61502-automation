@@ -19,11 +19,11 @@ policies:
       - path: config/policy-install-logging.yaml
   # Logging Policies - end
 
-  # # Log Forward policy - start
-  # - name: logforwarder 
-  #   manifests:
-  #     - path: config/policy-configure-log-forwarder.yaml
-  # # Log Foward policy - end    
+  # Log Forward policy - start
+  - name: logforwarder 
+    manifests:
+      - path: config/policy-configure-log-forwarder.yaml
+  # Log Foward policy - end    
 policySets:
   - name: cluster-logging
     placement:
