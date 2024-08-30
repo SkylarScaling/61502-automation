@@ -73,8 +73,9 @@
 #      vars:
 #        cluster_address: "{{ ocp_cluster_address }}"
 
-    - include_role:
-        name: admin_config_machine_pool
+# TODO This should be specific to the environment, as needed
+#    - include_role:
+#        name: admin_config_machine_pool
 
 #    - include_role:
 #        name: admin_config_log_forwarder
