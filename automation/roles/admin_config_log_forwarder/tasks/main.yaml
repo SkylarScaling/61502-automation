@@ -90,7 +90,8 @@
         outputs:
           - name: splunk-receiver 
             secret:
-              name: vector-splunk-secret 
+              #name: vector-splunk-secret 
+              name: splunk 
             type: splunk 
             url: "{{ hec_url }}"
         pipelines: 
