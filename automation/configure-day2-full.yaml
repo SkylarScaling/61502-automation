@@ -57,6 +57,12 @@
 
   # TODO Create trident-csi as default StorageClass (FSXn)
 
+# TODO MCO Needs Object Bucket storage available
+#    - include_role:
+#        name: install_mco_from_subscription
+#      vars:
+#        cluster_address: "{{ ocp_cluster_address }}"
+
     - include_role:
         name: install_logging_from_subscription
       vars:
@@ -73,8 +79,9 @@
 #      vars:
 #        cluster_address: "{{ ocp_cluster_address }}"
 
-    - include_role:
-        name: admin_config_machine-pool
+# TODO This should be specific to the environment, as needed
+#    - include_role:
+#        name: admin_config_machine_pool
 
 #    - include_role:
 #        name: admin_config_log_forwarder

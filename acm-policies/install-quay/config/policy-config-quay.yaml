@@ -4,7 +4,7 @@ metadata:
   name: quay-config
   namespace: acm-install-policies
 data:
-  host: '{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "registry-quay" ).spec.host }}'
+  host: '{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "quay-registry-quay" ).spec.host }}'
 ---
 apiVersion: console.openshift.io/v1
 kind: ConsoleLink
@@ -14,7 +14,7 @@ spec:
   applicationMenu:
     section: Red Hat applications
     imageURL: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/OpenShift-LogoType.svg'
-  href: 'https://{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "registry-quay" ).spec.host }}'
+  href: 'https://{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "quay-registry-quay" ).spec.host }}'
   location: ApplicationMenu
   text: 'Red Hat Quay Enterprise Registry'
 ---
