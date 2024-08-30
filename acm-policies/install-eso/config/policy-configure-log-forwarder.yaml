@@ -1,0 +1,102 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ acm_service_account_name }}"
+    service_account_namespace: "{{ acm_service_account_namespace }}"
+
+- name: Configure OpenShift Logging CR
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ClusterLogging
+      metadata:
+        name: instance 
+        namespace: openshift-logging 
+      spec:
+        collection:
+          type: vector
+          vector: {}
+        managementState: Managed
+
+# Create role binding to collect application logs
+- name: add collect-application-logs Rolebinding to the default ServiceAccount
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      kind: ClusterRoleBinding
+      apiVersion: rbac.authorization.k8s.io/v1
+      metadata:
+        name: collect-app-logs
+      subjects:
+      - kind: ServiceAccount
+        name: default
+        namespace: openshift-logging
+      roleRef:
+         apiGroup: rbac.authorization.k8s.io
+         kind: ClusterRole
+         name: collect-application-logs
+  
+
+- name: add Log-Forwarding Rolebinding to the default ServiceAccount
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      kind: ClusterRoleBinding
+      apiVersion: rbac.authorization.k8s.io/v1
+      metadata:
+        name: collect-infra-logs
+      subjects:
+      - kind: ServiceAccount
+        name: default
+        namespace: openshift-logging
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: collect-infrastructure-logs 
+     
+- name: Configure OpenShift Log-Forwarding Service Account Permissions 
+  k8s:
+   host: "https://api.{{ cluster_address }}:6443"
+   validate_certs: no
+   state: "{{ state }}"
+   definition:
+     apiVersion: v1
+     kind: ServiceAccount
+     metadata:
+       name: cluster-logging-operator
+       namespace: openshift-logging
+  
+- name: Configure OpenShift Log-Fowarding CR
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: logging.openshift.io/v1
+      kind: ClusterLogForwarder
+      metadata:
+        name: instance 
+        namespace: openshift-logging
+      spec:
+        serviceAccountName: cluster-logging-operator 
+        outputs:
+          - name: splunk-receiver 
+            secret:
+              name: splunk
+            type: splunk 
+            url: "{{ hec_url }}"
+        pipelines: 
+          - inputRefs:
+              - application
+              - infrastructure
+            name: 
+            outputRefs:
+              - splunk-receiver
