@@ -54,12 +54,12 @@ spec:
             echo "[INFO] Success" 1>&2
           }
           echo -n "Waiting for the Quay Registry CR to be available ."
-          RC=$(oc wait QuayRegistry -n local-quay registry --for=condition=Available=true > /dev/null 2>&1;echo $?)
+          RC=$(oc wait QuayRegistry -n local-quay quay-registry --for=condition=Available=true > /dev/null 2>&1;echo $?)
           
           while [ $RC -ne 0 ]; do
             sleep 2
             echo -n "."
-            RC=$(oc wait QuayRegistry -n local-quay registry --for=condition=Available=true > /dev/null 2>&1;echo $?)
+            RC=$(oc wait QuayRegistry -n local-quay quay-registry --for=condition=Available=true > /dev/null 2>&1;echo $?)
           done
           echo "done"
           
