@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quay-registry-quay-app
+  name: registry-quay-app
   namespace: local-quay
 status:
   conditions:
@@ -11,7 +11,7 @@ status:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quay-registry-quay-database
+  name: registry-quay-database
   namespace: local-quay
 status:
   conditions:
