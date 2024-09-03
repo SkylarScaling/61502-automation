@@ -68,7 +68,7 @@ spec:
           QUAY_USER=quaydevel
           QUAY_USER_SECRET=$QUAY_USER
           QUAY_NAMESPACE=local-quay
-          QUAY_HOST=$(oc get route -n $QUAY_NAMESPACE registry-quay -o jsonpath='{.spec.host}')
+          QUAY_HOST=$(oc get route -n $QUAY_NAMESPACE quay-registry-quay -o jsonpath='{.spec.host}')
           QUAY_ORG=devel
           QUAY_ORG_EMAIL=devel@myorg.com
           QUAY_REPO=example
