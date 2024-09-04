@@ -36,4 +36,19 @@
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
-...
+
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: "{{ USER_NAMESPACE }}" ##Openshift namespace where the secret going to be created in
+        namespace: openshift-logging
+      annotations:
+         eks.amazonaws.com/role-arn: "{{ ESO_ROLE_ARN }}"  ##AWS ESO_ROLE_ARN
+---
