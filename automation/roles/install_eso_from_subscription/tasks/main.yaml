@@ -47,8 +47,7 @@
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: "{{ USER_NAMESPACE }}" ##Openshift namespace where the secret going to be created in
-        namespace: openshift-logging
+        name: "{{ SA_NAME }}"
+        namespace: "{{ USER_NAMESPACE }}"  ##Openshift namespace where the secret going to be created in
       annotations:
          eks.amazonaws.com/role-arn: "{{ ESO_ROLE_ARN }}"  ##AWS ESO_ROLE_ARN
----
