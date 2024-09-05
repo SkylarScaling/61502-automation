@@ -1,0 +1,5 @@
+---
+state: present
+app_name: trident-installer
+app_namespace: acm-install-policies
+...

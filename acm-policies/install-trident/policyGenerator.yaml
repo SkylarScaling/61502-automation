@@ -1,0 +1,30 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-trident
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - install-trident
+placementBindingDefaults:
+  name: "trident-binding"
+policies:
+  - name: create-trident-crd
+    manifests:
+      - path: config/trident-orchestrator-crd.yaml
+  - name: create-trident-bundle
+    dependencies:
+      - name: create-trident-crd
+    manifests:
+      - path: config/trident-bundle.yaml
+  - name: install-trident
+    dependencies:
+      - name: create-trident-bundle
+    manifests:
+      - path: config/trident-orchestrator.yaml
+policySets:
+  - name: install-trident
+    placement:
+      placementRulePath: placements/all-placement.yaml
