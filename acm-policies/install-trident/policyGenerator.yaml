@@ -14,16 +14,24 @@ policies:
   - name: create-trident-crd
     manifests:
       - path: config/trident-orchestrator-crd.yaml
+
   - name: create-trident-bundle
     dependencies:
       - name: create-trident-crd
     manifests:
       - path: config/trident-bundle.yaml
+
   - name: install-trident
     dependencies:
       - name: create-trident-bundle
     manifests:
       - path: config/trident-orchestrator.yaml
+
+  - name: trident-status
+    dependencies:
+      - name: install-trident
+    manifests:
+      - path: health/trident-health.yaml
 policySets:
   - name: install-trident
     placement:
