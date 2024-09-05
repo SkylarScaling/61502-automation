@@ -1,14 +1,3 @@
-#TODO This needs to be populated by the external secrets operator
-#apiVersion: v1
-#kind: Secret
-#metadata:
-#  name: tbc-ontap-nas-01-secret
-#  namespace: trident
-#type: Opaque
-#stringData:
-#  username: vsadmin
-#  password: xxxxxxxxxxxxxxx
----
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
