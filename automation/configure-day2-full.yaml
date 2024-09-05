@@ -56,6 +56,10 @@
         cluster_address: "{{ ocp_cluster_address }}"
 
   # TODO Create trident-csi as default StorageClass (FSXn)
+    - include_role:
+        name: install_trident_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
 # TODO MCO Needs Object Bucket storage available
 #    - include_role:
