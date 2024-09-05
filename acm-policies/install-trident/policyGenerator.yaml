@@ -33,6 +33,13 @@ policies:
       - name: install-trident
     manifests:
       - path: health/trident-health.yaml
+
+  - name: fsx-config
+    dependencies:
+      - name: trident-status
+    manifests:
+      - path: config/fsx-config.yaml
+
 policySets:
   - name: install-trident
     placement:
