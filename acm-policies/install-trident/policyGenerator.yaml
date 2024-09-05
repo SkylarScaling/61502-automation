@@ -28,6 +28,7 @@ policies:
       - path: config/trident-orchestrator.yaml
 
   - name: trident-status
+    remediationAction: inform
     dependencies:
       - name: install-trident
     manifests:
