@@ -30,6 +30,6 @@ policies:
 #    remediationAction: inform
   # Quay Policies - end
 policySets:
-  - name: group-sync
+  - name: groupsync
     placement:
       placementRulePath: placements/all-placement.yaml

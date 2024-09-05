@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trident-controller
+  namespace: trident
+status:
+  conditions:
+    - status: "True"
+      type: Available
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trident-operator
+  namespace: trident
+status:
+  conditions:
+    - status: "True"
+      type: Available
+---
