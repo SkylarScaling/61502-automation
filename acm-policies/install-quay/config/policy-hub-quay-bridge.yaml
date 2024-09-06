@@ -45,7 +45,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  '{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "registry-quay" ).spec.host }}': |
+  '{{ (lookup "route.openshift.io/v1" "Route" "local-quay" "quay-registry-quay" ).spec.host }}': |
     {{ ( fromSecret "openshift-ingress-operator" "router-ca" "tls.crt" ) | base64dec | autoindent }}
 kind: ConfigMap
 metadata:

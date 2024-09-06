@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quay-registry-quay-app
-  namespace: local-quay
+  name: trident-controller
+  namespace: trident
 status:
   conditions:
     - status: "True"
@@ -11,9 +11,10 @@ status:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quay-registry-quay-database
-  namespace: local-quay
+  name: trident-operator
+  namespace: trident
 status:
   conditions:
     - status: "True"
       type: Available
+---
