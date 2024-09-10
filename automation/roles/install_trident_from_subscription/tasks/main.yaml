@@ -43,21 +43,21 @@
           pod-security.kubernetes.io/enforce: privileged
         name: trident
 
-- name: Create Trident Secret
-  k8s:
-    host: "https://api.{{ cluster_address }}:443"
-    api_key: "{{ sa_token }}"
-    state: "{{ state }}"
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: tbc-ontap-nas-01-secret
-        namespace: trident
-      type: Opaque
-      stringData:
-        username: "{{ trident_username }}"
-        password: "{{ trident_password }}"
+# - name: Create Trident Secret
+#   k8s:
+#     host: "https://api.{{ cluster_address }}:443"
+#     api_key: "{{ sa_token }}"
+#     state: "{{ state }}"
+#     definition:
+#       apiVersion: v1
+#       kind: Secret
+#       metadata:
+#         name: tbc-ontap-nas-01-secret
+#         namespace: trident
+#       type: Opaque
+#       stringData:
+#         username: "{{ trident_username }}"
+#         password: "{{ trident_password }}"
 
 - name: Apply Trident Operator install module repo subscription
   k8s:

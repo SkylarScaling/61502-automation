@@ -11,7 +11,7 @@ spec:
   backendName: tbc-ontap-nas-01
   svm: zose01f0101
   credentials:
-    name: tbc-ontap-nas-01-secret
+    name: osrosa-trident
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
