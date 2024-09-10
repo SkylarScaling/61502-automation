@@ -65,4 +65,18 @@
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: trident-sa
+        namespace: trident  ##Openshift namespace where the secret going to be created in
+      annotations:
+         eks.amazonaws.com/role-arn: arn:aws:iam::973284986717:role/trident-role  ##AWS ESO_ROLE_ARN
 ...
