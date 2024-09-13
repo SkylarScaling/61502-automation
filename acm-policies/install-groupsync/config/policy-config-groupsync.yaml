@@ -1,3 +1,4 @@
+
 ---
 apiVersion: redhatcop.redhat.io/v1alpha1
 kind: GroupSync
@@ -11,7 +12,11 @@ spec:
           kind: Secret
           name: osrosa-ldapbinding
           namespace: group-sync-operator
-        insecure: true
+        caSecret:
+          kind: Secret
+          name: osrosa-3mcacerts
+          namespace: group-sync-operator  
+        insecure: false
         rfc2307:
           usersQuery:
             baseDN: 'OU=Mail-Routing,OU=Groups,OU=FAP,O=3M'
@@ -36,4 +41,4 @@ spec:
           userUIDAttribute: dn
         url: ldaps://ldap-pdint-t2.mmm.com:636/OU=Internal,OU=People,OU=FAP,O=3M?uid?sub?(&(objectClass=Person)(memberOf=CN=US-MN-Maplewood-OSE-Users,OU=Mail-Routing,OU=Groups,OU=FAP,O=3M))
       name: ldap
-  schedule: 0 * * * *
+  schedule: 0 * * *
