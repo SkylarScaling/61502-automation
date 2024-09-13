@@ -6,10 +6,10 @@ metadata:
 spec:
   version: 1
   storageDriverName: ontap-nas
-  managementLIF: 10.117.28.195
-  dataLIF: 10.117.28.195
+  managementLIF: zose01f0301.mmm.com
+  dataLIF: zose01f0301.mmm.com
   backendName: tbc-ontap-nas-01
-  svm: zose01f0101
+  svm: zose01f0301
   credentials:
     name: osrosa-trident
 ---
