@@ -1,4 +1,4 @@
----
+ ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
 metadata:
@@ -17,19 +17,34 @@ policies:
   - name: policy-install-groupsync
     manifests:
       - path: config/policy-install-groupsync.yaml
-#  - name: policy-config-groupsync
-#    dependencies:
-#      - name: policy-install-groupsync
-#    manifests:
-#      - path: config/policy-config-groupsync.yaml
+  - name: policy-config-groupsync
+    dependencies:
+      - name: policy-install-groupsync
+    manifests:
+      - path: config/policy-config-groupsync.yaml
 #  - name: policy-groupsync-status
 #    dependencies:
 #      - name: policy-install-quay
 #    manifests:
 #      - path: health/policy-groupsync-status.yaml
 #    remediationAction: inform
-  # Quay Policies - end
+  # Quay Policies - end 
+
+    # ESO Store policy - start
+  - name: external-secrets-operator-store
+    manifests:
+      - path: external-secrets-operator/store/policy-externalsecret.yaml
+      - path: external-secrets-operator/store/policy-secretstore.yaml
+  # ESO Store policy - end
+
+   # ESO 3M CA Store policy - start
+  - name: external-secrets-3mca-store
+    manifests:
+      - path: external-secrets-operator/store/policy-externalsecrets-ldapca.yaml
+      - path: external-secrets-operator/store/policy-secretstore-ldapca.yaml
+  # ESO 3M CA Store policy - end 
+
 policySets:
-  - name: groupsync
+  - name: group-sync
     placement:
       placementRulePath: placements/all-placement.yaml
