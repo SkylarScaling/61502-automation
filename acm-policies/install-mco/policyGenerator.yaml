@@ -1,3 +1,60 @@
+# ---
+# apiVersion: policy.open-cluster-management.io/v1
+# kind: PolicyGenerator
+# metadata:
+#   name: gen-policy-generator-observe
+# policyDefaults:
+#   namespace: acm-install-policies
+#   remediationAction: enforce
+#   consolidateManifests: false
+#   policySets:
+#     - acm-observability
+# placementBindingDefaults:
+#   name: "acm-observe-binding"
+
+# policies:
+#   - name: acm-observe
+#     remediationAction: enforce
+#     manifests:
+#       - path: config/namespace.yml
+#       - path: config/console.yml
+#       - path: config/pull-secret.yml
+#       - path: config/objectbucketclaim.yml
+#         extraDependencies: 
+#           - name: odf-operator-status
+#             kind: Policy
+#             compliance: "Compliant"
+#       - path: config/noobaa-cert-secret.yml
+#         extraDependencies: 
+#           - name: odf-operator-status
+#             kind: Policy
+#             compliance: "Compliant"      
+#       - path: config/thanos-secret.yml
+#         extraDependencies: 
+#           - name: acm-observe5
+#             kind: ConfigurationPolicy
+#             compliance: "Compliant"
+#       - path: config/observability.yml
+#         extraDependencies: 
+#           - name: thanos-secret
+#             kind: ConfigurationPolicy
+#             compliance: "Compliant"
+
+#   - name: acm-observe-status
+#     remediationAction: inform
+#     dependencies:
+#       - name: "acm-observe"
+#         compliance: "Compliant"
+#     manifests:
+#       - path: health/acm-observability-status.yml
+
+# policySets:
+#   - name: acm-observability
+#     placement:
+#       placementRulePath: placements/hub-placement.yaml
+# #    placement:
+# #      placementName: "ft-acm-observability--enabled"
+
 ---
 apiVersion: policy.open-cluster-management.io/v1
 kind: PolicyGenerator
@@ -13,32 +70,40 @@ placementBindingDefaults:
   name: "acm-observe-binding"
 
 policies:
+  # - name: external-secret-bucketname
+  #   manifests:
+  #     - path: config/policy-externalsecret.yaml
+  #     - path: config/policy-secretstore.yaml
+  - name: external-secret-thanos
+    manifests:
+      - path: config/policy-thanos-externalsecret.yaml
+      - path: config/policy-thanos-secretstore.yaml    
   - name: acm-observe
     remediationAction: enforce
     manifests:
       - path: config/namespace.yml
       - path: config/console.yml
       - path: config/pull-secret.yml
-      - path: config/objectbucketclaim.yml
-        extraDependencies: 
-          - name: odf-operator-status
-            kind: Policy
-            compliance: "Compliant"
-      - path: config/noobaa-cert-secret.yml
-        extraDependencies: 
-          - name: odf-operator-status
-            kind: Policy
-            compliance: "Compliant"      
+      # - path: config/objectbucketclaim.yml
+      #   extraDependencies: 
+      #     - name: odf-operator-status
+      #       kind: Policy
+      #       compliance: "Compliant"
+      # - path: config/noobaa-cert-secret.yml
+      #   extraDependencies: 
+      #     - name: odf-operator-status
+      #       kind: Policy
+      #       compliance: "Compliant"      
       - path: config/thanos-secret.yml
         extraDependencies: 
-          - name: acm-observe5
+          - name: acm-observe
             kind: ConfigurationPolicy
             compliance: "Compliant"
       - path: config/observability.yml
-        extraDependencies: 
-          - name: thanos-secret
-            kind: ConfigurationPolicy
-            compliance: "Compliant"
+        # extraDependencies: 
+        #   - name: thanos-secret
+        #     kind: ConfigurationPolicy
+        #     compliance: "Compliant"
 
   - name: acm-observe-status
     remediationAction: inform
@@ -54,4 +119,3 @@ policySets:
       placementRulePath: placements/hub-placement.yaml
 #    placement:
 #      placementName: "ft-acm-observability--enabled"
-
