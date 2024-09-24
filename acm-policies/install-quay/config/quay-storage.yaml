@@ -1,0 +1,34 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: ConfigurationPolicy
+metadata:
+  name: quay-storage
+spec:
+  remediationAction: enforce
+  severity: high
+  object-templates-raw: |
+    {{/* ##  read the bucket and endpoint access data ## */}}
+    {{- $bucketSecret := (lookup "v1" "Secret" "local-quay" "osrosa-quay-storage-secret") }}
+    {{/* ##  create the quay config file as a template ## */}}
+    {{- $quayConfig := `
+    type: s3
+    config:
+      bucket: %[1]s
+      endpoint: %[2]s
+      insecure: true
+      signature_version2: false
+    }}
+
+    {{/* ##  create the secret using the quay configuration template created above. ## */}}
+    - complianceType: mustonlyhave
+      objectDefinition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: quay-storage
+          namespace: local-quay
+        type: Opaque
+        data:
+          quay.yaml: {{ (printf $quayConfig $bucketSecret.spec.bucketName 
+                                                $bucketSecret.spec.endpoint
+                          ) | base64enc }}
