@@ -36,4 +36,18 @@
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
+        namespace: local-quay ##Openshift namespace where the secret going to be created in
+      annotations:
+         eks.amazonaws.com/role-arn: arn:aws:iam::xxxxxxxxxx:role/Managed-OpenShift-HCP-access-to-any-secret-manager-service-role  ##AWS ESO_ROLE_ARN   
 ...
