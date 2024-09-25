@@ -16,6 +16,7 @@ policies:
   # Quay Policies - start
   - name: policy-install-quay
     manifests:
+      - path: config/quay-init-secret.yaml
       - path: config/policy-install-quay.yaml
   - name: policy-config-quay
     dependencies:
