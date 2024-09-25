@@ -44,6 +44,16 @@
         name: admin_config_ldap
 
     - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id1 }}"
+        machinepool_name: quay
+        machinepool_labels: node-role.kubernetes.io/quay=
+        min_replicas: 3
+        max_replicas: 3
+        instance_type: m5a.2xlarge
+
+    - include_role:
         name: install_groupsync_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
@@ -82,10 +92,6 @@
         name: install_quay_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
-
-# TODO This should be specific to the environment, as needed
-#    - include_role:
-#        name: admin_config_machine_pool
 
 #    - include_role:
 #        name: admin_config_log_forwarder

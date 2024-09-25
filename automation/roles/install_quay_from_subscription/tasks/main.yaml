@@ -42,8 +42,6 @@
         name: local-quay
       annotations:
         openshift.io/node-selector: 'node-role.kubernetes.io/quay='
-        scheduler.alpha.kubernetes.io/defaultTolerations: >-
-          [{"effect": "NoSchedule", "key": "node-role.kubernetes.io/quay"}]
 
 - name: Apply Quay install module repo subscription
   k8s:
