@@ -14,10 +14,14 @@ placementBindingDefaults:
 
 policies:
   # Quay Policies - start
-  - name: policy-install-quay
+  - name: policy-quay-init-config
     manifests:
       - path: config/quay-init-secret.yaml
+  - name: policy-install-quay
+    manifests:
       - path: config/policy-install-quay.yaml
+    dependencies:
+      - name: policy-quay-init-config
   - name: policy-config-quay
     dependencies:
       - name: policy-install-quay
