@@ -37,7 +37,7 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
-
+#TODO Move ARN to variables
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -48,6 +48,7 @@
       kind: ServiceAccount
       metadata:
         name: splunk-logging
-        namespace: openshift-logging  ##Openshift namespace where the secret going to be created in
+        ## Openshift namespace where the secret going to be created in
+        namespace: openshift-logging
       annotations:
          eks.amazonaws.com/role-arn: arn:aws:iam::973284986717:role/eso-splunk  ##AWS ESO_ROLE_ARN

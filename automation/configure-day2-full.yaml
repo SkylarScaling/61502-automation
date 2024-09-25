@@ -53,7 +53,6 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-
     - include_role:
         name: admin_config_rbac
       vars:

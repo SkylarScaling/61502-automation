@@ -70,6 +70,17 @@
       metadata:
         name: "{{ app_namespace }}"
 
+- name: Create MCO Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: open-cluster-management-observability
+
 - name: Apply ACM Multicluster Observability install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -77,7 +88,7 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
-
+#TODO Move ARN to variables
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -87,8 +98,10 @@
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
-        namespace: open-cluster-management-observability ##Openshift namespace where the secret going to be created in
+        ## Service account name that is listed in IAM Role
+        name: externalsecret-operator-config-external-secrets
+        ## Openshift namespace where the secret going to be created in
+        namespace: open-cluster-management-observability
       annotations:
          eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role  ##AWS ESO_ROLE_ARN    
 ...
