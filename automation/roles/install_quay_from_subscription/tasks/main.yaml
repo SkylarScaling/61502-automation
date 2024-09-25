@@ -30,6 +30,17 @@
       metadata:
         name: "{{ app_namespace }}"
 
+- name: Create local-quay Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: local-quay
+
 - name: Apply Quay install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
