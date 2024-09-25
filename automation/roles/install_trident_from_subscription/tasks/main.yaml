@@ -43,22 +43,6 @@
           pod-security.kubernetes.io/enforce: privileged
         name: trident
 
-# - name: Create Trident Secret
-#   k8s:
-#     host: "https://api.{{ cluster_address }}:443"
-#     api_key: "{{ sa_token }}"
-#     state: "{{ state }}"
-#     definition:
-#       apiVersion: v1
-#       kind: Secret
-#       metadata:
-#         name: tbc-ontap-nas-01-secret
-#         namespace: trident
-#       type: Opaque
-#       stringData:
-#         username: "{{ trident_username }}"
-#         password: "{{ trident_password }}"
-
 - name: Apply Trident Operator install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -66,6 +50,7 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
+#TODO Move ARN to variables
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -75,8 +60,7 @@
       apiVersion: v1
       kind: ServiceAccount
       metadata:
-        name: trident-sa
-        namespace: trident  ##Openshift namespace where the secret going to be created in
+        name: externalsecret-operator-config-external-secrets
+        namespace: trident ##Openshift namespace where the secret going to be created in
       annotations:
-         eks.amazonaws.com/role-arn: arn:aws:iam::973284986717:role/trident-role  ##AWS ESO_ROLE_ARN
-...
+         eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/Managed-OpenShift-HCP-access-to-any-secret-manager-service-role  ##AWS ESO_ROLE_ARN

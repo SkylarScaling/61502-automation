@@ -45,7 +45,7 @@ roleRef:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cluster-logging-operator
+  name: externalsecret-operator-config-external-secrets
   namespace: openshift-logging
 
 ---
@@ -59,7 +59,7 @@ spec:
   outputs:
     - name: splunk-receiver
       secret:
-        name: splunk
+        name: osrosa-splunk
       type: splunk
       url: 'https://glat02nplb.mmm.com:9088/services/collector'
   pipelines:
@@ -68,5 +68,5 @@ spec:
         - infrastructure
       outputRefs:
         - splunk-receiver
-  serviceAccountName: cluster-logging-operator
+  serviceAccountName: externalsecret-operator-config-external-secrets
     

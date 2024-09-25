@@ -1,16 +1,4 @@
 ---
-# apiVersion: observability.open-cluster-management.io/v1beta2
-# kind: MultiClusterObservability
-# metadata:
-#   name: observability
-# spec:
-#   observabilityAddonSpec: {}
-#   storageConfig:
-#     metricObjectStorage:
-#       name: thanos-object-storage
-#       key: thanos.yaml
-#       tlsSecretName: noobaa-cert
-#       tlsSecretMountPath: /etc/minio/certs
 apiVersion: observability.open-cluster-management.io/v1beta2
 kind: MultiClusterObservability
 metadata:
@@ -20,20 +8,19 @@ spec:
   advanced:
     compact:
        serviceAccountAnnotations:
-
-           eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role
+           eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
     store:
        serviceAccountAnnotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role
+          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
     rule:
        serviceAccountAnnotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role
+          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
     receive:
        serviceAccountAnnotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role
+          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
     query:
        serviceAccountAnnotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::157344841078:role/eso-role
+          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
   enableDownsampling: true
   observabilityAddonSpec:
     enableMetrics: true
@@ -46,6 +33,5 @@ spec:
       name: thanos-object-storage
     receiveStorageSize: 100Gi
     ruleStorageSize: 1Gi
-    storageClass: gp3-csi
+    storageClass: trident-csi
     storeStorageSize: 10Gi
-

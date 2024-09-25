@@ -2,15 +2,15 @@
 apiVersion: policy.open-cluster-management.io/v1
 kind: ConfigurationPolicy
 metadata:
-  name: thanos-secret
+  name: quay-storage
 spec:
   remediationAction: enforce
   severity: high
   object-templates-raw: |
     {{/* ##  read the bucket and endpoint access data ## */}}
-    {{- $bucketSecret := (lookup "v1" "Secret" "open-cluster-management-observability" "thanos-object-storage-secret") }}
-    {{/* ##  create the thanos config file as a template ## */}}
-    {{- $thanosConfig := `
+    {{- $bucketSecret := (lookup "v1" "Secret" "local-quay" "osrosa-quay-storage-secret") }}
+    {{/* ##  create the quay config file as a template ## */}}
+    {{- $quayConfig := `
     type: s3
     config:
       bucket: %[1]s
@@ -19,16 +19,18 @@ spec:
       signature_version2: false
     }}
 
-    {{/* ##  create the secret using the thanos configuration template created above. ## */}}
+    {{/* ##  create the secret using the quay configuration template created above. ## */}}
     - complianceType: mustonlyhave
       objectDefinition:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: thanos-object-storage
-          namespace: open-cluster-management-observability
+          name: quay-storage
+          namespace: local-quay
         type: Opaque
         data:
-          thanos.yaml: {{ (printf $thanosConfig $bucketSecret.spec.bucketName 
+          quay.yaml: {{ (printf $quayConfig $bucketSecret.spec.bucketName 
                                                 $bucketSecret.spec.endpoint
                           ) | base64enc }}
+
+

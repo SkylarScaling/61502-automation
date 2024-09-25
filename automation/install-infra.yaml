@@ -18,7 +18,6 @@
     - include_role:
         name: admin_provision_hcp_cluster
 
-    # TODO Move this out of here, into install-infra playbook. This is only for connection provisioning to Day 2 config
     - name: Waiting for Cluster to Start (This will take several minutes...)
       command:
         argv:

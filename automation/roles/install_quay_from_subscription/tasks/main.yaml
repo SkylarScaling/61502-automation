@@ -37,6 +37,7 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
+#TODO Move ARN to variables
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -49,5 +50,7 @@
         name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
         namespace: local-quay ##Openshift namespace where the secret going to be created in
       annotations:
-         eks.amazonaws.com/role-arn: arn:aws:iam::602153547481:role/eso-role  ##AWS ESO_ROLE_ARN   
+         eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/Managed-OpenShift-HCP-access-to-any-secret-manager-service-role  ##AWS ESO_ROLE_ARN    
+...
+
 ...
