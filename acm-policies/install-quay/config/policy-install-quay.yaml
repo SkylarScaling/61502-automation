@@ -3,6 +3,10 @@ kind: Namespace
 metadata:
   labels:
     openshift.io/cluster-monitoring: "true"
+  annotations:
+    openshift.io/node-selector: 'node-role.kubernetes.io/quay='
+    scheduler.alpha.kubernetes.io/defaultTolerations: >-
+      [{"effect": "NoSchedule", "key": "node-role.kubernetes.io/quay"}]
   name: local-quay
 ---
 apiVersion: v1
