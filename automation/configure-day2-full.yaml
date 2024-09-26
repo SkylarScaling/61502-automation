@@ -48,7 +48,7 @@
       vars:
         subnet: "{{ subnet_id1 }}"
         machinepool_name: quay
-        machinepool_labels: node-role.kubernetes.io/quay=
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
         min_replicas: 3
         max_replicas: 3
         instance_type: m5a.2xlarge
