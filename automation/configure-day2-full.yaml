@@ -38,9 +38,6 @@
         admin_password: "{{ cluster_admin_password }}"
 
     - include_role:
-        name: aws_config_security_groups
-
-    - include_role:
         name: admin_config_ldap
 
     - include_role:
