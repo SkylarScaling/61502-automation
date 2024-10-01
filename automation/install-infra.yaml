@@ -67,7 +67,7 @@
       register: output_info
       until: (output_info.resources | json_query(query) | unique | length == 1) and (output_info.resources | json_query(query) | unique == [["True"]])
       delay: 30
-      retries: 20
+      retries: 40
       vars:
         condition: 'Ready'
         query: "[*].status.conditions[?type=='{{ condition }}'].status"
