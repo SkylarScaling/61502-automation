@@ -18,17 +18,6 @@
     - include_role:
         name: admin_provision_hcp_cluster
 
-    - name: Waiting for Cluster to Start (This will take several minutes...)
-      command:
-        argv:
-          - rosa
-          - logs
-          - install
-          - --cluster
-          - "{{ cluster_name }}"
-          - --watch
-      register: logs_install
-
     - name: Get Cluster Details
       command:
         argv:

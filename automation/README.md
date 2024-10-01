@@ -16,13 +16,8 @@ ansible-playbook install-infra.yaml -i inventory
 `install-infra` will perform the full infrastructure installation via Ansible automation. 
 
 This includes:
-* Installing Advanced Cluster Management (ACM) to OCP hub cluster
-* Installing Advanced Cluster Security (ACS) via ACM subscription to hub and managed clusters
-* Installing Local Storage Operator (LSO) via subscription to hub cluster
-* Installing Open Data Foundations (ODF) via subscription to hub cluster
-* Installing ACM Multi-cluster Observability (MCO) via subscription to hub cluster
-* Installing Quay and Container Storage Operator (CSO) via subscription to hub cluster, and Quay bridge operator to hub and managed clusters
-* Creating ACS backup cronjob on ACS Central / ACM Hub cluster
+* Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
+* Performing Day 2 Configuration
 
 Example:
 ```
