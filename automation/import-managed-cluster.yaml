@@ -1,0 +1,55 @@
+---
+- name: Import cluster as ACM Managed Cluster
+  gather_facts: false
+  hosts: localhost
+#  vars_prompt:
+#    # Prompt for hub cluster address
+#    - name: hub_cluster_address
+#      prompt: Enter ACM Hub Cluster Address
+#      private: no
+#      confirm: no
+#    # Prompt for hub cluster-admin username
+#    - name: cluster_admin_user
+#      prompt: Enter cluster-admin user
+#      private: no
+#      confirm: no
+#    # Prompt for hub cluster-admin password
+#    - name: cluster_admin_password
+#      prompt: Enter cluster-admin password
+#      private: yes
+#      confirm: no
+#    # Prompt for cluster name
+#    - name: managed_cluster_name
+#      prompt: Enter Managed Cluster Name
+#      private: no
+#      confirm: no
+#    # Prompt for base domain
+#    - name: managed_cluster_base_domain
+#      prompt: Enter Base Domain for Managed Cluster
+#      private: no
+#      confirm: no
+#    # Prompt for managed cluster admins group name
+#    - name: managed_cluster_admin_group
+#      prompt: Enter managed cluster Group Name
+#      private: no
+#      confirm: no
+  tasks:
+    - set_fact:
+        cluster_address: "{{ managed_cluster_name }}.{{ managed_cluster_base_domain }}"
+
+    - include_role:
+        name: admin_create_cluster_admin_service_account
+      vars:
+        cluster_address: "{{ managed_cluster_name }}.{{ managed_cluster_base_domain }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    - include_role:
+        name: import_managed_cluster
+      vars:
+        cluster_name: "{{ managed_cluster_name }}"
+        base_domain: "{{ managed_cluster_base_domain }}"
+        hub_address: "{{ hub_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+...
