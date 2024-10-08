@@ -1,5 +1,5 @@
 ---
-- name: Provision and Configure OCP HCP Cluster on AWS
+- name: Provision and Configure OCP HCP Services Cluster on AWS
   gather_facts: false
   hosts: localhost
   # Required Variables for this playbook
@@ -9,7 +9,7 @@
   #    cluster_name: xxxxxxx
   #    cluster_short_name: XXX
   #    kms_arn: arn:aws:kms:xxxxxxxx
-  #    vpc_cidr: 10.0.0.0/16
+  #    vpc_cidr: 10.0.0.0/24
   #    subnet_id1: subnet-xxxxxxxxxxxxx
   #    subnet_id2: subnet-xxxxxxxxxxxxx
   #    subnet_id3: subnet-xxxxxxxxxxxxx
@@ -73,6 +73,6 @@
         query: "[*].status.conditions[?type=='{{ condition }}'].status"
 
 - name: Perform Day 2 Configuration
-  ansible.builtin.import_playbook: configure-day2-full.yaml
+  ansible.builtin.import_playbook: services-cluster-day2.yaml
   vars:
     ocp_cluster_address: "{{ hcp_cluster_address[0] }}"

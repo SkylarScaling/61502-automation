@@ -1,0 +1,105 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    cluster_address: "{{ cluster_name }}.{{ base_domain }}"
+    service_account_name: "{{ cluster_admin_service_account_name }}"
+    service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
+
+- name: Set Managed Cluster token var
+  set_fact:
+    managed_cluster_token: "{{ sa_token }}"
+
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    cluster_address: "{{ hub_address }}"
+    service_account_name: "{{ acm_service_account_name }}"
+    service_account_namespace: "{{ acm_service_account_namespace }}"
+
+- name: Set ACM Hub token var
+  set_fact:
+    hub_cluster_token: "{{ sa_token }}"
+
+- name: Create namespace for managed cluster
+  kubernetes.core.k8s:
+    host: "https://api.{{ hub_address }}:6443"
+    api_key: "{{ hub_cluster_token }}"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ cluster_name }}"
+
+- name: Create ManagedCluster custom resource
+  kubernetes.core.k8s:
+    host: "https://api.{{ hub_address }}:6443"
+    api_key: "{{ hub_cluster_token }}"
+    validate_certs: no
+    state: "{{ state }}"
+    definition:
+      apiVersion: cluster.open-cluster-management.io/v1
+      kind: ManagedCluster
+      metadata:
+        name: "{{ cluster_name }}"
+        labels:
+          cloud: auto-detect
+          vendor: auto-detect
+      spec:
+        hubAcceptsClient: true
+
+- name: Create Auto Import Secret
+  kubernetes.core.k8s:
+    host: "https://api.{{ hub_address }}:6443"
+    api_key: "{{ hub_cluster_token }}"
+    validate_certs: no
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: auto-import-secret
+        namespace: "{{ cluster_name }}"
+      stringData:
+        autoImportRetry: "5"
+        token: "{{ managed_cluster_token }}"
+        server: "https://api.{{ cluster_name }}.{{ base_domain }}:6443"
+      type: Opaque
+
+- name: Create KlusterletAddonConfig custom resource
+  kubernetes.core.k8s:
+    host: "https://api.{{ hub_address }}:6443"
+    api_key: "{{ hub_cluster_token }}"
+    validate_certs: no
+    definition:
+      apiVersion: agent.open-cluster-management.io/v1
+      kind: KlusterletAddonConfig
+      metadata:
+        name: "{{ cluster_name }}"
+        namespace: "{{ cluster_name }}"
+      spec:
+        applicationManager:
+          enabled: true
+        certPolicyController:
+          enabled: true
+        iamPolicyController:
+          enabled: true
+        policyController:
+          enabled: true
+        searchCollector:
+          enabled: true
+
+- name: Wait for ManagedCluster to become available
+  kubernetes.core.k8s_info:
+    host: "https://api.{{ hub_address }}:6443"
+    api_key: "{{ hub_cluster_token }}"
+    validate_certs: no
+    kind: ManagedCluster
+    name: "{{ cluster_name }}"
+    wait: true
+    wait_condition:
+      reason: ManagedClusterAvailable
+      type: ManagedClusterConditionAvailable
+    wait_sleep: 1
+...
