@@ -1,0 +1,27 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+	{
+			"Effect": "Allow",
+			"Action": [
+			"secretsmanager:GetResourcePolicy",
+			"secretsmanager:GetSecretValue",
+			"secretsmanager:DescribeSecret",
+			"secretsmanager:ListSecretVersionIds"
+			],
+			"Resource": [
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:rhacs-secret-J4qDtH",
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:quay-sandbox-secret-oZXjeY",
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:git_pipeline_access-gaq9zd",
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:rosa-acm-observability-qij2GU",
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:osrosa*",
+			"arn:aws:secretsmanager:us-east-1:426428682527:secret:thanos-object-storage-glfNq6"
+			]
+	},
+	{
+			"Effect": "Allow",
+			"Action": "secretsmanager:ListSecrets",
+			"Resource": "*"
+	}
+	]
+}
