@@ -49,5 +49,5 @@
       metadata:
         name: externalsecret-operator-config-external-secrets
         namespace: openshift-logging ##Openshift namespace where the secret going to be created in
-      annotations:
-         eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/Managed-OpenShift-HCP-access-to-aws-secret-manager-service-role  ##AWS ESO_ROLE_ARN
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/Managed-OpenShift-HCP-access-to-aws-secret-manager-service-role  ##AWS ESO_ROLE_ARN
