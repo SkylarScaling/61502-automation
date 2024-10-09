@@ -8,9 +8,5 @@
         create_instance_profile: false
         boundary: "{{ aws_iam_permissions_boundary }}"  ##attach permissions boudary to role
 
-    # - name: Populate TrustRelationship with Cluster OIDC
-    #   template:
-    #     src: "{{ policy_path }}/template/aws_iam_trustpolicy.json.j2" 
-            
 
     
