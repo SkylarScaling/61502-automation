@@ -48,6 +48,7 @@
           - auto
           - --yes
       register: oidc_provider
+      
 
     - name: Parse Returned OIDC Provider
       set_fact:
@@ -55,8 +56,17 @@
 
     - name: Get OIDC ID
       set_fact:
-        oidc_id: "{{ oidc[:-1] }}"
-
+        oidc_id: "{{ oidc[:-1] }}" 
+        cacheable: true
+    - debug:
+        msg:
+          - "{{ oidc }}"
+          - "{{ oidc_id }}"    
+        
+    - name: Include IAM Role Creation     
+      ansible.builtin.include_role:
+        name: admin_config_iam_role 
+        
     - name: Check if ROSA Operator Roles Exist
       command:
         argv:

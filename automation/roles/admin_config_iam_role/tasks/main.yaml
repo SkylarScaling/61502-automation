@@ -1,17 +1,16 @@
 ---
-- name: Create IAM Role with Trust Policy and Attached Policy
-
-  hosts: localhost
-  gather_facts: no
-  become: no
-  tasks:
     - name: Create IAM Role
       amazon.aws.iam_role:
         name: "{{ aws_iam_role_name }}"
-        assume_role_policy_document: "{{ lookup('file', aws_iam_trust_policy_path) }}"
+        assume_role_policy_document: "{{ lookup('template', 'aws_iam_trustpolicy.json.j2') }}"
         managed_policies:
           - "{{ aws_iam_policy_arn }}"  ##attach policy to role
         create_instance_profile: false
         boundary: "{{ aws_iam_permissions_boundary }}"  ##attach permissions boudary to role
+
+    # - name: Populate TrustRelationship with Cluster OIDC
+    #   template:
+    #     src: "{{ policy_path }}/template/aws_iam_trustpolicy.json.j2" 
+            
 
     
