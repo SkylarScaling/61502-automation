@@ -61,5 +61,5 @@
         name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
         namespace: group-sync-operator ##Openshift namespace where the secret going to be created in
         annotations:
-          eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/Managed-OpenShift-HCP-access-to-any-secret-manager-service-role  ##AWS ESO_ROLE_ARN
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN
 ...
