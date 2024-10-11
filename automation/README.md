@@ -12,17 +12,35 @@ Example:
 ansible-playbook install-infra.yaml -i inventory
 ```
 
-## Install Infra
-`install-infra` will perform the full infrastructure installation via Ansible automation. 
+## Create Services Cluster
+`create-services-cluster.yaml` will perform the full infrastructure installation via Ansible automation. 
 
 This includes:
 * Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
 * Performing Day 2 Configuration
 
+### Prerequisites
+**TODO** Put in pre-reqs here
+
+### Running the Playbook
 Example:
 ```
-ansible-playbook install-infra.yaml
+ansible-playbook create-services-cluster.yaml -i <inventory file>
 ```
 
-## Additional Playbooks
-The additional playbooks in this directory can perform the individual actions that are included in the `install-infra` playbook, and are primarily included for testing purposes.
+## Create Shared Cluster
+`create-shared-cluster.yaml` will perform the full infrastructure installation via Ansible automation.
+
+This includes:
+* Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
+* Performing Day 2 Configuration
+
+### Prerequisites
+**TODO** Put in pre-reqs here
+
+### Running the Playbook
+Example:
+```
+ansible-playbook create-shared-cluster.yaml -i <inventory file>
+```
+
