@@ -1,0 +1,25 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-gp3-csi
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - gp3-csi
+placementBindingDefaults:
+  name: "gp3-csi"
+
+policies:
+  #  Policies - start
+  - name: update-gp3-csi-storageclass
+    manifests:
+      - path: config/policy-update-gpt3-csi-storageclass.yaml
+  # Policies - end
+
+policySets:
+  - name: cluster-logging
+    placement:
+      placementRulePath: placements/all-placement.yaml
