@@ -16,7 +16,7 @@ policies:
   #  Policies - start
   - name: update-gp3-csi-storageclass
     manifests:
-      - path: config/policy-update-gpt3-csi-storageclass.yaml
+      - path: config/policy-update-gp3-csi-storageclass.yaml
   # Policies - end
 
 policySets:
