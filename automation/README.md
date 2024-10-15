@@ -53,7 +53,7 @@ This includes:
 2- Authenticate using rosa cli command by getting your rosa token from https://console.redhat.com/openshift/token/rosa 
 Once logged in via rosa token with `rosa login --token=xxxxxxxx` verify you are authentication by running: `rosa whoami` this command will print out details about the AWS account, make sure the AWS account id matches the account id in the inventory file that is located in your home directory.
 
-3- Inventory file, this file will live in your user home directory on the bastion host where the rosa-automation is cloned. the inventory file will contain values for different variables, review the inventory file before running the playbook.au    
+3- Inventory file, this file will live in your user home directory on the bastion host where the rosa-automation is cloned. the inventory file will contain values for different variables, review the inventory file before running the playbook.    
 
 4- Executing the ansible playbook, to execute the playbook make sure to navigate to rosa-automation directory in your user home directory first then execute the playbook:
 
