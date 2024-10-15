@@ -39,26 +39,36 @@ Once logged in via rosa token with `rosa login --token=xxxxxxxx` verify you are 
 
 4- Executing the ansible playbook, to execute the playbook make sure to navigate to rosa-automation directory in your user home directory first then execute the playbook:
 
-`# cd rosa-automation`
+```
+cd rosa-automation
+```
 
 Generate secret.yaml in your user home directory for `osrosa-acm-git-secret` secret in `acm-install-policies` namespace, this secret is used to authenticate ROSA HCP cluster to github rosa-automation repo to deploy the ACM policies.
 
 Generate secret.yaml via ansible-vault
 
-`# ansible-vault create secret.yaml` add a password for the vault file, then paste the content `username` & `github token`
+```
+ ansible-vault create secret.yaml
+``` 
+add a password for the vault file, then paste the content `username` & `github token`
 
 To view the content of the secret.yaml file use: 
 
-`# ansible-vault view secret.yaml` enter the password.
+``` 
+ansible-vault view secret.yaml
+``` 
+enter the password.
 
 Execute the ansible playbook:
 
-`# ansible-playbook /home/username/rosa-automation/automation/create-services-cluster.yaml -i /home/username/path-to-inventory-file --vault-id @prompt` 
+```
+ansible-playbook /home/username/rosa-automation/automation/create-services-cluster.yaml -i /home/username/path-to-inventory-file --vault-id @prompt
+```
 
 The above command will perform the full infrastructure installation via Ansible automation.
 
 
-Note: The above command will execute the playbook with the following option `--vault-id @prompt` which is used inject the github token credentials for the secret `osrosa-acm-git-secret` secret in `acm-install-policies` namespace.
+**Note:** The above command will execute the playbook with the following option `--vault-id @prompt` which is used inject the github token credentials for the secret `osrosa-acm-git-secret` secret in `acm-install-policies` namespace.
 
 
 This includes:
