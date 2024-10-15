@@ -173,4 +173,4 @@
           - "{{ cluster_name }}"
           - --watch
       register: logs_install
-i  when: cluster_list.stdout_lines is not search(cluster_name)
+  when: cluster_list.stdout_lines is not search(cluster_name)
