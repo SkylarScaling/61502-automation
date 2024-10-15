@@ -39,6 +39,13 @@ policies:
       - name: trident-status
     manifests:
       - path: config/fsx-config.yaml
+
+  - name: update-default-storage-class
+    dependencies:
+      - name: fsx-config
+    manifests:
+      - path: config/update-default-storage-class.yaml
+
   # ESO Store policy - start
   - name: external-secrets-operator-store
     manifests:
