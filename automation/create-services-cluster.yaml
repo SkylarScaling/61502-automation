@@ -1,133 +1,78 @@
 ---
-- name: Apply Day 2 Configuration to OCP HCP Cluster
+- name: Provision and Configure OCP HCP Cluster on AWS
   gather_facts: false
   hosts: localhost
-  #  vars:
-  # Required Variables for this Playbook
-  #    type: "LDAP"
-  #    name: "LDAP3M"
-  #    cluster_name: hcp-3m
-  #    url: "ldaps://xxxxxxxxxxxx"
-  #    bind_password: "xxxxxxxxx"
-  #    bind_dn: "xxxxxxxxxx"
-  #    id_attributes: "dn"
-  #    name_attributes: "cn"
-  #    email_attributes: "mail"
-  #    username_attributes: "uid"
-  #    region: "us-east-1"
-  #    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
-  #    VpcId: "xxxxxxx"
-  #    VpcEndpointId: "xxxxxxxxxx"
+  # Required Variables for this playbook
+  #    aws_account_id: xxxxxxxxx
+  #    account_roles_prefix: Managed-OpenShift
+  #    operator_roles_prefix: Managed-OpenShift-HCP
+  #    cluster_name: xxxxxxx
+  #    cluster_short_name: XXX
+  #    kms_arn: arn:aws:kms:xxxxxxxx
+  #    vpc_cidr: 10.0.0.0/24
+  #    subnet_id1: subnet-xxxxxxxxxxxxx
+  #    subnet_id2: subnet-xxxxxxxxxxxxx
+  #    subnet_id3: subnet-xxxxxxxxxxxxx
+  #    compute_machine_type: m5a.2xlarge
   tasks:
-    # Ensure we're not still logged in under another account
     - include_role:
-        name: admin_oc_logout
+        name: admin_provision_hcp_cluster
+
+    - name: Get Cluster Details
+      command:
+        argv:
+          - rosa
+          - describe
+          - cluster
+          - --cluster
+          - "{{ cluster_name }}"
+      register: cluster_details
+
+    - set_fact:
+        lines: "{{ cluster_details.stdout_lines }}"
+
+    - set_fact:
+        hcp_cluster_address: "{{ item | regex_search('(DNS:\\s*)(\\S*)', '\\2') }}"
+      loop: "{{ lines }}"
+      when: "item.startswith('DNS:')"
+
+    - debug:
+        msg: "{{ hcp_cluster_address[0] }}"
 
     - include_role:
-        name: install_acm
+        name: aws_config_security_groups
+
+    - name: Wait for cluster to start processing auth requests
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ hcp_cluster_address[0] }}:443"
+      retries: 20
+      delay: 30
+      register: result
+      until: result.rc == 0
+
+    - name: Wait for Nodes to be Created
+      k8s_info:
+        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        api_version: v1
+        kind: Node
+      register: output_info
+      until: (output_info.resources is defined) and (output_info.resources | length) >= 3
+      delay: 30
+      retries: 20
+
+    - name: Wait for Nodes to become Ready
+      k8s_info:
+        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        api_version: v1
+        kind: Node
+      register: output_info
+      until: (output_info.resources | json_query(query) | unique | length == 1) and (output_info.resources | json_query(query) | unique == [["True"]])
+      delay: 30
+      retries: 40
       vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}" 
+        condition: 'Ready'
+        query: "[*].status.conditions[?type=='{{ condition }}'].status"
 
-    - include_role:
-        name: admin_create_acm_service_account
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"    
-
-    - include_role:
-        name: admin_create_acm_service_account
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
-              
-
-    - include_role:
-        name: admin_config_ldap
-
-    - include_role:
-        name: admin_config_machine_pool
-      vars:
-        subnet: "{{ subnet_id1 }}"
-        machinepool_name: quay-1
-        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
-        machinepool_taints: ''
-        min_replicas: 1
-        max_replicas: 1
-        instance_type: m5a.2xlarge
-
-    - include_role:
-        name: admin_config_machine_pool
-      vars:
-        subnet: "{{ subnet_id2 }}"
-        machinepool_name: quay-2
-        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
-        machinepool_taints: ''
-        min_replicas: 1
-        max_replicas: 1
-        instance_type: m5a.2xlarge
-
-    - include_role:
-        name: admin_config_machine_pool
-      vars:
-        subnet: "{{ subnet_id3 }}"
-        machinepool_name: quay-3
-        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
-        machinepool_taints: ''
-        min_replicas: 1
-        max_replicas: 1
-        instance_type: m5a.2xlarge
-
-    - include_role:
-        name: admin_config_acm_github_authentication
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"    
-
-    - include_role:
-        name: install_groupsync_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_eso_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: admin_config_rbac
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_trident_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_mco_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_logging_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_acs_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-    - include_role:
-        name: install_quay_from_subscription
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-
-
-    - include_role:
-        name: admin_oc_logout
+- name: Perform Day 2 Configuration
+  ansible.builtin.import_playbook: services-cluster-day2.yaml
+  vars:
+    ocp_cluster_address: "{{ hcp_cluster_address[0] }}"
