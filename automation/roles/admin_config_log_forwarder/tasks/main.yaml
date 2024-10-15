@@ -85,19 +85,7 @@
         roleRef:
           apiGroup: rbac.authorization.k8s.io
           kind: ClusterRole
-          name: collect-infrastructure-logs 
-     
-#- name: Configure OpenShift Log-Forwarding Service Account Permissions 
-#  k8s:
-#    host: "https://api.{{ cluster_address }}:6443"
-#    validate_certs: no
-#    state: "{{ state }}"
-#    definition:
-#      apiVersion: v1
-#      kind: ServiceAccount
-#      metadata:
-#        name: cluster-logging-operator
-#        namespace: openshift-logging
+          name: collect-infrastructure-logs
   
 - name: Configure OpenShift Log-Fowarding CR
   k8s:

@@ -1,5 +1,5 @@
 ---
-- name: Provision and Configure OCP HCP Cluster on AWS
+- name: Provision and Configure OCP HCP Services Cluster on AWS
   gather_facts: false
   hosts: localhost
   # Required Variables for this playbook

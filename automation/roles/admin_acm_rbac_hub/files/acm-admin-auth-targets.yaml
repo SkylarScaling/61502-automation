@@ -1,3 +1,0 @@
-auth_target_list:
-  - auth_target: ACM_ADMINS
-    auth_type: Group

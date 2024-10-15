@@ -1,5 +1,5 @@
 ---
-- name: Provision and Configure OCP HCP Cluster on AWS
+- name: Provision and Configure OCP HCP Shared Cluster on AWS
   gather_facts: false
   hosts: localhost
   # Required Variables for this playbook
@@ -9,11 +9,12 @@
   #    cluster_name: xxxxxxx
   #    cluster_short_name: XXX
   #    kms_arn: arn:aws:kms:xxxxxxxx
-  #    vpc_cidr: 10.0.0.0/16
+  #    vpc_cidr: 10.0.0.0/24
   #    subnet_id1: subnet-xxxxxxxxxxxxx
   #    subnet_id2: subnet-xxxxxxxxxxxxx
   #    subnet_id3: subnet-xxxxxxxxxxxxx
-  #    compute_machine_type: m5.xlarge
+  #    compute_machine_type: m5a.xlarge
+  #    hub_cluster_address: hub-cluster.xXxX.p3.openshiftapps.com
   tasks:
     - include_role:
         name: admin_provision_hcp_cluster
@@ -57,7 +58,7 @@
       register: output_info
       until: (output_info.resources is defined) and (output_info.resources | length) >= 3
       delay: 30
-      retries: 40
+      retries: 20
 
     - name: Wait for Nodes to become Ready
       k8s_info:
@@ -73,6 +74,6 @@
         query: "[*].status.conditions[?type=='{{ condition }}'].status"
 
 - name: Perform Day 2 Configuration
-  ansible.builtin.import_playbook: configure-day2-full.yaml
+  ansible.builtin.import_playbook: shared-cluster-day2.yaml
   vars:
     ocp_cluster_address: "{{ hcp_cluster_address[0] }}"
