@@ -30,6 +30,24 @@ ansible-playbook create-services-cluster.yaml -i <inventory file>
 
 ## Create Shared Cluster
 
+Execute the ansible playbook:
+
+```
+ansible-playbook /home/username/rosa-automation/automation/create-services-cluster.yaml -i /home/username/path-to-inventory-file --vault-id @prompt
+```
+
+The above command will perform the full infrastructure installation via Ansible automation.
+
+
+**Note:** The above command will execute the playbook with the following option `--vault-id @prompt` which is used inject the github token credentials for the secret `osrosa-acm-git-secret` secret in `acm-install-policies` namespace.
+
+
+This includes:
+* Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
+* Performing Day 2 Configuration
+
+### Prerequisites
+
 1- Authenticate to AWS Cloud from the cli and verify the aws region depending on where the cluster will be provisioned.
 
 2- Authenticate using rosa cli command by getting your rosa token from https://console.redhat.com/openshift/token/rosa 
@@ -58,25 +76,6 @@ To view the content of the secret.yaml file use:
 ansible-vault view secret.yaml
 ``` 
 enter the password.
-
-Execute the ansible playbook:
-
-```
-ansible-playbook /home/username/rosa-automation/automation/create-services-cluster.yaml -i /home/username/path-to-inventory-file --vault-id @prompt
-```
-
-The above command will perform the full infrastructure installation via Ansible automation.
-
-
-**Note:** The above command will execute the playbook with the following option `--vault-id @prompt` which is used inject the github token credentials for the secret `osrosa-acm-git-secret` secret in `acm-install-policies` namespace.
-
-
-This includes:
-* Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
-* Performing Day 2 Configuration
-
-### Prerequisites
-**TODO** Put in pre-reqs here
 
 ### Running the Playbook
 Example:
