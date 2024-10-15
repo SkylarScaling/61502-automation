@@ -14,6 +14,7 @@
   #    subnet_id2: subnet-xxxxxxxxxxxxx
   #    subnet_id3: subnet-xxxxxxxxxxxxx
   #    compute_machine_type: m5a.xlarge
+  #    hub_cluster_address: hub-cluster.xXxX.p3.openshiftapps.com
   tasks:
     - include_role:
         name: admin_provision_hcp_cluster

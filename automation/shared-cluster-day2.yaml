@@ -39,4 +39,15 @@
         cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
+        name: import_managed_cluster
+      vars:
+        managed_cluster_address: "{{ ocp_cluster_address }}"
+        managed_cluster_name: "{{ cluster_name }}"
+        hub_address: "{{ hub_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    # TODO Cleanup Automation Admin Accounts
+
+    - include_role:
         name: admin_oc_logout

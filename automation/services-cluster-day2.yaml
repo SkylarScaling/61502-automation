@@ -122,5 +122,7 @@
         admin_user: "{{ cluster_admin_user }}"
         admin_password: "{{ cluster_admin_password }}"
 
+    # TODO Cleanup Automation Admin Accounts
+
     - include_role:
         name: admin_oc_logout
