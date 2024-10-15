@@ -1,0 +1,26 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: update-default-storage-class
+  namespace: trident
+spec:
+  template:
+    spec:
+      containers:
+        - command:
+            - /bin/bash
+            - -c
+            - |
+              #!/usr/bin/env bash
+                oc patch storageclass gp3-csi -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "false"}}}'
+                oc patch storageclass trident-csi -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+                echo "Updated default StorageClass from gp3-csi to trident-csi"
+          image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+          imagePullPolicy: Always
+          name: update-default-storage-class
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      serviceAccount: trident-operator
+      serviceAccountName: trident-operator
+      terminationGracePeriodSeconds: 30
