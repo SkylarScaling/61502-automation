@@ -1,0 +1,43 @@
+---
+- include_role:
+    name: admin_oc_login
+
+- name: Create GitOps Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openshift-gitops-operator
+
+- name: Create GitOps Operator Group
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: openshift-gitops-operator
+        namespace: openshift-gitops-operator
+      spec:
+        upgradeStrategy: Default
+
+- name: Create GitOps Operator Subscription
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: openshift-gitops-operator
+        namespace: openshift-gitops-operator
+      spec:
+        channel: gitops-1.14
+        installPlanApproval: Automatic
+        name: openshift-gitops-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
