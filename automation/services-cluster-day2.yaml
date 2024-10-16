@@ -74,6 +74,13 @@
         instance_type: m5a.2xlarge
 
     - include_role:
+        name: admin_config_acm_github_authentication
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"       
+
+    - include_role:
         name: install_groupsync_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
