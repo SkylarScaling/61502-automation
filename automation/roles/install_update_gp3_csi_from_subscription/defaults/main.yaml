@@ -1,5 +1,0 @@
----
-state: present
-app_name: gp3-csi
-app_namespace: acm-install-policies
-...
