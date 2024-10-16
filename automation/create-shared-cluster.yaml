@@ -18,6 +18,8 @@
   tasks:
     - include_role:
         name: admin_provision_hcp_cluster
+      vars:
+        worker_labels: node-role.kubernetes.io/infra=
 
     - name: Get Cluster Details
       command:

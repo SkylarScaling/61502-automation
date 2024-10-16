@@ -2,11 +2,15 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: stackrox
+  annotations:
+    openshift.io/node-selector: 'node-role.kubernetes.io/infra'
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: rhacs-operator
+  annotations:
+    openshift.io/node-selector: 'node-role.kubernetes.io/infra'
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup

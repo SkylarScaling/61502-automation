@@ -34,7 +34,55 @@
         name: admin_config_ldap
 
     - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id1 }}"
+        machinepool_name: workloads-1
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id2 }}"
+        machinepool_name: workloads-2
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id3 }}"
+        machinepool_name: workloads-3
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
         name: admin_config_rbac
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_openshift_pipelines
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_openshift_gitops
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_developer_hub
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
