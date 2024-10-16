@@ -153,8 +153,6 @@
           - "--subnet-ids={{ subnet_id1 }},{{ subnet_id2 }},{{ subnet_id3 }}"
           - --compute-machine-type
           - "{{ compute_machine_type }}"
-          - --worker-mp-labels
-          - "{{ worker_labels }}"
       register: cluster_create
 
     - name: Cluster Creation Command Used
