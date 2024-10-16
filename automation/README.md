@@ -15,21 +15,6 @@ ansible-playbook install-infra.yaml -i inventory
 ## Create Services Cluster
 `create-services-cluster.yaml` will perform the full infrastructure installation via Ansible automation. 
 
-This includes:
-* Provisioning an OpenShift Hosted Control Planes (HCP) cluster on AWS
-* Performing Day 2 Configuration
-
-### Prerequisites
-**TODO** Put in pre-reqs here
-
-### Running the Playbook
-Example:
-```
-ansible-playbook create-services-cluster.yaml -i <inventory file>
-```
-
-## Create Shared Cluster
-
 Execute the ansible playbook:
 
 ```
@@ -84,6 +69,18 @@ To view the content of the secret.yaml file use:
 ansible-vault view secret.yaml
 ``` 
 enter the password.
+
+### Running the Playbook
+Example:
+```
+ansible-playbook create-services-cluster.yaml -i <inventory file>
+```
+
+## Create Shared Cluster
+
+
+### Prerequisites
+
 
 ### Running the Playbook
 Example:
