@@ -99,7 +99,7 @@
 
     - include_role:
         name: install_developer_hub
-      vars:u
+      vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
