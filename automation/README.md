@@ -44,9 +44,16 @@ A- Verify the AWS Account ID is correct
 
 B- Verify the AWS Region where the cluster is going to be deployed in
 
-C- Update the value of `aws_iam_role_name` variable for creating a new role name to manage ESO secrets, example of role name: `Managed-OpenShift-HCP-access-to-ClusterName-s3-service-role`.
+C- Update the value of `aws_iam_role_name` variable for creating a new role name to manage ESO secrets, example of role name: 
 
-D- Update the value of `aws_s3_role_name` variable for creating a new role name to manage the observability service, example of role name: `ManagedOpenShift-HCP-access-to-ClusterName-eso-service-role`.
+`ManagedOpenShift-HCP-access-to-ClusterName-eso-service-role`
+
+
+D- Update the value of `aws_s3_role_name` variable for creating a new role name to manage the observability service, example of role name: 
+
+`Managed-OpenShift-HCP-access-to-ClusterName-s3-service-role`
+
+Note: When provisioning a new cluster, the following file must be updated `acm-policies/install-mco/config/observability.yml` to include the value of `aws_s3_role_name`  
 
 4- Executing the ansible playbook, to execute the playbook make sure to navigate to rosa-automation directory in your user home directory first then execute the playbook:
 
