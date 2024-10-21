@@ -50,7 +50,23 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
-#TODO Move ARN to variables
+- name: Configure Secret trident backend
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    definition:   
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: trident-backend
+        namespace: trident
+      stringData:
+        storageDriverName: "{{ storageDriverName }}"
+        managementLIF: "{{ managementLIF }}"
+        dataLIF: "{{ dataLIF }}"
+        backendName: "{{ backendName }}"
+        svm: "{{ svm }}"
+      type: Opaque
+      
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
