@@ -40,8 +40,8 @@
       kind: Namespace
       metadata:
         name: local-quay
-      annotations:
-        openshift.io/node-selector: 'node-role.kubernetes.io/quay='
+        annotations:
+          openshift.io/node-selector: 'node-role.kubernetes.io/quay='
 
 - name: Apply Quay install module repo subscription
   k8s:
