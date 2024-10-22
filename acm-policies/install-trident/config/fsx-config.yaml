@@ -4,12 +4,11 @@ metadata:
   name: tbc-ontap-nas-01
   namespace: trident
 spec:
-  version: 1
   storageDriverName: ontap-nas
-  managementLIF: zose01f0301.mmm.com
-  dataLIF: zose01f0301.mmm.com
   backendName: tbc-ontap-nas-01
-  svm: zose01f0301
+  managementLIF: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "management-lif" hub}}'
+  dataLIF: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "data-lif" hub}}'
+  svm: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "svm" hub}}'
   credentials:
     name: osrosa-trident
 ---

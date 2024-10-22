@@ -16,8 +16,11 @@
 
 - name: Populate Templates
   template:
-    src: "{{ role_path }}/templates/subscription.yaml.j2"
-    dest: "{{ working_dir }}/subscription.yaml"
+    src: "{{ role_path }}/templates/{{ item }}.yaml.j2"
+    dest: "{{ working_dir }}/{{ item }}.yaml"
+  loop:
+    - subscription
+    - trident-fsx-config
 
 - name: Create App Namespace
   k8s:
@@ -43,14 +46,19 @@
           pod-security.kubernetes.io/enforce: privileged
         name: trident
 
+- name: Apply Trident FSx Config Secret
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    src: "{{ working_dir }}/trident-fsx-config.yaml"
+    state: "{{ state }}"
+
 - name: Apply Trident Operator install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
-
-
 
 - name: create service account
   k8s:
