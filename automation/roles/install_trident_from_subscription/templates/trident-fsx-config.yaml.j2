@@ -5,6 +5,6 @@ metadata:
   name: trident-fsx-config
   namespace: "{{ app_namespace }}"
 data:
-  management-lif: "{{ fsx_management_lif | base64enc }}"
-  data-lif: "{{ fsx_data_lif | base64enc }}"
-  svm: "{{ fsx_svm | base64enc }}"
+  management-lif: "{{ fsx_management_lif | b64encode }}"
+  data-lif: "{{ fsx_data_lif | b64encode }}"
+  svm: "{{ fsx_svm | b64encode }}"
