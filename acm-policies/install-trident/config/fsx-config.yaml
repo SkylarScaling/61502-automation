@@ -7,9 +7,9 @@ spec:
   version: 1
   storageDriverName: ontap-nas
   backendName: tbc-ontap-nas-01
-  managementLIF: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "management-lif" hub}}'
-  dataLIF: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "data-lif" hub}}'
-  svm: '{{hub fromSecret "acm-install-policies" "trident-fsx-config" "svm" hub}}'
+  managementLIF: '{{ print "{{hub fromSecret "acm-install-policies" "trident-fsx-config" "management-lif" hub}}" | base64dec }}'
+  dataLIF: '{{ print "{{hub fromSecret "acm-install-policies" "trident-fsx-config" "data-lif" hub}}" | base64dec }}'
+  svm: '{{ print "{{hub fromSecret "acm-install-policies" "trident-fsx-config" "svm" hub}}" | base64dec }}'
   credentials:
     name: osrosa-trident
 ---
