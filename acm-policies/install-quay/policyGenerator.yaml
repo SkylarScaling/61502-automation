@@ -32,14 +32,11 @@ policies:
       - name: policy-install-quay
     manifests:
       - path: config/policy-quay-status.yaml
-    remediationAction: inform
-  - name: external-secret-quay
+    remediationAction: inform   
+  - name: quay-config-external
     manifests:
-      - path: config/policy-quay-externalsecret.yaml
-      - path: config/policy-quay-secretstore.yaml    
-  # - name: quay QuayEcosystem
-  #   manifests:
-  #     - path: config/policy-quayecosystem.yaml  
+      - path: config/policy-quay-configexternal.yaml
+      - path: config/policy-quay-configstore.yaml     
   # Quay Bridge is configured with a temporary token that will expire quickly after
   # deployment.  After quay is running, see the instructions:
   # https://hybrid-cloud-patterns.io/devsecops/getting-started/#completing-the-quay-bridge-with-a-bearer-token
