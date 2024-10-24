@@ -35,5 +35,6 @@
         - "{{email_attributes}}"
         - --username-attributes
         - "{{username_attributes}}"
+        - "--insecure={{insecure}}" 
     register: idp_provider
     when: name not in idp_list.stdout
