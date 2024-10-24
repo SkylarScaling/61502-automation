@@ -16,8 +16,11 @@
 
 - name: Populate Templates
   template:
-    src: "{{ role_path }}/templates/subscription.yaml.j2"
-    dest: "{{ working_dir }}/subscription.yaml"
+    src: "{{ role_path }}/templates/{{ item }}.yaml.j2"
+    dest: "{{ working_dir }}/{{ item }}.yaml"
+  loop:
+    - subscription
+    - quay-s3-secret
 
 - name: Create App Namespace
   k8s:
@@ -43,6 +46,13 @@
         annotations:
           openshift.io/node-selector: 'node-role.kubernetes.io/quay='
 
+- name: Apply Quay S3 Bucket Secret
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    src: "{{ working_dir }}/quay-s3-secret.yaml"
+    state: "{{ state }}"
+
 - name: Apply Quay install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
@@ -50,7 +60,6 @@
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
-#TODO Move ARN to variables
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
