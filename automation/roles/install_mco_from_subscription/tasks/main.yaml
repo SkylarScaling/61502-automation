@@ -20,7 +20,7 @@
     dest: "{{ working_dir }}/{{ item }}.yaml"
   loop:
     - subscription
-    - Observability-iam-config  
+    - observability-iam-config  
     # src: "{{ role_path }}/templates/subscription.yaml.j2"
     # dest: "{{ working_dir }}/subscription.yaml"
 
