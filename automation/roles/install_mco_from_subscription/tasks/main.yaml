@@ -16,8 +16,13 @@
 
 - name: Populate Templates
   template:
-    src: "{{ role_path }}/templates/subscription.yaml.j2"
-    dest: "{{ working_dir }}/subscription.yaml"
+    src: "{{ role_path }}/templates/{{ item }}.yaml.j2"
+    dest: "{{ working_dir }}/{{ item }}.yaml"
+  loop:
+    - subscription
+    - Observability-iam-config  
+    # src: "{{ role_path }}/templates/subscription.yaml.j2"
+    # dest: "{{ working_dir }}/subscription.yaml"
 
 - name: Create App Namespace
   k8s:
