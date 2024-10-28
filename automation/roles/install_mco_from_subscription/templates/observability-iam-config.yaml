@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: observability-iam-config
+  namespace: "{{ app_namespace }}"
+data:
+  eks.amazonaws.com/role-arn: "{{ aws_account_id:role/aws_s3_role_name | b64encode }}"
