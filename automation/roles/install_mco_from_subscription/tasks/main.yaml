@@ -35,6 +35,13 @@
       metadata:
         name: "{{ app_namespace }}"
 
+- name: Apply Observability IAM Config Secret
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    src: "{{ working_dir }}/observability-iam-config.yaml"
+    state: "{{ state }}"
+
 - name: Create MCO Namespace
   k8s:
     host: "https://api.{{ cluster_address }}:443"
