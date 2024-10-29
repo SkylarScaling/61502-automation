@@ -18,7 +18,7 @@ spec:
           advanced:
             compact:
               serviceAccountAnnotations:
-                eks.amazonaws.com/role-arn: arn:aws:iam::{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub | base64dec}}
+                eks.amazonaws.com/role-arn: arn:aws:iam::{{ print {{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}} | base64dec }}
             store:
               serviceAccountAnnotations:
                 eks.amazonaws.com/role-arn: temp #arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
