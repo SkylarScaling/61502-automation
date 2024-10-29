@@ -1,8 +1,10 @@
 ---
-apiVersion: v1
 kind: Secret
+apiVersion: v1
 metadata:
   name: observability-iam-config
-  namespace: "{{ app_namespace }}"
+  namespace: acm-install-policies
 data:
-  eks.amazonaws.com/role-arn: "{{ aws_account_id:role/aws_s3_role_name | b64encode }}"
+  aws_account_id: "{{ aws_account_id }}"
+  aws_s3_role_name: "{{ aws_s3_role_name }}"
+type: Opaque
