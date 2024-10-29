@@ -7,6 +7,8 @@ spec:
   remediationAction: enforce
   severity: high
   object-templates-raw: |
+    {{/* ##  read the observability secret data ## */}}
+    {{- $observabilitySecret := (lookup "v1" "Secret" "acm-install-policies" "observability-iam-config") }}
     - complianceType: musthave
       objectDefinition:
         apiVersion: observability.open-cluster-management.io/v1beta2
@@ -18,7 +20,7 @@ spec:
           advanced:
             compact:
               serviceAccountAnnotations:
-                eks.amazonaws.com/role-arn: arn:aws:iam::{{print {{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}} | base64dec}}
+                eks.amazonaws.com/role-arn: arn:aws:iam::$observabilitySecret.spec.aws_account_id
             store:
               serviceAccountAnnotations:
                 eks.amazonaws.com/role-arn: temp #arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
