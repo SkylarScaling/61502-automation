@@ -4,6 +4,6 @@ metadata:
   name: observability-iam-config
   namespace: "{{ app_namespace }}"
 data:
-  aws_account_id: "{{ aws_account_id }}"
-  aws_s3_role_name: "{{ aws_s3_role_name }}"
+  aws_account_id: "{{ aws_account_id | b64encode }}"
+  aws_s3_role_name: "{{ aws_s3_role_name | b64encode }}"
 type: Opaque
