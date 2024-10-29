@@ -3,6 +3,6 @@ metadata:
   name: observability-iam-config
   namespace: acm-install-policies
 data:
-  aws_account_id: ODA3NTE3MjU2NTUz
-  aws_s3_role_name: TWFuYWdlZC1PcGVuU2hpZnQtSENQLWFjY2Vzcy10by1zMy1zZXJ2aWNlLXJvbGU=
+  aws_account_id: "{{ aws_account_id | b64encode }}"
+  aws_s3_role_name: "{{ aws_s3_role_name | b64encode }}"
 type: Opaque
