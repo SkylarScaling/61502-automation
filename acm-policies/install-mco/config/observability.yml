@@ -5,54 +5,22 @@ metadata:
   name: observability
   namespace: open-cluster-management-observability
 spec:
-  remediationAction: enforce
-  severity: low
-  object-templates-raw: |
-    {{hub- $iamSec := (lookup "v1 "Secret" "acm-install-policies" "observability-iam-config") hub}}
-    {{hub- $awsAccountId := ($iamSec.data.aws_account_id | base64dec) hub}}
-    {{hub- $awsRoleName := ($iamSec.data.aws_s3_role_name | base64dec) hub}}
-    {{hub- $annotation := (printf "arn:aws:iam::%s:role/%s" $awsAccountId $awsRoleName) hub}}
-
-    - complianceType: musthave
-      objectDefinition:
-        apiVersion: observability.open-cluster-management.io/v1beta2
-        kind: MultiClusterObservability
-        metadata:
-          name: observability
-          namespace: open-cluster-management-observability
-        spec:
-          advanced:
-            compact:
-              serviceAccountAnnotations:
-                  eks.amazonaws.com/role-arn: {{hub $annotation $hub}}
-            store:      
-              serviceAccountAnnotations:
-                  eks.amazonaws.com/role-arn: {{hub $annotation $hub}}
-            rule:
-              serviceAccountAnnotations:
-                  eks.amazonaws.com/role-arn: {{hub $annotation $hub}}
-            receive:
-              serviceAccountAnnotations:
-                  eks.amazonaws.com/role-arn: {{hub $annotation $hub}}
-            query:
-              serviceAccountAnnotations:
-                  eks.amazonaws.com/role-arn: {{hub $annotation $hub}}  
-  #advanced:
-    # compact:
-    #    serviceAccountAnnotations:
-    #       eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
-    # store:      
-    #    serviceAccountAnnotations:
-    #       eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
-    # rule:
-    #    serviceAccountAnnotations:
-    #       eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
-    # receive:
-    #    serviceAccountAnnotations:
-    #       eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
-    # query:
-    #    serviceAccountAnnotations:
-    #       eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
+  advanced:
+    compact:
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
+    store:
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
+    rule:
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
+    receive:
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
+    query:
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_account_id" hub}}" | base64dec }}' :role/'{{ print "{{hub fromSecret "acm-install-policies" "observability-iam-config" "aws_s3_role_name" hub}}" | base64dec }}'
     # compact:
     #    serviceAccountAnnotations:
     #        eks.amazonaws.com/role-arn: arn:aws:iam::017103373694:role/ManagedOpenShift-HCP-access-to-aws-s3-service-role
