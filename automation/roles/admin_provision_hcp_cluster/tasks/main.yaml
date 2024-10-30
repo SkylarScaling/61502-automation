@@ -141,7 +141,7 @@
           - 4.16.14
           - --create-admin-user
           - --cluster-admin-password
-          - "RedHat123RedHat123"
+          - "{{ cluster_admin_password }}"
           - --etcd-encryption-kms-arn
           - "{{ kms_arn }}"
           - --operator-roles-prefix

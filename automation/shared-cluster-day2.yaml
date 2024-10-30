@@ -108,8 +108,8 @@
         managed_cluster_address: "{{ ocp_cluster_address }}"
         managed_cluster_name: "{{ cluster_name }}"
         hub_address: "{{ hub_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
+        managed_admin_user: "{{ cluster_admin_user }}"
+        managed_admin_password: "{{ cluster_admin_password }}"
 
     # TODO Cleanup Automation Admin Accounts
 
