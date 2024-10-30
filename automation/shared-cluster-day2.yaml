@@ -72,6 +72,12 @@
         instance_type: r5a.xlarge
 
     - include_role:
+        name: admin_config_shared_cluster_sa
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+             
+
+    - include_role:
         name: admin_config_machine_pool
       vars:
         subnet: "{{ subnet_id3 }}"
