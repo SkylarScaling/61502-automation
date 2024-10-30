@@ -9,12 +9,16 @@ spec:
     - ldap:
         credentialsSecret:
           kind: Secret
-          name: ldapsync
+          name: osrosa-ldapbinding
           namespace: group-sync-operator
-        insecure: true
+        caSecret:
+          kind: Secret
+          name: osrosa-3mcacerts
+          namespace: group-sync-operator  
+        insecure: false
         rfc2307:
           usersQuery:
-            baseDN: 'XXXXXXXXX'
+            baseDN: 'OU=Mail-Routing,OU=Groups,OU=FAP,O=3M'
             derefAliases: never
             pageSize: 0
             scope: sub
@@ -28,12 +32,12 @@ spec:
           userNameAttributes:
             - uid
           groupsQuery:
-            baseDN: 'XXXXXXXX'
+            baseDN: 'OU=Mail-Routing,OU=Groups,OU=FAP,O=3M'
             derefAliases: always
             filter: (&(objectClass=group)(cn=OSCP-*))
             pageSize: 0
             scope: sub
           userUIDAttribute: dn
-        url: 'XXXXXXXXXXXX'
+        url: ldaps://ldap-pdint-t2.mmm.com:636/OU=Internal,OU=People,OU=FAP,O=3M?uid?sub?(&(objectClass=Person)(memberOf=CN=US-MN-Maplewood-OSE-Users,OU=Mail-Routing,OU=Groups,OU=FAP,O=3M))
       name: ldap
   schedule: 0 * * * *

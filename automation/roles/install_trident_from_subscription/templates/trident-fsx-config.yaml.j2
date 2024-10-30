@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trident-fsx-config
+  namespace: "{{ app_namespace }}"
+data:
+  management-lif: "{{ fsx_management_lif | b64encode }}"
+  data-lif: "{{ fsx_data_lif | b64encode }}"
+  svm: "{{ fsx_svm | b64encode }}"

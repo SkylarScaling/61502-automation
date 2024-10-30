@@ -16,8 +16,10 @@
 
 - name: Populate Templates
   template:
-    src: "{{ role_path }}/templates/subscription.yaml.j2"
-    dest: "{{ working_dir }}/subscription.yaml"
+    src: "{{ role_path }}/templates/{{ item }}.yaml.j2"
+    dest: "{{ working_dir }}/{{ item }}.yaml"
+  loop:
+    - subscription
 
 - name: Create App Namespace
   k8s:
@@ -30,10 +32,37 @@
       metadata:
         name: "{{ app_namespace }}"
 
+- name: Create local-quay Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: local-quay
+        annotations:
+          openshift.io/node-selector: 'node-role.kubernetes.io/quay='
+
 - name: Apply Quay install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:443"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
+        namespace: local-quay ##Openshift namespace where the secret going to be created in
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN    
 ...

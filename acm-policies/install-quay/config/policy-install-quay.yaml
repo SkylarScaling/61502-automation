@@ -3,6 +3,8 @@ kind: Namespace
 metadata:
   labels:
     openshift.io/cluster-monitoring: "true"
+  annotations:
+    openshift.io/node-selector: 'node-role.kubernetes.io/quay='
   name: local-quay
 ---
 apiVersion: v1
@@ -79,15 +81,6 @@ spec:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ---
-apiVersion: v1
-data:
-  config.yaml: RkVBVFVSRV9VU0VSX0lOSVRJQUxJWkU6IHRydWUKQlJPV1NFUl9BUElfQ0FMTFNfWEhSX09OTFk6IGZhbHNlClNVUEVSX1VTRVJTOgotIHF1YXlhZG1pbgpGRUFUVVJFX1VTRVJfQ1JFQVRJT046IHRydWUKRkVBVFVSRV9TVVBFUlVTRVJTX0ZVTExfQUNDRVNTOiB0cnVlCg==
-kind: Secret
-metadata:
-  name: init-config-bundle-secret
-  namespace: local-quay
-type: Opaque
----
 apiVersion: quay.redhat.com/v1
 kind: QuayRegistry
 metadata:
@@ -100,7 +93,7 @@ spec:
     - kind: postgres
       managed: true
     - kind: objectstorage
-      managed: true
+      managed: false
     - kind: redis
       managed: true
     - kind: horizontalpodautoscaler

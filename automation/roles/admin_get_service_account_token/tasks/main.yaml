@@ -3,7 +3,7 @@
     name: admin_oc_login
 
 - name: "Get ServiceAccount Token"
-  shell: "oc create token {{ acm_service_account_name }} -n {{ acm_service_account_namespace }}"
+  shell: "oc create token {{ service_account_name }} -n {{ service_account_namespace }}"
   register: token_request
 
 - set_fact:

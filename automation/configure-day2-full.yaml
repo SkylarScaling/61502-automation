@@ -2,22 +2,22 @@
 - name: Apply Day 2 Configuration to OCP HCP Cluster
   gather_facts: false
   hosts: localhost
-#  vars:
-# Required Variables for this Playbook
-#    type: "LDAP"
-#    name: "LDAP3M"
-#    cluster_name: hcp-3m
-#    url: "ldaps://xxxxxxxxxxxx"
-#    bind_password: "xxxxxxxxx"
-#    bind_dn: "xxxxxxxxxx"
-#    id_attributes: "dn"
-#    name_attributes: "cn"
-#    email_attributes: "mail"
-#    username_attributes: "uid"
-#    region: "us-east-1"
-#    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
-#    VpcId: "xxxxxxx"
-#    VpcEndpointId: "xxxxxxxxxx"     
+  #  vars:
+  # Required Variables for this Playbook
+  #    type: "LDAP"
+  #    name: "LDAP3M"
+  #    cluster_name: hcp-3m
+  #    url: "ldaps://xxxxxxxxxxxx"
+  #    bind_password: "xxxxxxxxx"
+  #    bind_dn: "xxxxxxxxxx"
+  #    id_attributes: "dn"
+  #    name_attributes: "cn"
+  #    email_attributes: "mail"
+  #    username_attributes: "uid"
+  #    region: "us-east-1"
+  #    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
+  #    VpcId: "xxxxxxx"
+  #    VpcEndpointId: "xxxxxxxxxx"
   tasks:
     # Ensure we're not still logged in under another account
     - include_role:
@@ -38,15 +38,48 @@
         admin_password: "{{ cluster_admin_password }}"
 
     - include_role:
-        name: aws_config_security_groups
-
-    # TODO Create Cluster Admin using rosa CLI
-
-    - include_role:
         name: admin_config_ldap
 
     - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id1 }}"
+        machinepool_name: quay-1
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 1
+        instance_type: m5a.2xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id2 }}"
+        machinepool_name: quay-2
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 1
+        instance_type: m5a.2xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id3 }}"
+        machinepool_name: quay-3
+        machinepool_labels: node-role.kubernetes.io/infra=,node-role.kubernetes.io/quay=
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 1
+        instance_type: m5a.2xlarge
+
+    - include_role:
         name: install_groupsync_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_eso_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
@@ -55,17 +88,15 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-  # TODO Create trident-csi as default StorageClass (FSXn)
     - include_role:
         name: install_trident_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-# TODO MCO Needs Object Bucket storage available
-#    - include_role:
-#        name: install_mco_from_subscription
-#      vars:
-#        cluster_address: "{{ ocp_cluster_address }}"
+    - include_role:
+        name: install_mco_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
         name: install_logging_from_subscription
@@ -77,24 +108,10 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-# TODO Quay needs block storage available
-#    - include_role:
-#        name: install_quay_from_subscription
-#      vars:
-#        cluster_address: "{{ ocp_cluster_address }}"
-
-# TODO This should be specific to the environment, as needed
-#    - include_role:
-#        name: admin_config_machine_pool
-
-#    - include_role:
-#        name: admin_config_log_forwarder
-#      vars:
-#        cluster_address: "{{ ocp_cluster_address }}"
-#        hec_token: "{{ splunk_hec_token }}"
-#        hec_url: "{{ splunk_hec_url }}"
-#        admin_user: "{{ cluster_admin_user }}"
-#        admin_password: "{{ cluster_admin_password }}"
+    - include_role:
+        name: install_quay_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
         name: admin_oc_logout

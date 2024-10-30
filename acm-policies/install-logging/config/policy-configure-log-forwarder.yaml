@@ -1,0 +1,72 @@
+---
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogging
+metadata:
+  name: instance 
+  namespace: openshift-logging 
+spec:
+  collection:
+    type: vector
+  managementState: Managed   
+---       
+
+# Create role binding to collect application logs
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: collect-app-logs
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: openshift-logging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: collect-application-logs 
+--- 
+  
+
+# add Log-Forwarding Rolebinding to the default ServiceAccount
+ kind: ClusterRoleBinding
+ apiVersion: rbac.authorization.k8s.io/v1
+ metadata:
+  name: collect-infra-logs
+ subjects:
+ - kind: ServiceAccount
+   name: default
+   namespace: openshift-logging
+ roleRef:
+   apiGroup: rbac.authorization.k8s.io
+   kind: ClusterRole
+   name: collect-infrastructure-logs 
+     
+---     
+# Configure OpenShift Log-Forwarding Service Account Permissions 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: externalsecret-operator-config-external-secrets
+  namespace: openshift-logging
+
+---
+# Configure OpenShift Log-Fowarding CR
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance 
+  namespace: openshift-logging
+spec:
+  outputs:
+    - name: splunk-receiver
+      secret:
+        name: osrosa-splunk
+      type: splunk
+      url: 'https://glat02nplb.mmm.com:9088/services/collector'
+  pipelines:
+    - inputRefs:
+        - application
+        - infrastructure
+      outputRefs:
+        - splunk-receiver
+  serviceAccountName: externalsecret-operator-config-external-secrets
+    

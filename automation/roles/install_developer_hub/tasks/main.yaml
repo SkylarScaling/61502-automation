@@ -1,0 +1,43 @@
+---
+- include_role:
+    name: admin_oc_login
+
+- name: Create Developer Hub Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: rhdh-operator
+
+- name: Create Developer Hub Operator Group
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: rhdh-operator
+        namespace: rhdh-operator
+      spec:
+        upgradeStrategy: Default
+
+- name: Create Developer Hub Operator Subscription
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    definition:
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: rhdh
+        namespace: rhdh-operator
+      spec:
+        channel: fast-1.3
+        installPlanApproval: Automatic
+        name: rhdh
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace

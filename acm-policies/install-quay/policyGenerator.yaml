@@ -14,9 +14,14 @@ placementBindingDefaults:
 
 policies:
   # Quay Policies - start
+  - name: policy-quay-init-config
+    manifests:
+      - path: config/quay-init-secret.yaml
   - name: policy-install-quay
     manifests:
       - path: config/policy-install-quay.yaml
+    dependencies:
+      - name: policy-quay-init-config
   - name: policy-config-quay
     dependencies:
       - name: policy-install-quay
@@ -27,7 +32,11 @@ policies:
       - name: policy-install-quay
     manifests:
       - path: config/policy-quay-status.yaml
-    remediationAction: inform
+    remediationAction: inform   
+  - name: quay-config-external
+    manifests:
+      - path: config/policy-quay-configexternal.yaml
+      - path: config/policy-quay-configstore.yaml     
   # Quay Bridge is configured with a temporary token that will expire quickly after
   # deployment.  After quay is running, see the instructions:
   # https://hybrid-cloud-patterns.io/devsecops/getting-started/#completing-the-quay-bridge-with-a-bearer-token

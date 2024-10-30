@@ -1,0 +1,50 @@
+---
+- name: Import Cluster into ACM Hub as Managed Cluster
+  gather_facts: false
+  hosts: localhost
+  #  vars:
+  # Required Variables for this Playbook
+  #    cluster_name:
+  #    hub_cluster_address:
+  #    managed_admin_user:
+  #    managed_admin_password:
+  #    hub_admin_user:
+  #    hub_admin_password:
+  tasks:
+    - name: Get Cluster Details
+      command:
+        argv:
+          - rosa
+          - describe
+          - cluster
+          - --cluster
+          - "{{ cluster_name }}"
+      register: cluster_details
+
+    - set_fact:
+        lines: "{{ cluster_details.stdout_lines }}"
+
+    - set_fact:
+        hcp_cluster_address: "{{ item | regex_search('(DNS:\\s*)(\\S*)', '\\2') }}"
+      loop: "{{ lines }}"
+      when: "item.startswith('DNS:')"
+
+    - debug:
+        msg: "{{ hcp_cluster_address[0] }}"
+
+    - include_role:
+        name: admin_create_cluster_admin_service_account
+      vars:
+        admin_user: "{{ managed_admin_user }}"
+        admin_password: "{{ managed_admin_password }}"
+        cluster_address: "{{ hcp_cluster_address[0] }}"
+
+    - include_role:
+        name: import_managed_cluster
+      vars:
+        managed_cluster_address: "{{ hcp_cluster_address[0] }}"
+        managed_cluster_name: "{{ cluster_name }}"
+        hub_address: "{{ hub_cluster_address }}"
+
+    - include_role:
+        name: admin_oc_logout

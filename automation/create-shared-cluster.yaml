@@ -1,0 +1,79 @@
+---
+- name: Provision and Configure OCP HCP Shared Cluster on AWS
+  gather_facts: false
+  hosts: localhost
+  # Required Variables for this playbook
+  #    aws_account_id: xxxxxxxxx
+  #    account_roles_prefix: Managed-OpenShift
+  #    operator_roles_prefix: Managed-OpenShift-HCP
+  #    cluster_name: xxxxxxx
+  #    cluster_short_name: XXX
+  #    kms_arn: arn:aws:kms:xxxxxxxx
+  #    vpc_cidr: 10.0.0.0/24
+  #    subnet_id1: subnet-xxxxxxxxxxxxx
+  #    subnet_id2: subnet-xxxxxxxxxxxxx
+  #    subnet_id3: subnet-xxxxxxxxxxxxx
+  #    compute_machine_type: m5a.xlarge
+  #    hub_cluster_address: hub-cluster.xXxX.p3.openshiftapps.com
+  tasks:
+    - include_role:
+        name: admin_provision_hcp_cluster
+
+    - name: Get Cluster Details
+      command:
+        argv:
+          - rosa
+          - describe
+          - cluster
+          - --cluster
+          - "{{ cluster_name }}"
+      register: cluster_details
+
+    - set_fact:
+        lines: "{{ cluster_details.stdout_lines }}"
+
+    - set_fact:
+        hcp_cluster_address: "{{ item | regex_search('(DNS:\\s*)(\\S*)', '\\2') }}"
+      loop: "{{ lines }}"
+      when: "item.startswith('DNS:')"
+
+    - debug:
+        msg: "{{ hcp_cluster_address[0] }}"
+
+    - include_role:
+        name: aws_config_security_groups
+
+    - name: Wait for cluster to start processing auth requests
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ hcp_cluster_address[0] }}:443"
+      retries: 20
+      delay: 30
+      register: result
+      until: result.rc == 0
+
+    - name: Wait for Nodes to be Created
+      k8s_info:
+        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        api_version: v1
+        kind: Node
+      register: output_info
+      until: (output_info.resources is defined) and (output_info.resources | length) >= 3
+      delay: 30
+      retries: 20
+
+    - name: Wait for Nodes to become Ready
+      k8s_info:
+        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        api_version: v1
+        kind: Node
+      register: output_info
+      until: (output_info.resources | json_query(query) | unique | length == 1) and (output_info.resources | json_query(query) | unique == [["True"]])
+      delay: 30
+      retries: 40
+      vars:
+        condition: 'Ready'
+        query: "[*].status.conditions[?type=='{{ condition }}'].status"
+
+- name: Perform Day 2 Configuration
+  ansible.builtin.import_playbook: shared-cluster-day2.yaml
+  vars:
+    ocp_cluster_address: "{{ hcp_cluster_address[0] }}"

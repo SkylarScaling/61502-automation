@@ -1,0 +1,5 @@
+---
+state: present
+app_name: install-eso
+app_namespace: acm-install-policies
+...

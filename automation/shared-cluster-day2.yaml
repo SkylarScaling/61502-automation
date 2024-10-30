@@ -1,0 +1,117 @@
+---
+- name: Apply Day 2 Configuration to OCP HCP Shared Cluster
+  gather_facts: false
+  hosts: localhost
+  #  vars:
+  # Required Variables for this Playbook
+  #    type: "LDAP"
+  #    name: "LDAP3M"
+  #    cluster_name: hcp-3m
+  #    url: "ldaps://xxxxxxxxxxxx"
+  #    bind_password: "xxxxxxxxx"
+  #    bind_dn: "xxxxxxxxxx"
+  #    id_attributes: "dn"
+  #    name_attributes: "cn"
+  #    email_attributes: "mail"
+  #    username_attributes: "uid"
+  #    region: "us-east-1"
+  #    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
+  #    VpcId: "xxxxxxx"
+  #    VpcEndpointId: "xxxxxxxxxx"
+  tasks:
+    # Ensure we're not still logged in under another account
+    - include_role:
+        name: admin_oc_logout
+
+    - include_role:
+        name: admin_create_cluster_admin_service_account
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    - include_role:
+        name: admin_config_ldap
+
+    - name: Update Labels on Worker Machine Pools
+      command:
+        argv:
+          - rosa
+          - edit
+          - machinepool
+          - --cluster
+          - "{{ cluster_name }}"
+          - --labels
+          - "node-role.kubernetes.io/infra="
+          - "{{ item }}"
+      loop:
+        - workers-0
+        - workers-1
+        - workers-2
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id1 }}"
+        machinepool_name: workloads-1
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id2 }}"
+        machinepool_name: workloads-2
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
+        name: admin_config_machine_pool
+      vars:
+        subnet: "{{ subnet_id3 }}"
+        machinepool_name: workloads-3
+        machinepool_labels: ''
+        machinepool_taints: ''
+        min_replicas: 1
+        max_replicas: 20
+        instance_type: r5a.xlarge
+
+    - include_role:
+        name: admin_config_rbac
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_openshift_pipelines
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_openshift_gitops
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_developer_hub
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: import_managed_cluster
+      vars:
+        managed_cluster_address: "{{ ocp_cluster_address }}"
+        managed_cluster_name: "{{ cluster_name }}"
+        hub_address: "{{ hub_cluster_address }}"
+        managed_admin_user: "{{ cluster_admin_user }}"
+        managed_admin_password: "{{ cluster_admin_password }}"
+
+    # TODO Cleanup Automation Admin Accounts
+
+    - include_role:
+        name: admin_oc_logout

@@ -20,13 +20,13 @@ kind: Channel
 metadata:
   annotations:
     apps.open-cluster-management.io/reconcile-rate: medium
-  name: trident-install-policies-channel
+  name: install-trident-policies-channel
   namespace: "{{ app_namespace }}"
 spec:
   type: Git
   pathname: "{{ subscription_repo_url }}"
 #  secretRef: # Uncomment if using private repo
-#    name: acm-trident-policy-git-secret
+#    name: acm-eso-policy-git-secret
 #---
 #apiVersion: v1 # Uncomment if using private repo
 #kind: Secret
@@ -40,7 +40,7 @@ spec:
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription
 metadata:
-  name: trident-install-policies-subscription
+  name: install-trident-policies-subscription
   namespace: "{{ app_namespace }}"
   annotations:
     apps.open-cluster-management.io/git-branch: "{{ subscription_branch }}"
@@ -49,16 +49,16 @@ metadata:
   labels:
     app: "{{ app_name }}"
 spec:
-  channel: "{{ app_namespace }}/trident-install-policies-channel"
+  channel: "{{ app_namespace }}/install-trident-policies-channel"
   placement:
     placementRef:
       kind: PlacementRule
-      name: trident-install-policies-placement
+      name: install-trident-policies-placement
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
-  name: trident-install-policies-placement
+  name: install-trident-policies-placement
   namespace: "{{ app_namespace }}"
   labels:
     app: "{{ app_name }}"
