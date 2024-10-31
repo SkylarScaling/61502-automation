@@ -1,4 +1,10 @@
 ---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ cluster_admin_service_account_name }}"
+    service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
+    
 - name: create service account
   k8s:
     host: "https://api.{{ cluster_address }}:443"
