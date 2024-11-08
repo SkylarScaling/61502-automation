@@ -27,11 +27,8 @@
 #       - "{{ vpce_id }}"
 #       - --add-security-group-ids
 #       - "{{ DEFAULT_3M_SG_ID }}"
-
-- name: Get Security Group details
-  hosts: localhost
-  tasks:
-    - name: Get Security Group info by tag and cluster name
+---
+- name: Get Security Group info by tag and cluster name
       amazon.aws.ec2_security_group_info:
         region: us-east-1
         filters:
@@ -59,3 +56,4 @@
            to_port: "-1"
            ip_prefix: "{{ prefix_ip_list }}"
            group_id: "{{ group_id }}"    
+
