@@ -35,25 +35,25 @@
           "tag:api.openshift.com/name": "{{ cluster_name }}"
 
       register: security_group_info
+- name: debug existing sg info
+  debug:
+    var: security_group_info
 
-    - name: debug existing sg info
-      debug:
-        var: security_group_info
 
-    - name: set group-id
-      set_fact:
-        group_id: "{{ security_group_info.security_groups[0].group_id }}"
-        group_name: "{{ security_group_info.security_groups[0].group_name }}"
+- name: set group-id
+  set_fact:
+    group_id: "{{ security_group_info.security_groups[0].group_id }}"
+    group_name: "{{ security_group_info.security_groups[0].group_name }}"
 
-    - name: Add inbound rule to default HCP security group
-      ec2_group:
-        name: "{{ group_name }}"
-        description: updating default HCP ROSA SG inbound rules
-        vpc_id: vpc-06a9e54ea6f8391a6
-        rules:
-         - proto: all
-           from_port: "-1"
-           to_port: "-1"
-           ip_prefix: "{{ prefix_ip_list }}"
-           group_id: "{{ group_id }}"    
+- name: Add inbound rule to default HCP security group
+  ec2_group:
+    name: "{{ group_name }}"
+    description: updating default HCP ROSA SG inbound rules
+    vpc_id: "{{ vpc_id }}"
+    rules:
+     - proto: all
+       from_port: "-1"
+       to_port: "-1"
+       ip_prefix: "{{ prefix_ip_list }}" 
+       group_id: "{{ group_id }}"    
 
