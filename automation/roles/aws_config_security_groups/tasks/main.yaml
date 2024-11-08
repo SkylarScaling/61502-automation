@@ -27,7 +27,6 @@
 #       - "{{ vpce_id }}"
 #       - --add-security-group-ids
 #       - "{{ DEFAULT_3M_SG_ID }}"
----
 - name: Get Security Group info by tag and cluster name
       amazon.aws.ec2_security_group_info:
         region: us-east-1
