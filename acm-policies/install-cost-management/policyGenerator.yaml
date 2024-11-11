@@ -1,0 +1,23 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: policy-cost-management-install
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cost-management
+placementBindingDefaults:
+  name: "cost-management-binding"
+
+policies:
+  - name: policy-install-cost-management
+    manifests:
+      - path: config/policy-install-cost-management.yaml
+
+policySets:
+  - name: cost-management
+    placement:
+      placementRulePath: placements/all-placement.yaml
