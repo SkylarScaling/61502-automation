@@ -17,6 +17,13 @@ policies:
     manifests:
       - path: config/policy-install-cost-management.yaml
 
+  - name: policy-config-cost-management
+    dependencies:
+      - name: policy-install-cost-management
+    manifests:
+      - path: config/policy-config-cost-management.yaml
+
+
 policySets:
   - name: cost-management
     placement:
