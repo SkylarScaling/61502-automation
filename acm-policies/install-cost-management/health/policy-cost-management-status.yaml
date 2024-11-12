@@ -1,0 +1,20 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: costmanagement-metrics-operator
+  namespace: costmanagement-metrics-operator
+status:
+  conditions:
+    - type: Available
+      status: 'True'
+---
+apiVersion: costmanagement-metrics-cfg.openshift.io/v1beta1
+kind: CostManagementMetricsConfig
+metadata:
+  name: costmanagement-metrics-config
+  namespace: costmanagement-metrics-operator
+status:
+  prometheus:
+    prometheus_configured: true
+    prometheus_connected: true

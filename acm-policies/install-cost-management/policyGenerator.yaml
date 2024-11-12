@@ -23,6 +23,12 @@ policies:
     manifests:
       - path: config/policy-config-cost-management.yaml
 
+  - name: policy-cost-management-status
+    dependencies:
+      - name: policy-config-cost-management
+    manifests:
+      - path: health/policy-cost-management-status.yaml
+    remediationAction: inform
 
 policySets:
   - name: cost-management
