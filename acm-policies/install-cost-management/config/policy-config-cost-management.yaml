@@ -27,4 +27,5 @@ spec:
     check_cycle: 1440
     create_source: true
     sources_path: /api/sources/v1.0/
-    name: '{{ fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec }}'
+    #name: '{{ fromSecret "open-cluster-management-agent" "hub-kubeconfig-secret" "cluster-name" | base64dec }}'
+    name: '{{ print "{{hub fromSecret "acm-install-policies" "cost-management-secret-config" "cluster_name" hub}}" | base64dec }}'

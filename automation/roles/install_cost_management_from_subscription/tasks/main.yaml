@@ -16,8 +16,13 @@
 
 - name: Populate Templates
   template:
-    src: "{{ role_path }}/templates/subscription.yaml.j2"
-    dest: "{{ working_dir }}/subscription.yaml"
+    # src: "{{ role_path }}/templates/subscription.yaml.j2"
+    # dest: "{{ working_dir }}/subscription.yaml"
+    src: "{{ role_path }}/templates/{{ item }}.yaml.j2"
+    dest: "{{ working_dir }}/{{ item }}.yaml"
+  loop:
+    - subscription
+    - cost-management-secret-config
 
 - name: Create App Namespace
   k8s:
@@ -29,6 +34,13 @@
       kind: Namespace
       metadata:
         name: "{{ app_namespace }}"
+
+- name: Apply Trident FSx Config Secret
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    src: "{{ working_dir }}/cost-management-secret-config.yaml"
+    state: "{{ state }}"        
 
 - name: Apply Cost Management Operator install module repo subscription
   k8s:
