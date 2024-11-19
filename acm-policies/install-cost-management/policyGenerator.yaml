@@ -17,11 +17,21 @@ policies:
     manifests:
       - path: config/policy-install-cost-management.yaml
 
-  - name: policy-config-cost-management
+  - name: policy-config-cost-management-hub
     dependencies:
       - name: policy-install-cost-management
     manifests:
-      - path: config/policy-config-cost-management.yaml
+      - path: config/policy-config-cost-management-hub.yaml
+    policySets:
+      - cost-management-hub
+  
+  - name: policy-config-cost-management-managed
+    dependencies:
+      - name: policy-install-cost-management
+    manifests:
+      - path: config/policy-config-cost-management-managed.yaml
+    policySets:
+      - cost-management-managed
 
   - name: policy-cost-management-status
     dependencies:
@@ -34,3 +44,11 @@ policySets:
   - name: cost-management
     placement:
       placementRulePath: placements/all-placement.yaml
+
+  - name: cost-management-hub
+    placement:
+      placementRulePath: placements/hub-placement.yaml
+
+  - name: cost-management-managed
+    placement:
+      placementRulePath: placements/clusters-placement.yaml
