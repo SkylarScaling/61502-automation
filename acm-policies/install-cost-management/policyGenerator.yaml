@@ -35,7 +35,7 @@ policies:
 
   - name: policy-cost-management-status
     dependencies:
-      - name: policy-config-cost-management
+      - name: policy-install-cost-management
     manifests:
       - path: health/policy-cost-management-status.yaml
     remediationAction: inform
