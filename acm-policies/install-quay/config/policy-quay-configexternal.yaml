@@ -1,3 +1,4 @@
+
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -40,6 +41,28 @@ spec:
         metadataPolicy: None
         property: s3_secret_key  ##KEY5
       secretKey: s3_secret_key  #KEY5  
+    - remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+        metadataPolicy: None
+        property: LDAP_ADMIN_DN  ##KEY6
+      secretKey: LDAP_ADMIN_DN  #KEY6
+    - remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+        metadataPolicy: None
+        property: LDAP_ADMIN_PASSWD  ##KEY7
+      secretKey: LDAP_ADMIN_PASSWD  #KEY7 
+    - remoteRef:
+        conversionStrategy: Default
+        decodingStrategy: None
+        key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+        metadataPolicy: None
+        property: LDAP_URI  ##KEY8
+      secretKey: LDAP_URI #KEY8   
+
   refreshInterval: 1m
   secretStoreRef:
     kind: SecretStore
