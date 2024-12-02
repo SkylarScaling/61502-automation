@@ -20,13 +20,13 @@ kind: Channel
 metadata:
   annotations:
     apps.open-cluster-management.io/reconcile-rate: medium
-  name: cost-management-install-policies-channel
+  name: cost-management-policies-channel
   namespace: "{{ app_namespace }}"
 spec:
   type: Git
   pathname: "{{ subscription_repo_url }}"
-#  secretRef: # Uncomment if using private repo
-#    name: acm-cost-management-policy-git-secret
+  secretRef: # Uncomment if using private repo
+    name: osrosa-acm-git-secret
 #---
 #apiVersion: v1 # Uncomment if using private repo
 #kind: Secret
@@ -40,7 +40,7 @@ spec:
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription
 metadata:
-  name: cost-management-install-policies-subscription
+  name: cost-management-policies-subscription
   namespace: "{{ app_namespace }}"
   annotations:
     apps.open-cluster-management.io/git-branch: "{{ subscription_branch }}"
@@ -49,16 +49,16 @@ metadata:
   labels:
     app: "{{ app_name }}"
 spec:
-  channel: "{{ app_namespace }}/cost-management-install-policies-channel"
+  channel: "{{ app_namespace }}/cost-management-policies-channel"
   placement:
     placementRef:
       kind: PlacementRule
-      name: cost-management-install-policies-placement
+      name: cost-management-policies-placement
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
-  name: cost-management-install-policies-placement
+  name: cost-management-policies-placement
   namespace: "{{ app_namespace }}"
   labels:
     app: "{{ app_name }}"

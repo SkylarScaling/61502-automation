@@ -20,18 +20,18 @@ kind: Channel
 metadata:
   annotations:
     apps.open-cluster-management.io/reconcile-rate: medium
-  name: cost-management-policies-channel
+  name: install-logging-policies-channel
   namespace: "{{ app_namespace }}"
 spec:
   type: Git
   pathname: "{{ subscription_repo_url }}"
-  secretRef: # Uncomment if using private repo
-    name: osrosa-acm-git-secret
+#  secretRef: # Uncomment if using private repo
+#    name: acm-groupsync-policy-git-secret
 #---
 #apiVersion: v1 # Uncomment if using private repo
 #kind: Secret
 #metadata:
-#  name: acm-cost-management-policy-git-secret
+#  name: acm-groupsync-policy-git-secret
 #  namespace: "{{ app_namespace }}"
 #data:
 #  user: cmVwbGFjZQo=
@@ -40,25 +40,25 @@ spec:
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription
 metadata:
-  name: cost-management-policies-subscription
+  name: install-logging-policies-subscription
   namespace: "{{ app_namespace }}"
   annotations:
     apps.open-cluster-management.io/git-branch: "{{ subscription_branch }}"
-    apps.open-cluster-management.io/git-path: acm-policies/install-cost-management
+    apps.open-cluster-management.io/git-path: acm-policies/install-logging
     apps.open-cluster-management.io/reconcile-option: replace
   labels:
     app: "{{ app_name }}"
 spec:
-  channel: "{{ app_namespace }}/cost-management-policies-channel"
+  channel: "{{ app_namespace }}/install-logging-policies-channel"
   placement:
     placementRef:
       kind: PlacementRule
-      name: cost-management-policies-placement
+      name: install-logging-policies-placement
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: PlacementRule
 metadata:
-  name: cost-management-policies-placement
+  name: install-logging-policies-placement
   namespace: "{{ app_namespace }}"
   labels:
     app: "{{ app_name }}"
