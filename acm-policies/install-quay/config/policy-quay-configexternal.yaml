@@ -1,3 +1,4 @@
+
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -39,7 +40,7 @@ spec:
         key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
         metadataPolicy: None
         property: s3_secret_key  ##KEY5
-      secretKey: s3_secret_key  #KEY5  
+      secretKey: s3_secret_key  #KEY5
   refreshInterval: 1m
   secretStoreRef:
     kind: SecretStore
