@@ -110,6 +110,7 @@
         hub_address: "{{ hub_cluster_address }}"
         managed_admin_user: "{{ cluster_admin_user }}"
         managed_admin_password: "{{ cluster_admin_password }}"
+        cluster_set: "hcp-managed-clusters"
 
     # TODO Cleanup Automation Admin Accounts
 

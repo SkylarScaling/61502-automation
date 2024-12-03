@@ -110,4 +110,16 @@
     - ClusterRole-Hub.yaml
     - ClusterRole-ACSOnlyClusters.yaml
     - ClusterRole-HCPManagedClusters.yaml
+
+- name: Add local-cluster to Hub Cluster Set
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    api_version: cluster.open-cluster-management.io/v1
+    definition:
+      kind: ManagedCluster
+      metadata:
+        name: local-cluster
+        labels:
+          cluster.open-cluster-management.io/clusterset: hub-cluster
 ...

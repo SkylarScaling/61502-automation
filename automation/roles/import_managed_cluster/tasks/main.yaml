@@ -50,6 +50,7 @@
       metadata:
         name: "{{ managed_cluster_name }}"
         labels:
+          cluster.open-cluster-management.io/clusterset: "{{ cluster_set }}"
           cloud: auto-detect
           vendor: auto-detect
       spec:
