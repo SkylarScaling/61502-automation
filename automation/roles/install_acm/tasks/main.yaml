@@ -96,4 +96,18 @@
       type: Complete
     wait_sleep: 15
     wait_timeout: 1200
+
+- name: Create ManagedClusterSets
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    state: "{{ state }}"
+    api_version: operator.open-cluster-management.io/v1beta2
+    definition: "{{ lookup('file', item) | from_yaml }}"
+  loop:
+    - ManagedClusterSet-Hub.yaml
+    - ManagedClusterSet-HCPManagedClusters.yaml
+    - ManagedClusterSet-ACSOnlyClusters.yaml
+    - ClusterRole-Hub.yaml
+    - ClusterRole-ACSOnlyClusters.yaml
+    - ClusterRole-HCPManagedClusters.yaml
 ...

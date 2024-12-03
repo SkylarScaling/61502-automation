@@ -43,12 +43,12 @@ policies:
 policySets:
   - name: cost-management
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml
 
   - name: cost-management-hub
     placement:
-      placementRulePath: placements/hub-placement.yaml
+      placementPath: placements/hub-placement.yaml
 
   - name: cost-management-managed
     placement:
-      placementRulePath: placements/clusters-placement.yaml
+      placementPath: placements/clusters-placement.yaml

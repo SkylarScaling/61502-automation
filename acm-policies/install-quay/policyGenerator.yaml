@@ -68,8 +68,8 @@ policies:
 policySets:
   - name: quay-hub
     placement:
-      placementRulePath: placements/hub-placement.yaml
+      placementPath: placements/hub-placement.yaml
 
   - name: quay-clusters
     placement:
-      placementRulePath: placements/clusters-placement.yaml
+      placementPath: placements/clusters-placement.yaml

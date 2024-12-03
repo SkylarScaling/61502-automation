@@ -47,4 +47,4 @@ policies:
 policySets:
   - name: group-sync
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml
