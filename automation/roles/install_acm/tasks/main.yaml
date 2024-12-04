@@ -107,6 +107,9 @@
     - ManagedClusterSet-Hub.yaml
     - ManagedClusterSet-HCPManagedClusters.yaml
     - ManagedClusterSet-ACSOnlyClusters.yaml
+    - ManagedClusterSetBinding-Hub.yaml
+    - ManagedClusterSetBinding-HCPManagedClusters.yaml
+    - ManagedClusterSetBinding-ACSOnlyClusters.yaml
     - ClusterRole-Hub.yaml
     - ClusterRole-ACSOnlyClusters.yaml
     - ClusterRole-HCPManagedClusters.yaml

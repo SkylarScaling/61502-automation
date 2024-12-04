@@ -4,6 +4,6 @@ metadata:
   name: acm-acs-only-clusters-role
 rules:
   - apiGroups: ["cluster.open-cluster-management.io"]
-    resources: ["managedclustersets/join"]
+    resources: ["managedclustersets/join", "managedclustersets/bind"]
     resourceNames: ["acs-only-clusters"]
     verbs: ["create"]

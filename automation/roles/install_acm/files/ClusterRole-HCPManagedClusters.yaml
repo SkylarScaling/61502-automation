@@ -4,6 +4,6 @@ metadata:
   name: acm-hcp-managed-clusters-role
 rules:
   - apiGroups: ["cluster.open-cluster-management.io"]
-    resources: ["managedclustersets/join"]
+    resources: ["managedclustersets/join", "managedclustersets/bind"]
     resourceNames: ["hcp-managed-clusters"]
     verbs: ["create"]
