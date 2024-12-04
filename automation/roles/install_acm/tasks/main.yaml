@@ -97,11 +97,18 @@
     wait_sleep: 15
     wait_timeout: 1200
 
+- name: Create Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: acm-install-policies
+
 - name: Create ManagedClusterSets
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:443"
-    state: "{{ state }}"
-    api_version: operator.open-cluster-management.io/v1beta2
     definition: "{{ lookup('file', item) | from_yaml }}"
   loop:
     - ManagedClusterSet-Hub.yaml
@@ -117,9 +124,8 @@
 - name: Add local-cluster to Hub Cluster Set
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:443"
-    state: "{{ state }}"
-    api_version: cluster.open-cluster-management.io/v1
     definition:
+      apiVersion: cluster.open-cluster-management.io/v1
       kind: ManagedCluster
       metadata:
         name: local-cluster
