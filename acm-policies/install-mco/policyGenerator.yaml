@@ -55,7 +55,7 @@ policies:
 policySets:
   - name: acm-observability
     placement:
-      placementRulePath: placements/hub-placement.yaml
+      placementPath: placements/hub-placement.yaml
       # placement:
       # placementName: "ft-acm-observability--enabled"
 

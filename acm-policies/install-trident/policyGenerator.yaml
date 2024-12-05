@@ -56,4 +56,4 @@ policies:
 policySets:
   - name: install-trident
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml

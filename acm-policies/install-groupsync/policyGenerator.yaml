@@ -45,6 +45,6 @@ policies:
   # ESO 3M CA Store policy - end 
 
 policySets:
-  - name: group-sync
+  - name: groupsync
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml

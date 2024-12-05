@@ -27,4 +27,4 @@ policies:
 policySets:
   - name: cluster-logging
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml

@@ -39,7 +39,7 @@
         labels:
           operators.coreos.com/advanced-cluster-management.open-cluster-management: ""
       spec:
-        channel: release-2.11
+        channel: release-2.12
         installPlanApproval: Automatic
         name: advanced-cluster-management
         source: redhat-operators
@@ -96,4 +96,39 @@
       type: Complete
     wait_sleep: 15
     wait_timeout: 1200
+
+- name: Create Namespace
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: acm-install-policies
+
+- name: Create ManagedClusterSets
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    definition: "{{ lookup('file', item) | from_yaml }}"
+  loop:
+    - ManagedClusterSet-Hub.yaml
+    - ManagedClusterSet-HCPManagedClusters.yaml
+    - ManagedClusterSet-ACSOnlyClusters.yaml
+    - ManagedClusterSetBinding-Hub.yaml
+    - ManagedClusterSetBinding-HCPManagedClusters.yaml
+    - ManagedClusterSetBinding-ACSOnlyClusters.yaml
+    - ClusterRole-Hub.yaml
+    - ClusterRole-ACSOnlyClusters.yaml
+    - ClusterRole-HCPManagedClusters.yaml
+
+- name: Add local-cluster to Hub Cluster Set
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    definition:
+      apiVersion: cluster.open-cluster-management.io/v1
+      kind: ManagedCluster
+      metadata:
+        name: local-cluster
+        labels:
+          cluster.open-cluster-management.io/clusterset: hub-cluster
 ...
