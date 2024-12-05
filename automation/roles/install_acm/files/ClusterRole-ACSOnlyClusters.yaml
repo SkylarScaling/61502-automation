@@ -1,0 +1,9 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: acm-acs-only-clusters-role
+rules:
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersets/join", "managedclustersets/bind"]
+    resourceNames: ["acs-only-clusters"]
+    verbs: ["create"]

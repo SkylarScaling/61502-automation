@@ -45,6 +45,7 @@
         managed_cluster_address: "{{ hcp_cluster_address[0] }}"
         managed_cluster_name: "{{ cluster_name }}"
         hub_address: "{{ hub_cluster_address }}"
+        cluster_set: "{{ target_cluster_set }}"
 
     - include_role:
         name: admin_oc_logout
