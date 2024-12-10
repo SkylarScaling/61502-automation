@@ -4,6 +4,12 @@
   register: result
   failed_when: ( result.rc not in [ 0, 1 ] )
 
+- debug:
+    msg: "{{ k8s_port }}"
+
+- set_fact:
+    insecure: "{{ '--insecure-skip-tls-verify' if k8s_port == 6443 else '' }}"
+
 - name: "OpenShift CLI login"
-  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:443"
+  shell: "oc login -u {{ admin_user }} -p {{ admin_password }} https://api.{{ cluster_address }}:{{ k8s_port }} {{ insecure }}"
   when: result.rc == 1

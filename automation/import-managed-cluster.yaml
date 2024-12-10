@@ -25,26 +25,29 @@
         lines: "{{ cluster_details.stdout_lines }}"
 
     - set_fact:
-        hcp_cluster_address: "{{ item | regex_search('(DNS:\\s*)(\\S*)', '\\2') }}"
+        rosa_cluster_address: "{{ item | regex_search('(DNS:\\s*)(\\S*)', '\\2') }}"
       loop: "{{ lines }}"
       when: "item.startswith('DNS:')"
 
     - debug:
-        msg: "{{ hcp_cluster_address[0] }}"
+        msg: "{{ rosa_cluster_address[0] }}"
 
     - include_role:
         name: admin_create_cluster_admin_service_account
       vars:
         admin_user: "{{ managed_admin_user }}"
         admin_password: "{{ managed_admin_password }}"
-        cluster_address: "{{ hcp_cluster_address[0] }}"
+        cluster_address: "{{ rosa_cluster_address[0] }}"
+        k8s_port: "{{ managed_cluster_k8s_port }}"
 
     - include_role:
         name: import_managed_cluster
       vars:
         managed_cluster_address: "{{ hcp_cluster_address[0] }}"
         managed_cluster_name: "{{ cluster_name }}"
+        managed_cluster_port: "{{ managed_cluster_k8s_port }}"
         hub_address: "{{ hub_cluster_address }}"
+        hub_cluster_port: "{{ hub_cluster_k8s_port }}"
         cluster_set: "{{ target_cluster_set }}"
 
     - include_role:

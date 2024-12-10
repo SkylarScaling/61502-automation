@@ -4,7 +4,7 @@
 
 - name: Create ansible-playbook-access Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: v1
@@ -14,7 +14,7 @@
 
 - name: Create ServiceAccount
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: v1
@@ -41,7 +41,7 @@
 
 - name: Apply Templates
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     src: "{{ item }}"
     state: "{{ state }}"
     api_version: v1
