@@ -8,8 +8,7 @@ spec:
   collection:
     type: vector
   managementState: Managed   
----       
-
+---
 # Create role binding to collect application logs
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -23,9 +22,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: collect-application-logs 
---- 
-  
-
+---
 # add Log-Forwarding Rolebinding to the default ServiceAccount
  kind: ClusterRoleBinding
  apiVersion: rbac.authorization.k8s.io/v1
@@ -38,8 +35,7 @@ roleRef:
  roleRef:
    apiGroup: rbac.authorization.k8s.io
    kind: ClusterRole
-   name: collect-infrastructure-logs 
-     
+   name: collect-infrastructure-logs
 ---     
 # Configure OpenShift Log-Forwarding Service Account Permissions 
 apiVersion: v1
@@ -47,7 +43,6 @@ kind: ServiceAccount
 metadata:
   name: externalsecret-operator-config-external-secrets
   namespace: openshift-logging
-
 ---
 # Configure OpenShift Log-Fowarding CR
 apiVersion: logging.openshift.io/v1
