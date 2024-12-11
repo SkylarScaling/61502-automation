@@ -7,7 +7,7 @@
     cluster_address: "{{ managed_cluster_address }}"
     service_account_name: "{{ cluster_admin_service_account_name }}"
     service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
-    k8s_port: "{{ managed_cluster_port }}"
+    k8s_admin_port: "{{ managed_cluster_port }}"
 
 - name: Set Managed Cluster token var
   set_fact:
@@ -24,7 +24,7 @@
     cluster_address: "{{ hub_address }}"
     service_account_name: "{{ acm_service_account_name }}"
     service_account_namespace: "{{ acm_service_account_namespace }}"
-    k8s_port: "{{ hub_cluster_port }}"
+    k8s_admin_port: "{{ hub_cluster_port }}"
 
 - name: Set ACM Hub token var
   set_fact:
