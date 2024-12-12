@@ -7,6 +7,7 @@
     cluster_address: "{{ managed_cluster_address }}"
     service_account_name: "{{ cluster_admin_service_account_name }}"
     service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
+    k8s_admin_port: "{{ managed_cluster_port }}"
 
 - name: Set Managed Cluster token var
   set_fact:
@@ -23,6 +24,7 @@
     cluster_address: "{{ hub_address }}"
     service_account_name: "{{ acm_service_account_name }}"
     service_account_namespace: "{{ acm_service_account_namespace }}"
+    k8s_admin_port: "{{ hub_cluster_port }}"
 
 - name: Set ACM Hub token var
   set_fact:
@@ -30,7 +32,7 @@
 
 - name: Create namespace for managed cluster
   kubernetes.core.k8s:
-    host: "https://api.{{ hub_address }}:443"
+    host: "https://api.{{ hub_address }}:{{ hub_cluster_port }}"
     api_key: "{{ hub_cluster_token }}"
     state: "{{ state }}"
     definition:
@@ -41,7 +43,7 @@
 
 - name: Create ManagedCluster custom resource
   kubernetes.core.k8s:
-    host: "https://api.{{ hub_address }}:443"
+    host: "https://api.{{ hub_address }}:{{ hub_cluster_port }}"
     api_key: "{{ hub_cluster_token }}"
     state: "{{ state }}"
     definition:
@@ -58,7 +60,7 @@
 
 - name: Create Auto Import Secret
   kubernetes.core.k8s:
-    host: "https://api.{{ hub_address }}:443"
+    host: "https://api.{{ hub_address }}:{{ hub_cluster_port }}"
     api_key: "{{ hub_cluster_token }}"
     definition:
       apiVersion: v1
@@ -69,12 +71,12 @@
       stringData:
         autoImportRetry: "5"
         token: "{{ managed_cluster_token }}"
-        server: "https://api.{{ managed_cluster_address }}:443"
+        server: "https://api.{{ managed_cluster_address }}:{{ managed_cluster_port }}"
       type: Opaque
 
 - name: Create KlusterletAddonConfig custom resource
   kubernetes.core.k8s:
-    host: "https://api.{{ hub_address }}:443"
+    host: "https://api.{{ hub_address }}:{{ hub_cluster_port }}"
     api_key: "{{ hub_cluster_token }}"
     definition:
       apiVersion: agent.open-cluster-management.io/v1
@@ -96,7 +98,7 @@
 
 - name: Wait for ManagedCluster to become available
   kubernetes.core.k8s_info:
-    host: "https://api.{{ hub_address }}:443"
+    host: "https://api.{{ hub_address }}:{{ hub_cluster_port }}"
     api_key: "{{ hub_cluster_token }}"
     kind: ManagedCluster
     name: "{{ managed_cluster_name }}"

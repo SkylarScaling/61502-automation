@@ -1,6 +1,6 @@
 - name: Create Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     definition:   
       apiVersion: v1
       kind: Namespace
@@ -10,7 +10,7 @@
 ###This secret is used to authenticate OCP cluster to github via github token
 - name: Configure Secret for github Token
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     definition:   
       apiVersion: v1
       kind: Secret

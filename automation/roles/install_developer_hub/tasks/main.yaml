@@ -4,7 +4,7 @@
 
 - name: Create Developer Hub Namespace
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: v1
@@ -14,7 +14,7 @@
 
 - name: Create Developer Hub Operator Group
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: operators.coreos.com/v1
@@ -27,7 +27,7 @@
 
 - name: Create Developer Hub Operator Subscription
   kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: operators.coreos.com/v1alpha1

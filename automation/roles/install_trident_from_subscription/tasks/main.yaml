@@ -24,7 +24,7 @@
 
 - name: Create App Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
@@ -35,7 +35,7 @@
 
 - name: Create Trident Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
@@ -48,21 +48,21 @@
 
 - name: Apply Trident FSx Config Secret
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/trident-fsx-config.yaml"
     state: "{{ state }}"
 
 - name: Apply Trident Operator install module repo subscription
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
 - name: create service account
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:

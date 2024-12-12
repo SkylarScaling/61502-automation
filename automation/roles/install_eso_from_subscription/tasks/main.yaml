@@ -21,7 +21,7 @@
 
 - name: Create App Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
@@ -32,7 +32,7 @@
 
 - name: Apply eso Operator install module repo subscription
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
@@ -40,7 +40,7 @@
 #TODO Move ARN to variables
 - name: create service account
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:

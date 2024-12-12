@@ -4,7 +4,7 @@
 
 - name: Grant 3M Group Cluster-Admin Rolebinding
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     state: "{{ state }}"
     definition:
       apiVersion: rbac.authorization.k8s.io/v1

@@ -43,7 +43,7 @@
         name: aws_config_security_groups
 
     - name: Wait for cluster to start processing auth requests
-      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ hcp_cluster_address[0] }}:443"
+      shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ hcp_cluster_address[0] }}:{{ k8s_port }}"
       retries: 20
       delay: 30
       register: result
@@ -51,7 +51,7 @@
 
     - name: Wait for Nodes to be Created
       k8s_info:
-        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        host: "https://api.{{ hcp_cluster_address[0] }}:{{ k8s_port }}"
         api_version: v1
         kind: Node
       register: output_info
@@ -61,7 +61,7 @@
 
     - name: Wait for Nodes to become Ready
       k8s_info:
-        host: "https://api.{{ hcp_cluster_address[0] }}:443"
+        host: "https://api.{{ hcp_cluster_address[0] }}:{{ k8s_port }}"
         api_version: v1
         kind: Node
       register: output_info
