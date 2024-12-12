@@ -33,6 +33,9 @@
         msg: "{{ rosa_cluster_address[0] }}"
 
     - include_role:
+        name: admin_oc_logout
+
+    - include_role:
         name: admin_create_cluster_admin_service_account
       vars:
         admin_user: "{{ managed_admin_user }}"
@@ -43,7 +46,7 @@
     - include_role:
         name: import_managed_cluster
       vars:
-        managed_cluster_address: "{{ hcp_cluster_address[0] }}"
+        managed_cluster_address: "{{ rosa_cluster_address[0] }}"
         managed_cluster_name: "{{ cluster_name }}"
         managed_cluster_port: "{{ managed_cluster_k8s_port }}"
         hub_address: "{{ hub_cluster_address }}"
