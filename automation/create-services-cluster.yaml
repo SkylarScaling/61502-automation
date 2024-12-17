@@ -39,8 +39,8 @@
     - debug:
         msg: "{{ hcp_cluster_address[0] }}"
 
-    - include_role:
-        name: aws_config_security_groups
+    # - include_role:
+    #     name: aws_config_security_groups
 
     - name: Wait for cluster to start processing auth requests
       shell: "oc login -u {{ cluster_admin_user }} -p {{ cluster_admin_password }} https://api.{{ hcp_cluster_address[0] }}:{{ k8s_port }}"
