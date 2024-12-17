@@ -1,0 +1,9 @@
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: placement-openshift-acm-all-clusters
+  namespace: acm-install-policies
+spec:
+  clusterSets:
+    - hub-cluster
+    - hcp-managed-clusters
