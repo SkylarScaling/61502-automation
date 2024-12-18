@@ -25,4 +25,4 @@ policies:
 policySets:
   - name: cluster-cma
     placement:
-      placementPath: placements/all-placement.yaml
+      placementPath: placements/clusters-placement.yaml
