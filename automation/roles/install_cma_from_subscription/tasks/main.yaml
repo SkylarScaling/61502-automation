@@ -30,7 +30,7 @@
       metadata:
         name: "{{ app_namespace }}"
 
-- name: Apply logging Operator install module repo subscription
+- name: Apply Custom Metrics Autoscaler Operator install module repo subscription
   k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"

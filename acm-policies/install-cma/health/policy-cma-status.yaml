@@ -1,0 +1,18 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: custom-metrics-autoscaler-operator
+  namespace: openshift-keda
+status:
+  conditions:
+    - type: Available
+      status: 'True'
+---
+apiVersion: keda.sh/v1alpha1
+kind: KedaController
+metadata:
+  name: keda
+  namespace: openshift-keda
+status:
+  phase: Installation Succeeded
