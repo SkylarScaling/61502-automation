@@ -1,0 +1,32 @@
+---
+- include_role:
+    name: admin_oc_login
+
+- debug:
+    var: maxreplicas_dict.maxreplicas
+- debug:
+    var: maxreplicas_dict.maxreplicas|type_debug
+
+- name: Create temporary directory for template files
+  tempfile:
+    state: directory
+    suffix: tmp
+  register: tmp_dir
+
+- set_fact:
+    working_dir: "{{ tmp_dir.path }}"
+
+- name: Populate Templates
+  template:
+    src: "{{ role_path }}/templates/ScaledObject.yaml.j2"
+    dest: "{{ working_dir }}/ScaledObject.yaml"
+
+- name: "Apply ScaledObject for {{ deployment_name }} to {{ deployment_namespace }}"
+  k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    src: "{{ working_dir }}/ScaledObject.yaml"
+    state: present
+
+- include_role:
+    name: admin_oc_logout
+...
