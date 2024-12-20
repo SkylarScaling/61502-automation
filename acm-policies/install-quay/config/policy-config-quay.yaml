@@ -95,6 +95,8 @@ spec:
           
             echo "[INFO] Creating quay admin secret quayadmin ..."
             TOKEN=$(echo "$RESULT" | tr ',' '\n' | grep access_token | awk -F: '{print $2}' | sed 's/"//g')
+            echo $TOKEN
+            echo $ADMINPASS
             oc -n $QUAY_NAMESPACE create secret generic quayadmin --from-literal=token=$TOKEN --from-literal=password=$ADMINPASS --from-literal=basic="$BASE64AUTH"
           
             echo "[INFO] Creating $QUAY_USER user ..."
