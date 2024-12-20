@@ -2,11 +2,6 @@
 - include_role:
     name: admin_oc_login
 
-- debug:
-    var: maxreplicas_dict.maxreplicas
-- debug:
-    var: maxreplicas_dict.maxreplicas|type_debug
-
 - name: Create temporary directory for template files
   tempfile:
     state: directory
