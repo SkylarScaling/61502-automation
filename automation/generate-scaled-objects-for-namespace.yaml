@@ -1,0 +1,42 @@
+---
+- name: Generate ScaledObject for Deployment
+  gather_facts: false
+  hosts: localhost
+  # Required Variables for this playbook
+  #   deployment_name
+  #   deployment_namespace
+  #   max_replicas
+  #   min_replicas
+  #   desired_replicas
+  #   cron_end
+  #   cron_start
+  #   cron_timezone
+  tasks:
+    - include_role:
+        name: admin_oc_login
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+
+    - name: Get all Deployments in Namespace
+      k8s_info:
+        host: "https://api.{{ ocp_cluster_address }}:{{ k8s_port }}"
+        api_version: apps/v1
+        kind: Deployment
+        namespace: "{{ deployment_namespace }}"
+      register: deployments
+
+    - debug:
+        msg: "{{ item.metadata.name }}"
+      loop: "{{ deployments.resources }}"
+
+    - include_role:
+        name: generate_scaled_object
+      vars:
+        deployment_name: "{{ item.metadata.name }}"
+        cluster_address: "{{ ocp_cluster_address }}"
+        admin_user: "{{ cluster_admin_user }}"
+        admin_password: "{{ cluster_admin_password }}"
+      loop: "{{ deployments.resources }}"
+...
