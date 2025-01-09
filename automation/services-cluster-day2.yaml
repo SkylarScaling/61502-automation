@@ -124,7 +124,11 @@
         name: install_cost_management_from_subscription
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
-
+        
+    - include_role:
+        name: install_argocd_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
     # TODO Cleanup Automation Admin Accounts
 

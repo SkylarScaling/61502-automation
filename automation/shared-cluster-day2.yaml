@@ -92,10 +92,10 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
-    - include_role:
-        name: install_openshift_gitops
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
+#    - include_role:
+#        name: install_openshift_gitops
+#      vars:
+#        cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
         name: install_developer_hub
