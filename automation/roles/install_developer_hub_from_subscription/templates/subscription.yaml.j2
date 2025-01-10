@@ -25,8 +25,8 @@ metadata:
 spec:
   type: Git
   pathname: "{{ subscription_repo_url }}"
-  secretRef: # Uncomment if using private repo
-    name: osrosa-acm-git-secret
+#  secretRef: # Uncomment if using private repo
+#    name: osrosa-acm-git-secret
 #---
 #apiVersion: v1 # Uncomment if using private repo
 #kind: Secret
@@ -44,7 +44,7 @@ metadata:
   namespace: "{{ app_namespace }}"
   annotations:
     apps.open-cluster-management.io/git-branch: "{{ subscription_branch }}"
-    apps.open-cluster-management.io/git-path: acm-policies/install-rhdh
+    apps.open-cluster-management.io/git-path: acm-policies/install-developerhub
     apps.open-cluster-management.io/reconcile-option: replace
   labels:
     app: "{{ app_name }}"
