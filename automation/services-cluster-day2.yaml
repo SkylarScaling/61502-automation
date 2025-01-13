@@ -130,6 +130,11 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
+    - include_role:
+        name: install_openshift_pipelines_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"       
+
     # TODO Cleanup Automation Admin Accounts
 
     - include_role:
