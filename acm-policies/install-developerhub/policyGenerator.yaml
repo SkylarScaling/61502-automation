@@ -17,6 +17,18 @@ policies:
   - name: policy-install-developer-hub.yaml
     manifests:
       - path: config/policy-install-developer-hub.yaml     
+  - name: policy-external-secret.yaml
+    manifests:
+      - path: config/policy-external-secret.yaml  
+  - name: policy-secret-store.yaml
+    manifests:
+      - path: config/policy-secret-store.yaml  
+  - name: policy-external-secret-k8s-plugin.yaml
+    manifests:
+      - path: config/policy-external-secret-k8s-plugin.yaml 
+  - name: policy-secret-store-k8s-plugin.yaml
+    manifests:
+      - path: config/policy-secret-store-k8s-plugin.yaml     
   # developer-hub Policies - end   
 policySets:
   - name: cluster-rhdh

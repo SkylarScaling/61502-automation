@@ -1,0 +1,62 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ cluster_admin_service_account_name }}"
+    service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
+    
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets
+        namespace: trident ##Openshift namespace where the secret going to be created in
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets ##Service account name that is listed in IAM Role
+        namespace: group-sync-operator ##Openshift namespace where the secret going to be created in
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets
+        namespace: openshift-logging ##Openshift namespace where the secret going to be created in
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN
+
+- name: create service account
+  k8s:
+    host: "https://api.{{ cluster_address }}:443"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: externalsecret-operator-config-external-secrets
+        namespace: rhdh-operator ##Openshift namespace where the secret going to be created in
+        annotations:
+          eks.amazonaws.com/role-arn: arn:aws:iam::{{ aws_account_id }}:role/{{ aws_iam_role_name }}  ##AWS ESO_ROLE_ARN          
