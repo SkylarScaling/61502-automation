@@ -260,7 +260,8 @@
                         authProvider: 'serviceAccount'
                         skipTLSVerify: true
                         serviceAccountToken: ${K8S_CLUSTER_TOKEN}
-
+                        
+### https://github.com/redhat-na-ssa/setup-playbooks/blob/main/rh-developer-hub/readme.md#enabling-kubernetes-plugin 
 - name: Create Service Account
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
