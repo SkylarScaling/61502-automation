@@ -1,0 +1,14 @@
+apiVersion: keycloak.org/v1alpha1
+kind: Keycloak
+metadata:
+  namespace: keycloak
+  labels:
+    app: sso
+  name: keycloak
+spec:
+  external:
+    enabled: false
+  externalAccess:
+    enabled: true
+  instances: 1
+  DisableDefaultServiceMonitor: true
