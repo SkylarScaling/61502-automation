@@ -1,0 +1,19 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "quarkus-example-scaled-object"
+  namespace: "quarkus-pipeline"
+spec:
+  cooldownPeriod: 0
+  maxReplicaCount: 10
+  minReplicaCount: 0
+  scaleTargetRef:
+    name: "quarkus-example"
+  triggers:
+    - metadata:
+        desiredReplicas: "3"
+        start: "0 6 * * 1,2,3,4,5"
+        end: "0 16 * * 1,2,3,4,5"
+        timezone: "US/Mountain"
+      type: cron
