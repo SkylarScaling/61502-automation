@@ -13,7 +13,7 @@ spec:
   triggers:
     - metadata:
         desiredReplicas: "{{ desired_replicas }}"
-        end: "{{ cron_end }}"
         start: "{{ cron_start }}"
+        end: "{{ cron_end }}"
         timezone: "{{ cron_timezone }}"
       type: cron
