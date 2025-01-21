@@ -3,7 +3,6 @@
   gather_facts: false
   hosts: localhost
   # Required Variables for this playbook
-  #   deployment_name
   #   deployment_namespace
   #   max_replicas
   #   min_replicas
