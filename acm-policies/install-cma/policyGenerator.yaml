@@ -29,6 +29,10 @@ policies:
       - path: health/policy-cma-status.yaml
     remediationAction: inform
 
+  - name: policy-cma-scaled-objects
+    manifests:
+      - path: scaled-objects/
+
   # cma Policies - end   
 policySets:
   - name: cluster-cma
