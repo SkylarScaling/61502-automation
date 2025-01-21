@@ -1,0 +1,21 @@
+---
+- name: Generate ScaledObject for Deployment
+  gather_facts: false
+  hosts: localhost
+  # Required Variables for this playbook
+  #   deployment_namespace
+  #   max_replicas
+  #   min_replicas
+  #   desired_replicas
+  #   cron_end
+  #   cron_start
+  #   cron_timezone
+  tasks:
+    - include_role:
+        name: generate_scaled_objects_for_namespace
+      vars:
+        deployment_namespace: "{{ ns }}"
+      loop: "{{ namespaces }}"
+      loop_control:
+        loop_var: ns
+...

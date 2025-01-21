@@ -26,18 +26,13 @@
         namespace: "{{ deployment_namespace }}"
       register: deployments
 
-    - debug:
-        msg: "{{ item.metadata.name }}"
-      loop: "{{ deployments.resources }}"
-
     - include_role:
         name: generate_scaled_object
       vars:
         deployment_name: "{{ item.metadata.name }}"
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
       loop: "{{ deployments.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
 
     - include_role:
         name: admin_oc_logout
