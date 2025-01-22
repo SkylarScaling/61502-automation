@@ -6,13 +6,13 @@ metadata:
   namespace: "quarkus-pipeline"
 spec:
   cooldownPeriod: 0
-  maxReplicaCount: 200
+  maxReplicaCount: 20
   minReplicaCount: 0
   scaleTargetRef:
     name: "quarkus-example-4"
   triggers:
     - metadata:
-        desiredReplicas: "100"
+        desiredReplicas: "9"
         start: "45 10 * * *"
         end: "0 12 * * *"
         timezone: "US/Mountain"
