@@ -6,7 +6,7 @@ metadata:
   namespace: "quarkus-pipeline"
 spec:
   cooldownPeriod: 0
-  maxReplicaCount: 15
+  maxReplicaCount: 7
   minReplicaCount: 0
   scaleTargetRef:
     name: "quarkus-example-2"
