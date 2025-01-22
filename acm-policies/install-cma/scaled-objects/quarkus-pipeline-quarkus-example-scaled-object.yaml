@@ -13,7 +13,7 @@ spec:
   triggers:
     - metadata:
         desiredReplicas: "5"
-        start: "35 10 * * *"
-        end: "0 12 * * *"
+        start: "53 13 * * *"
+        end: "0 15 * * *"
         timezone: "US/Mountain"
       type: cron
