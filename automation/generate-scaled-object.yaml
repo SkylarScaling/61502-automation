@@ -14,8 +14,4 @@
   tasks:
     - include_role:
         name: generate_scaled_object
-      vars:
-        cluster_address: "{{ ocp_cluster_address }}"
-        admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"
 ...

@@ -3,6 +3,9 @@
   gather_facts: false
   hosts: localhost
   # Required Variables for this playbook
+  #   ocp_cluster_address
+  #   cluster_admin_user
+  #   cluster_admin_password
   #   deployment_namespace
   #   max_replicas
   #   min_replicas

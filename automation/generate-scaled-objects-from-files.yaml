@@ -1,0 +1,21 @@
+---
+- name: Generate ScaledObject for Deployment
+  gather_facts: false
+  hosts: localhost
+  # Required Variables for this playbook
+  #   source_directory
+  tasks:
+    - name: Get all filenames in directory
+      find:
+        paths: "{{ source_dir }}"
+      register: found_files
+
+    - debug:
+        msg: "{{ found_files['files'] | map(attribute='path') | map('basename') | list }}"
+
+    - include_role:
+        name: generate_scaled_objects_from_files
+      loop: "{{ found_files['files'] | map(attribute='path') | map('basename') | list }}"
+      loop_control:
+        loop_var: file
+...
