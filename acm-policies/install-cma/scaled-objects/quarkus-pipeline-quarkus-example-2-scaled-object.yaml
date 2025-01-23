@@ -14,6 +14,6 @@ spec:
     - metadata:
         desiredReplicas: "7"
         start: "20 16 * * *"
-        end: "0 18 * * *"
+        end: "40 16 * * *"
         timezone: "US/Mountain"
       type: cron
