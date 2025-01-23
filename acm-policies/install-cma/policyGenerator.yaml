@@ -30,6 +30,9 @@ policies:
     remediationAction: inform
 
   - name: policy-cma-scaled-objects
+    dependencies:
+      - name: policy-cma-status
+    recreateOption: "Always"
     manifests:
       - path: scaled-objects/
 
