@@ -356,7 +356,7 @@
           apiGroups:
             - org.eclipse.che
           resources:
-            - checlustersi
+            - checlusters
 ---
 - name: Create rhdh-k8s-plugin Cluster Role Binding for Service Account
   kubernetes.core.k8s:
