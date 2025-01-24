@@ -28,8 +28,11 @@ policies:
       - path: config/policy-external-secret-k8s-plugin.yaml 
   - name: policy-secret-store-k8s-plugin.yaml
     manifests:
-      - path: config/policy-secret-store-k8s-plugin.yaml     
-  # developer-hub Policies - end   
+      - path: config/policy-secret-store-k8s-plugin.yaml 
+# -name: policy-configure-backstage.yaml
+#  manifests:
+#   - path: config/policy-configure-backstage.yaml        
+# developer-hub Policies - end   
 policySets:
   - name: cluster-rhdh
     placement:
