@@ -1,0 +1,8 @@
+# policyGenerator needs at least one valid CR in this directory at all times,
+#   so if no ScaledObjects exist, this is necessary to properly parse the policy
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+  name: openshift-keda
