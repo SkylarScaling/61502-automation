@@ -1,4 +1,3 @@
----
 - name: Create Developer Hub Instance
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
@@ -26,7 +25,7 @@
             enabled: true
         database:
           enableLocalDb: true
-
+---
 - name: Create rhdh-dynamic-plugins ConfigMap
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
@@ -149,7 +148,7 @@
                               anyOf:
                                 - hasAnnotation: backstage.io/kubernetes-id
                                 - hasAnnotation: backstage.io/kubernetes-namespace
-
+---
 - name: Create rhdh-appconfig ConfigMap
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
@@ -256,7 +255,7 @@
                         authProvider: 'serviceAccount'
                         skipTLSVerify: true
                         serviceAccountToken: ${K8S_CLUSTER_TOKEN}
-                        
+---                        
 ### https://github.com/redhat-na-ssa/setup-playbooks/blob/main/rh-developer-hub/readme.md#enabling-kubernetes-plugin 
 - name: Create Service Account
   kubernetes.core.k8s:
@@ -268,7 +267,7 @@
       metadata:
         name: rhdh-k8s-plugin
         namespace: rhdh-operator
-
+---
 - name: Create rhdh-k8s-plugin Cluster Role
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
@@ -358,7 +357,7 @@
             - org.eclipse.che
           resources:
             - checlustersi
-
+---
 - name: Create rhdh-k8s-plugin Cluster Role Binding for Service Account
   kubernetes.core.k8s:
     host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
