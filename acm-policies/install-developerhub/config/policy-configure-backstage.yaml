@@ -1,8 +1,3 @@
-- name: Create Developer Hub Instance
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       apiVersion: rhdh.redhat.com/v1alpha3
       kind: Backstage
       metadata:
@@ -26,11 +21,6 @@
         database:
           enableLocalDb: true
 ---
-- name: Create rhdh-dynamic-plugins ConfigMap
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       kind: ConfigMap
       apiVersion: v1
       metadata:
@@ -149,11 +139,6 @@
                                 - hasAnnotation: backstage.io/kubernetes-id
                                 - hasAnnotation: backstage.io/kubernetes-namespace
 ---
-- name: Create rhdh-appconfig ConfigMap
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       kind: ConfigMap
       apiVersion: v1
       metadata:
@@ -257,22 +242,12 @@
                         serviceAccountToken: ${K8S_CLUSTER_TOKEN}
 ---                        
 ### https://github.com/redhat-na-ssa/setup-playbooks/blob/main/rh-developer-hub/readme.md#enabling-kubernetes-plugin 
-- name: Create Service Account
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       apiVersion: v1
       kind: ServiceAccount
       metadata:
         name: rhdh-k8s-plugin
         namespace: rhdh-operator
 ---
-- name: Create rhdh-k8s-plugin Cluster Role
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       kind: ClusterRole
       apiVersion: rbac.authorization.k8s.io/v1 
       metadata:
@@ -358,11 +333,6 @@
           resources:
             - checlusters
 ---
-- name: Create rhdh-k8s-plugin Cluster Role Binding for Service Account
-  kubernetes.core.k8s:
-    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
-    state: "{{ state }}"
-    definition:
       apiVersion: rbac.authorization.k8s.io/v1
       kind: ClusterRoleBinding
       metadata:
