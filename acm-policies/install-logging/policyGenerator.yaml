@@ -14,17 +14,19 @@ placementBindingDefaults:
 
 policies:
   # Logging Policies - start
-  - name: policy-install-logging.yaml
+  - name: policy-install-logging
     manifests:
       - path: config/policy-install-logging.yaml
   # Logging Policies - end
 
   # Log Forward policy - start
-  - name: logforwarder 
+  - name: policy-configure-log-forwarder
+    dependencies:
+      - name: policy-install-logging
     manifests:
       - path: config/policy-configure-log-forwarder.yaml
   # Log Foward policy - end    
 policySets:
   - name: cluster-logging
     placement:
-      placementRulePath: placements/all-placement.yaml
+      placementPath: placements/all-placement.yaml

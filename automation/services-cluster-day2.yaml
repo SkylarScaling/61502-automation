@@ -120,6 +120,15 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
 
+    - include_role:
+        name: install_cost_management_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+
+    - include_role:
+        name: install_cma_from_subscription
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
     # TODO Cleanup Automation Admin Accounts
 

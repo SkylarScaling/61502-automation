@@ -1,10 +1,8 @@
-# https://github.com/external-secrets/external-secrets-helm-operator/blob/main/docs/install.md
 ---
-apiVersion: project.openshift.io/v1
-kind: Project
+apiVersion: v1
+kind: Namespace
 metadata:
   name: external-secrets
-
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource

@@ -115,7 +115,9 @@
       vars:
         managed_cluster_address: "{{ ocp_cluster_address }}"
         managed_cluster_name: "{{ cluster_name }}"
+        managed_cluster_port: "{{ k8s_port }}"
         hub_address: "{{ hub_cluster_address }}"
+        hub_cluster_port: "{{ k8s_port }}"
         managed_admin_user: "{{ cluster_admin_user }}"
         managed_admin_password: "{{ cluster_admin_password }}"
 

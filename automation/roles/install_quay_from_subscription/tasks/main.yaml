@@ -23,7 +23,7 @@
 
 - name: Create App Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
@@ -34,7 +34,7 @@
 
 - name: Create local-quay Namespace
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:
@@ -47,14 +47,14 @@
 
 - name: Apply Quay install module repo subscription
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     src: "{{ working_dir }}/subscription.yaml"
     state: "{{ state }}"
 
 - name: create service account
   k8s:
-    host: "https://api.{{ cluster_address }}:443"
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
     api_key: "{{ sa_token }}"
     state: "{{ state }}"
     definition:

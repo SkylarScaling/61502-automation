@@ -1,0 +1,31 @@
+---
+- include_role:
+    name: admin_oc_login
+  vars:
+    cluster_address: "{{ ocp_cluster_address }}"
+    admin_user: "{{ cluster_admin_user }}"
+    admin_password: "{{ cluster_admin_password }}"
+
+- debug:
+    msg: "{{ deployment_namespace }}"
+
+- name: Get all Deployments in Namespace
+  k8s_info:
+    host: "https://api.{{ ocp_cluster_address }}:{{ k8s_port }}"
+    api_version: apps/v1
+    kind: Deployment
+    namespace: "{{ deployment_namespace }}"
+  register: deployments
+
+- include_role:
+    name: generate_scaled_object
+  vars:
+    deployment_name: "{{ deployment.metadata.name }}"
+  loop: "{{ deployments.resources }}"
+  loop_control:
+    loop_var: deployment
+    label: "{{ deployment.metadata.name }}"
+
+- include_role:
+    name: admin_oc_logout
+...

@@ -1,0 +1,19 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: "{{ deployment_name }}-scaled-object"
+  namespace: "{{ deployment_namespace }}"
+spec:
+  cooldownPeriod: 0
+  maxReplicaCount: {{ max_replicas }}
+  minReplicaCount: {{ min_replicas }}
+  scaleTargetRef:
+    name: "{{ deployment_name }}"
+  triggers:
+    - metadata:
+        desiredReplicas: "{{ desired_replicas }}"
+        start: "{{ cron_start }}"
+        end: "{{ cron_end }}"
+        timezone: "{{ cron_timezone }}"
+      type: cron

@@ -1,0 +1,24 @@
+---
+- name: Generate ScaledObject for Deployment
+  gather_facts: false
+  hosts: localhost
+  # Required Variables for this playbook
+  #   ocp_cluster_address
+  #   cluster_admin_user
+  #   cluster_admin_password
+  #   namespaces [list]
+  #   max_replicas
+  #   min_replicas
+  #   desired_replicas
+  #   cron_end
+  #   cron_start
+  #   cron_timezone
+  tasks:
+    - include_role:
+        name: generate_scaled_objects_for_namespace
+      vars:
+        deployment_namespace: "{{ ns }}"
+      loop: "{{ namespaces }}"
+      loop_control:
+        loop_var: ns
+...

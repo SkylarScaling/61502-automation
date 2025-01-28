@@ -95,6 +95,13 @@ Example:
 ansible-playbook create-shared-cluster.yaml -i <inventory file>
 ```
 
+The create-shared-cluster.yaml playbook will be applying the configurations that are included in shared-cluster-day2.yaml to apply the day2 configurations on the shared cluster.
+
+
+**Note**
+Generate Oauth token for Quay Integration:
+
+After the shared cluster is provisioned and cluster health is verified, follow these steps to generate a new token in quay manually to allow integrations between namespaces in OpenShift cluster and Quay Registry for authentication:
 
 The create-shared-cluster.yaml playbook will be applying the configurations that are included in shared-cluster-day2.yaml to apply the day2 configurations on the shared cluster.
 

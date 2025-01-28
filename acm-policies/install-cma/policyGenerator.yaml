@@ -1,0 +1,43 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-cma
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-cma
+placementBindingDefaults:
+  name: "cma-binding"
+
+policies:
+  # cma Policies - start
+  - name: policy-install-cma
+    manifests:
+      - path: config/policy-install-cma.yaml
+
+  - name: policy-install-kedacontroller
+    manifests:
+      - path: config/policy-install-kedacontroller.yaml
+
+  - name: policy-cma-status
+    dependencies:
+      - name: policy-install-kedacontroller
+    manifests:
+      - path: health/policy-cma-status.yaml
+    remediationAction: inform
+
+  - name: policy-cma-scaled-objects
+    dependencies:
+      - name: policy-cma-status
+    recreateOption: "Always"
+    manifests:
+      - path: scaled-objects/
+
+  # cma Policies - end   
+policySets:
+  - name: cluster-cma
+    placement:
+      placementPath: placements/clusters-placement.yaml
