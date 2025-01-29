@@ -38,6 +38,7 @@ spec:
             pageSize: 0
             scope: sub
           userUIDAttribute: dn
+          # TODO Move this to secret ref:
         url: ldaps://ldap-pdint-t2.mmm.com:636/OU=Internal,OU=People,OU=FAP,O=3M?uid?sub?(&(objectClass=Person)(memberOf=CN=US-MN-Maplewood-OSE-Users,OU=Mail-Routing,OU=Groups,OU=FAP,O=3M))
       name: ldap
   schedule: 0 * * * *

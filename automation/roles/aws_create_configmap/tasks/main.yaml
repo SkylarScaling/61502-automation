@@ -1,0 +1,20 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+  vars:
+    service_account_name: "{{ acm_service_account_name }}"
+    service_account_namespace: "{{ acm_service_account_namespace }}"
+
+- name: Create AWS ConfigMap
+  k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: aws-config
+        namespace: acm-install-policies
+      data:
+        region: "{{ region }}"
