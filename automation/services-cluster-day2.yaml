@@ -84,6 +84,8 @@
         name: aws_create_configmap
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
+        service_account_name: "{{ acm_service_account_name }}"
+        service_account_namespace: "{{ acm_service_account_namespace }}"
 
     - include_role:
         name: install_groupsync_from_subscription

@@ -96,6 +96,13 @@
         cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
+        name: aws_create_configmap
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
+        service_account_name: "{{ cluster_admin_service_account_name }}"
+        service_account_namespace: "{{ cluster_admin_service_account_namespace }}"
+
+    - include_role:
         name: install_openshift_pipelines
       vars:
         cluster_address: "{{ ocp_cluster_address }}"

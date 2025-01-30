@@ -1,9 +1,15 @@
 ---
 - include_role:
     name: admin_get_service_account_token
-  vars:
-    service_account_name: "{{ acm_service_account_name }}"
-    service_account_namespace: "{{ acm_service_account_namespace }}"
+
+- name: Create Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: acm-install-policies
 
 - name: Create AWS ConfigMap
   k8s:
