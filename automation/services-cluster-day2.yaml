@@ -78,7 +78,12 @@
       vars:
         cluster_address: "{{ ocp_cluster_address }}"
         admin_user: "{{ cluster_admin_user }}"
-        admin_password: "{{ cluster_admin_password }}"       
+        admin_password: "{{ cluster_admin_password }}"
+
+    - include_role:
+        name: aws_create_configmap
+      vars:
+        cluster_address: "{{ ocp_cluster_address }}"
 
     - include_role:
         name: install_groupsync_from_subscription
