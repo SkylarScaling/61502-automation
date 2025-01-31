@@ -1,4 +1,3 @@
-
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -41,6 +40,42 @@ spec:
         metadataPolicy: None
         property: s3_secret_key  ##KEY5
       secretKey: s3_secret_key  #KEY5
+    ## Uncomment below configurations in case LDAP is being used with quay  
+    # - remoteRef:
+    #     conversionStrategy: Default
+    #     decodingStrategy: None
+    #     key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+    #     metadataPolicy: None
+    #     property: LDAP_ADMIN_DN  ##KEY6
+    #   secretKey: LDAP_ADMIN_DN  #KEY6
+    # - remoteRef:
+    #     conversionStrategy: Default
+    #     decodingStrategy: None
+    #     key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+    #     metadataPolicy: None
+    #     property: LDAP_ADMIN_PASSWD  ##KEY7
+    #   secretKey: LDAP_ADMIN_PASSWD  #KEY7 
+    # - remoteRef:
+    #     conversionStrategy: Default
+    #     decodingStrategy: None
+    #     key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+    #     metadataPolicy: None
+    #     property: LDAP_URI  ##KEY8
+    #   secretKey: LDAP_URI #KEY8     
+    # - remoteRef:
+    #     conversionStrategy: Default
+    #     decodingStrategy: None
+    #     key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+    #     metadataPolicy: None
+    #     property: LDAP_USER_FILTER  ##KEY9
+    #   secretKey: LDAP_USER_FILTER #KEY9   
+    # - remoteRef:
+    #     conversionStrategy: Default
+    #     decodingStrategy: None
+    #     key: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
+    #     metadataPolicy: None
+    #     property: LDAP_SUPERUSER_FILTER  ##KEY10
+    #   secretKey: LDAP_SUPERUSER_FILTERg #KEY10   
   refreshInterval: 1m
   secretStoreRef:
     kind: SecretStore
@@ -49,4 +84,3 @@ spec:
     creationPolicy: Owner
     deletionPolicy: Retain
     name: osrosa-quay-config-secret   ##The secret name in ocp that is stored in AWS Secret Manager
----
