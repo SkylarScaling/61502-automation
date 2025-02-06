@@ -6,7 +6,7 @@
   # Required Variables for this Playbook
   #    type: "LDAP"
   #    name: "LDAP3M"
-  #    cluster_name: hcp-3m
+  #    cluster_name: hcp-xx
   #    url: "ldaps://xxxxxxxxxxxx"
   #    bind_password: "xxxxxxxxx"
   #    bind_dn: "xxxxxxxxxx"
@@ -15,7 +15,7 @@
   #    email_attributes: "mail"
   #    username_attributes: "uid"
   #    region: "us-east-1"
-  #    DEFAULT_3M_SG_ID: "sg-xxxxxxxxxxxxx"
+  #    DEFAULT_xx_SG_ID: "sg-xxxxxxxxxxxxx"
   #    VpcId: "xxxxxxx"
   #    VpcEndpointId: "xxxxxxxxxx"
   tasks:
