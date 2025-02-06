@@ -5,7 +5,7 @@
   #  vars:
   # Required Variables for this Playbook
   #    type: "LDAP"
-  #    name: "LDAP3M"
+  #    name: "MYLDAP"
   #    cluster_name: hcp-xx
   #    url: "ldaps://xxxxxxxxxxxx"
   #    bind_password: "xxxxxxxxx"

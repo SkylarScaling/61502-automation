@@ -9,7 +9,7 @@
         - "{{ cluster_name }}"
     register: idp_list
 
-  - name: "Create 3M Active Directory LDAP Identity Provider if it Doesn't Exist"
+  - name: "Create Active Directory LDAP Identity Provider if it Doesn't Exist"
     command:
       argv:
         - rosa

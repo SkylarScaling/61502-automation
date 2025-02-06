@@ -18,7 +18,7 @@
 #     vpce_id: "{{ existing_endpoints.vpc_endpoints[0].vpc_endpoint_id }}"
 #     vpc_endpoint_type: "{{ existing_endpoints.vpc_endpoints[0].vpc_endpoint_type }}"
 
-# - name: Configure AWS VPC Endpoint to access 3M API
+# - name: Configure AWS VPC Endpoint to access API
 #   command:
 #     argv:
 #       - aws
@@ -27,7 +27,7 @@
 #       - --vpc-endpoint-id
 #       - "{{ vpce_id }}"
 #       - --add-security-group-ids
-#       - "{{ DEFAULT_3M_SG_ID }}"
+#       - "{{ DEFAULT_XX_SG_ID }}"
 
 ## This playbook will be adding a prefix IP to the HCP security groups that has the filter "api.openshift.com/name with value of cluster"
 
