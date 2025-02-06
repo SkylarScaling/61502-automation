@@ -1,0 +1,26 @@
+---
+- include_role:
+    name: admin_get_service_account_token
+
+- name: Create Namespace
+  k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: acm-install-policies
+
+- name: Create AWS ConfigMap
+  k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    api_key: "{{ sa_token }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: aws-config
+        namespace: acm-install-policies
+      data:
+        region: "{{ region }}"

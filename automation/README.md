@@ -95,3 +95,36 @@ Example:
 ansible-playbook create-shared-cluster.yaml -i <inventory file>
 ```
 
+The create-shared-cluster.yaml playbook will be applying the configurations that are included in shared-cluster-day2.yaml to apply the day2 configurations on the shared cluster.
+
+
+**Note**
+Generate Oauth token for Quay Integration:
+
+After the shared cluster is provisioned and cluster health is verified, follow these steps to generate a new token in quay manually to allow integrations between namespaces in OpenShift cluster and Quay Registry for authentication:
+
+The create-shared-cluster.yaml playbook will be applying the configurations that are included in shared-cluster-day2.yaml to apply the day2 configurations on the shared cluster.
+
+> [Note]
+Generate Oauth token for Quay Integration:
+
+After the shared cluster is provisioned and cluster health is verified, follow these steps to generate a new token in quay manually to allow integrations between namespaces in OpenShift cluster and Quay Registry for authentication:
+
+1- Login to Quay registry and under Users and Organizations select openshift organization.
+
+2- On the openshift org, click on Create New Application and add the Application Name then on the left side panel click on Generate Token and select all the boxes and click on Generate Access Token.
+
+3- Once you have the token generated, save the token and create a secret in local-quay namespace on the services cluster to include the new token. 
+
+Use the following secret template to create the secret in local-quay namespace on the services cluster:
+```
+kind: Secret
+apiVersion: v1
+metadata:
+  name: secret-token
+  namespace: local-quay
+data:
+  token: xxxxxTOKENxxxxx
+type: Opaque
+```
+

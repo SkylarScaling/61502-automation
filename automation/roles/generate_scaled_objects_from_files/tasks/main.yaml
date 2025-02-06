@@ -1,0 +1,7 @@
+---
+- include_vars:
+    file: "{{ source_dir }}/{{ file }}"
+
+- include_role:
+    name: generate_scaled_object
+...

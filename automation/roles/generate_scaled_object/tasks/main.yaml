@@ -1,0 +1,24 @@
+---
+- set_fact:
+    so_filename: "{{ deployment_namespace }}-{{ deployment_name }}-scaled-object"
+
+- name: Create temporary directory for template files
+  tempfile:
+    state: directory
+    suffix: tmp
+  register: tmp_dir
+
+- set_fact:
+    working_dir: "{{ tmp_dir.path }}"
+
+- name: Populate Templates
+  template:
+    src: "{{ role_path }}/templates/ScaledObject.yaml.j2"
+    dest: "{{ working_dir }}/{{ so_filename }}.yaml"
+
+
+- name: Copy CRs to CMA ACM Policy Dir
+  copy:
+    src: "{{ working_dir }}/{{ so_filename }}.yaml"
+    dest: "{{ playbook_dir }}/../acm-policies/install-cma/scaled-objects/{{ so_filename }}.yaml"
+...
