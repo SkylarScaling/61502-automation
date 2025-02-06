@@ -1,0 +1,383 @@
+---
+- include_role:
+    name: admin_oc_login
+
+- name: Create Developer Hub Instance
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: rhdh.redhat.com/v1alpha3
+      kind: Backstage
+      metadata:
+        name: developer-hub
+        namespace: rhdh-operator
+      spec:
+        application:
+          appConfig:
+            configMaps:
+              - name: rhdh-appconfig
+            mountPath: /opt/app-root/src
+          dynamicPluginsConfigMapName: rhdh-dynamic-plugins
+          extraEnvs:
+            secrets:
+              - name: osrosa-rhdh-secret
+          extraFiles:
+            mountPath: /opt/app-root/src
+          replicas: 1
+          route:
+            enabled: true
+        database:
+          enableLocalDb: true
+
+
+- name: Create rhdh-dynamic-plugins ConfigMap
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      kind: ConfigMap
+      apiVersion: v1
+      metadata:
+        name: rhdh-dynamic-plugins
+        namespace: rhdh-operator
+        labels:
+          rhdh.redhat.com/ext-config-sync: 'true'
+        annotations:
+          rhdh.redhat.com/backstage-name: developer-hub
+      data:
+        dynamic-plugins.yaml: |
+          includes:
+                - dynamic-plugins.default.yaml
+          plugins:
+            #Configs for Github Org
+            - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-org-dynamic
+              disabled: false
+            #Configs for Tekton plugins
+            - package: ./dynamic-plugins/dist/backstage-community-plugin-tekton
+              disabled: false
+              pluginConfig:
+                dynamicPlugins:
+                  frontend:
+                    backstage-community.plugin-tekton:
+                      mountPoints:
+                        - mountPoint: entity.page.ci/cards
+                          importName: TektonCI
+                          config:
+                            layout:
+                              gridColumn: "1 / -1"
+                            if:
+                              allOf:
+                                - isTektonCIAvailable
+            # Configs for Argo plugins
+            - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd-backend-dynamic
+              disabled: false
+            - package: ./dynamic-plugins/dist/roadiehq-scaffolder-backend-argocd-dynamic
+              disabled: false
+            - package: ./dynamic-plugins/dist/roadiehq-backstage-plugin-argo-cd
+              disabled: false
+              pluginConfig:
+                dynamicPlugins:
+                  frontend:
+                    roadiehq.backstage-plugin-argo-cd:
+                      mountPoints:
+                        - mountPoint: entity.page.overview/cards
+                          importName: EntityArgoCDOverviewCard
+                          config:
+                            layout:
+                              gridColumnEnd:
+                                lg: "span 8"
+                                xs: "span 12"
+                            if:
+                              allOf:
+                                - isArgocdAvailable
+                        - mountPoint: entity.page.cd/cards
+                          importName: EntityArgoCDHistoryCard
+                          config:
+                            layout:
+                              gridColumn: "1 / -1"
+                            if:
+                              allOf:
+                                - isArgocdAvailable
+            #Configs for Quay plugins
+            - package: ./dynamic-plugins/dist/backstage-community-plugin-quay
+              disabled: false
+              pluginConfig:
+                dynamicPlugins:
+                  frontend:
+                    backstage-community.plugin-quay:
+                      mountPoints:
+                        - mountPoint: entity.page.image-registry/cards
+                          importName: QuayPage
+                          config:
+                            layout:
+                              gridColumn: 1 / -1
+                            if:
+                              anyOf:
+                              - isQuayAvailable
+            - package: ./dynamic-plugins/dist/backstage-community-plugin-scaffolder-backend-module-quay-dynamic
+              disabled: false
+            #Configs for Kubernetes plugins
+            - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes-backend-dynamic
+              disabled: false
+            - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes
+              disabled: false
+              pluginConfig:
+                dynamicPlugins:
+                  frontend:
+                    backstage.plugin-kubernetes:
+                      mountPoints:
+                        - mountPoint: entity.page.kubernetes/cards
+                          importName: EntityKubernetesContent
+                          config:
+                            layout:
+                              gridColumn: "1 / -1"
+                            if:
+                              anyOf:
+                                - hasAnnotation: backstage.io/kubernetes-id
+                                - hasAnnotation: backstage.io/kubernetes-namespace
+            - package: ./dynamic-plugins/dist/backstage-community-plugin-topology
+              disabled: false
+              pluginConfig:
+                dynamicPlugins:
+                  frontend:
+                    backstage-community.plugin-topology:
+                      mountPoints:
+                        - mountPoint: entity.page.topology/cards
+                          importName: TopologyPage
+                          config:
+                            layout:
+                              gridColumn: "1 / -1"
+                              height: 75vh
+                            if:
+                              anyOf:
+                                - hasAnnotation: backstage.io/kubernetes-id
+                                - hasAnnotation: backstage.io/kubernetes-namespace
+
+- name: Create rhdh-appconfig ConfigMap
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      kind: ConfigMap
+      apiVersion: v1
+      metadata:
+        name: rhdh-appconfig
+        namespace: rhdh-operator
+        labels:
+          rhdh.redhat.com/ext-config-sync: 'true'
+        annotations:
+          rhdh.redhat.com/backstage-name: developer-hub
+      data:
+        app-config.yaml: |2-
+              app:
+                baseUrl: ${GITHUB_WEBHOOK_URL}  
+              backend:
+                baseUrl: ${GITHUB_WEBHOOK_URL} 
+                auth:
+                  externalAccess:
+                    - type: legacy
+                      options:
+                        subject: legacy-default-config
+                        # This is a default value, which you should change by providing your own app-config
+                        secret: "pl4s3Ch4ng3M3"
+              auth:
+                  environment: production
+                  providers:
+                    github:
+                      production:
+                        clientId: ${AUTH_GITHUB_CLIENT_ID}
+                        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+              integrations:
+                github:
+                  - host: ${GITHUB_HOST_DOMAIN}
+                    apps:
+                      - appId: ${AUTH_GITHUB_APP_ID}
+                        clientId: ${AUTH_GITHUB_CLIENT_ID}
+                        clientSecret: ${GITHUB_CLIENT_SECRET}
+                        webhookUrl: ${GITHUB_WEBHOOK_URL}
+                        webhookSecret: ${GITHUB_WEBHOOK_SECRET}
+                        privateKey: |
+                          ${GITHUB_PRIVATE_KEY_FILE}
+              signInPage: github
+
+              dangerouslyAllowSignInWithoutUserInCatalog: false
+              catalog:
+                providers:
+                  githubOrg:
+                    id: production
+                    githubUrl: https://github.com
+                    orgs: [ "${GITHUB_ORGANIZATION}" ]
+                    schedule:
+                      frequency:
+                        seconds: 10
+                      initialDelay:
+                        seconds: 15
+                      timeout:
+                        minutes: 15
+              #ArgoCD Backend Plugins
+              argocd:
+                username: "${ARGOCD_USERNAME}"
+                password: "${ARGOCD_PASSWORD}"
+                appLocatorMethods:
+                  - type: 'config'
+                    instances:
+                      - name: ${K8S_CLUSTER_NAME}
+                        url: "${ARGOCD_INSTANCE_URL}"
+                        token: "${ARGOCD_AUTH_TOKEN}"        
+              proxy:
+                endpoints:  
+                  #Quay Backend Plugins
+                  '/quay/api':
+                        target: ${QUAY_URL}
+                        headers:
+                          X-Requested-With: 'XMLHttpRequest'
+                          Authorization: "Bearer ${QUAY_BEARER_TOKEN}"
+                        changeOrigin: true
+                        # Change to "false" in case of using self hosted quay instance with a self-signed certificate
+                        secure: false
+              kubernetes:
+                customResources:
+                  - group: 'tekton.dev'
+                    apiVersion: 'v1beta1'
+                    plural: 'pipelines'
+                  - group: 'tekton.dev'
+                    apiVersion: 'v1beta1'
+                    plural: 'pipelineruns'
+                  - group: 'tekton.dev'
+                    apiVersion: 'v1beta1'
+                    plural: 'taskruns'
+                  - group: 'route.openshift.io'
+                    apiVersion: 'v1'
+                    plural: 'routes'
+                serviceLocatorMethod:
+                  type: 'multiTenant'
+                clusterLocatorMethods:
+                  - type: 'config'
+                    clusters:
+                      - name: ${K8S_CLUSTER_NAME}
+                        url: ${K8S_CLUSTER_URL}
+                        authProvider: 'serviceAccount'
+                        skipTLSVerify: true
+                        serviceAccountToken: ${K8S_CLUSTER_TOKEN}
+                        
+### https://github.com/redhat-na-ssa/setup-playbooks/blob/main/rh-developer-hub/readme.md#enabling-kubernetes-plugin 
+- name: Create Service Account
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: rhdh-k8s-plugin
+        namespace: rhdh-operator
+
+- name: Create rhdh-k8s-plugin Cluster Role
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      kind: ClusterRole
+      apiVersion: rbac.authorization.k8s.io/v1 
+      metadata:
+        name: rhdh-k8s-plugin
+      rules:
+        - verbs: 
+            - get
+            - watch
+            - list 
+          apiGroups:
+            - '' 
+          resources:
+            - pods
+            - pods/log
+            - services
+            - configmaps 
+            - limitranges
+        - verbs: 
+            - get
+            - watch
+            - list 
+          apiGroups:
+            - metrics.k8s.io 
+          resources:
+            - pods 
+        - verbs:
+            - get
+            - watch 
+            - list
+          apiGroups: 
+            - apps
+          resources:
+            - daemonsets
+            - deployments 
+            - replicasets 
+            - statefulsets
+        - verbs: 
+            - get
+            - watch
+            - list 
+          apiGroups:
+            - autoscaling 
+          resources:
+            - horizontalpodautoscalers 
+        - verbs:
+            - get
+            - watch 
+            - list
+          apiGroups:
+            - networking.k8s.io
+          resources: 
+            - ingresses
+        - verbs: 
+            - get
+            - watch 
+            - list
+          apiGroups: 
+            - batch
+          resources: 
+            - jobs
+            - cronjobs
+        - verbs: 
+            - get
+            - list 
+          apiGroups:
+            - tekton.dev 
+          resources:
+            - pipelines
+            - pipelineruns 
+            - taskruns
+        - verbs:
+            - get
+            - list
+          apiGroups:
+            - route.openshift.io
+          resources:
+            - routes
+        - verbs:
+            - get
+            - list
+          apiGroups:
+            - org.eclipse.che
+          resources:
+            - checlustersi
+
+- name: Create rhdh-k8s-plugin Cluster Role Binding for Service Account
+  kubernetes.core.k8s:
+    host: "https://api.{{ cluster_address }}:{{ k8s_port }}"
+    state: "{{ state }}"
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: rhdh-k8s-plugin
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: rhdh-k8s-plugin
+      subjects:
+        - kind: ServiceAccount
+          name: rhdh-k8s-plugin
+          namespace: rhdh-operator
+

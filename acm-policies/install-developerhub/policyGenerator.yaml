@@ -1,0 +1,39 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-rhdh
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-rhdh
+placementBindingDefaults:
+  name: "rhdh-binding"
+
+policies:
+  # developer-hub Policies - start
+  - name: policy-install-developer-hub.yaml
+    manifests:
+      - path: config/policy-install-developer-hub.yaml     
+  - name: policy-external-secret.yaml
+    manifests:
+      - path: config/policy-external-secret.yaml  
+  - name: policy-secret-store.yaml
+    manifests:
+      - path: config/policy-secret-store.yaml  
+  - name: policy-external-secret-k8s-plugin.yaml
+    manifests:
+      - path: config/policy-external-secret-k8s-plugin.yaml 
+  - name: policy-secret-store-k8s-plugin.yaml
+    manifests:
+      - path: config/policy-secret-store-k8s-plugin.yaml 
+  - name: policy-configure-backstage.yaml
+    manifests:
+      - path: config/policy-configure-backstage.yaml        
+# developer-hub Policies - end   
+policySets:
+  - name: cluster-rhdh
+    placement:
+      placementPath: placements/clusters-placement.yaml

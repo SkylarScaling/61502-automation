@@ -1,0 +1,24 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-tekton
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-tekton  
+placementBindingDefaults:
+  name: "rhdh-tekton"
+
+policies:
+  # developer-hub Policies - start
+  - name: policy-install-tekton.yaml
+    manifests:
+      - path: config/policy-install-tekton.yaml     
+  # tekton Policies - end   
+policySets:
+  - name: cluster-tekton
+    placement:
+      placementPath: placements/clusters-placement.yaml
