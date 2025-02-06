@@ -37,12 +37,12 @@ policies:
       - path: external-secrets-operator/store/policy-secretstore.yaml
   # ESO Store policy - end
 
-   # ESO 3M CA Store policy - start
-  - name: external-secrets-3mca-store
+   # ESO CA Store policy - start
+  - name: external-secrets-ca-store
     manifests:
       - path: external-secrets-operator/store/policy-externalsecrets-ldapca.yaml
       - path: external-secrets-operator/store/policy-secretstore-ldapca.yaml
-  # ESO 3M CA Store policy - end 
+  # ESO CA Store policy - end
 
 policySets:
   - name: groupsync
