@@ -18,7 +18,7 @@ spec:
         insecure: false
         rfc2307:
           usersQuery:
-            baseDN: 'OU=Mail-Routing,OU=Groups,OU=FAP,O=3M'
+            baseDN: 'xxxxxxxxxxxx Add value of base DN'
             derefAliases: never
             pageSize: 0
             scope: sub
@@ -32,13 +32,13 @@ spec:
           userNameAttributes:
             - uid
           groupsQuery:
-            baseDN: 'OU=Mail-Routing,OU=Groups,OU=FAP,O=3M'
+            baseDN: 'xxxxxxxxxx Add value of base DN'
             derefAliases: always
-            filter: (&(objectClass=group)(cn=OSCP-*))
+            filter: (&(objectClass=group)(cn=YOUR-GROUP-*))
             pageSize: 0
             scope: sub
           userUIDAttribute: dn
           # TODO Move this to secret ref:
-        url: ldaps://ldap-pdint-t2.mmm.com:636/OU=Internal,OU=People,OU=FAP,O=3M?uid?sub?(&(objectClass=Person)(memberOf=CN=US-MN-Maplewood-OSE-Users,OU=Mail-Routing,OU=Groups,OU=FAP,O=3M))
+        url: xxxxxxxxxx
       name: ldap
   schedule: 0 * * * *
