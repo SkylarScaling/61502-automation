@@ -1,0 +1,24 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-argocd
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-argocd
+placementBindingDefaults:
+  name: "argocd-binding"
+
+policies:
+  # argocd Policies - start
+  - name: policy-install-argocd.yaml
+    manifests:
+      - path: config/policy-install-argocd.yaml     
+  # argocd Policies - end   
+policySets:
+  - name: cluster-argocd
+    placement:
+      placementPath: placements/clusters-placement.yaml

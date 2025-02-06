@@ -1,3 +1,4 @@
+## this playbook will modify the VPCE (VPC Endpoint) to add a seconds SG to it ##
 # ---
 # - name: Get all endpoints with specific filters
 #   amazon.aws.ec2_vpc_endpoint_info:
@@ -28,11 +29,14 @@
 #       - --add-security-group-ids
 #       - "{{ DEFAULT_3M_SG_ID }}"
 
+## This playbook will be adding a prefix IP to the HCP security groups that has the filter "api.openshift.com/name with value of cluster"
+
 - name: Get Security Group info by tag and cluster name
   amazon.aws.ec2_security_group_info:
     region: "{{ region }}"
     filters:
       "tag:api.openshift.com/name": "{{ cluster_name }}"
+      "description": "VPC endpoint security group"
   register: security_group_info
 
 - name: debug existing sg info
@@ -55,4 +59,3 @@
        to_port: "-1"
        ip_prefix: "{{ prefix_ip_list }}" 
        group_id: "{{ group_id }}"    
-

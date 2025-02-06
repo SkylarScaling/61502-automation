@@ -1,0 +1,30 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: gen-policy-generator-keycloak
+policyDefaults:
+  namespace: acm-install-policies
+  remediationAction: enforce
+  consolidateManifests: false
+  policySets:
+    - cluster-keycloak
+placementBindingDefaults:
+  name: "keycloak-binding"
+
+policies:
+  # keycloak Policies - start
+  - name: policy-install-keycloak
+    manifests:
+      - path: config/policy-install-keycloak.yaml 
+  - name: policy-create-keycloak-instance.yaml
+    manifests:
+      - path: config/policy-create-keycloak-instance.yaml 
+  - name: policy-create-keycloak-realm.yaml
+    manifests:
+      - path: config/policy-create-keycloak-realm.yaml            
+  # keycloak Policies - end   
+policySets:
+  - name: cluster-keycloak
+    placement:
+      placementPath: placements/hub-placement.yaml

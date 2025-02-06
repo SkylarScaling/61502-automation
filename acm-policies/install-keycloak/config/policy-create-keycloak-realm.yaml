@@ -1,0 +1,16 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakRealm
+metadata:
+  name: tekton
+  namespace: keycloak  
+  labels:
+    realm: tekton
+spec:
+  instanceSelector:
+    matchLabels:
+      app: sso
+  realm:
+    displayName: Tekton Authentication Realm
+    enabled: true
+    id: tekton
+    realm: tekton
